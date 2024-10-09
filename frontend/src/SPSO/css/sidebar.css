@@ -1,0 +1,37 @@
+.p-sidebar-mask {
+    display: flex; /* Hoặc thay đổi thành block nếu không cần */
+}
+
+.p-sidebar-left {
+    width: 200px !important; /* Giới hạn chiều rộng của sidebar */
+}
+
+.custom-sidebar{
+    border-radius: 10px;
+    max-width: 200px !important;
+    overflow: hidden;
+}
+
+.custom-menu{
+    padding-top: 20px;
+    font-family: monospace
+}
+
+.custom-menu-item{
+    padding: 10px;
+    font-weight: bolder;
+}
+
+.custom-menu-subitem{
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+
+.custom-menu-subitem-last{
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+
+.p-menuitem-icon {
+    margin-right: 10px; /* Điều chỉnh khoảng cách giữa icon và label */
+}
