@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Column, HeaderGroup, Row, useTable } from "react-table"
 import { useSidebar } from "../providers/SidebarContext";
 
+//Tối đa chỉ 15 records
+
 interface StudentData {
   name: string;
   student_ID: string;     
@@ -9,7 +11,19 @@ interface StudentData {
   pages: number;            
 }
 
+const tmpNum = 1
+
 const data: StudentData[] = [
+  { name: "John Doe", student_ID: "ds3a23", printing_time: 35, pages: 5 },
+  { name: "Jane Smith", student_ID: "ds3b45", printing_time: 15, pages: 2 },
+  { name: "Alice Johnson", student_ID: "ds3c67", printing_time: 20, pages: 3 },
+  { name: "Michael Brown", student_ID: "ds3d89", printing_time: 50, pages: 10 },
+  { name: "Emily Davis", student_ID: "ds3e12", printing_time: 25, pages: 7 }, 
+  { name: "John Doe", student_ID: "ds3a23", printing_time: 35, pages: 5 },
+  { name: "Jane Smith", student_ID: "ds3b45", printing_time: 15, pages: 2 },
+  { name: "Alice Johnson", student_ID: "ds3c67", printing_time: 20, pages: 3 },
+  { name: "Michael Brown", student_ID: "ds3d89", printing_time: 50, pages: 10 },
+  { name: "Emily Davis", student_ID: "ds3e12", printing_time: 25, pages: 7 }, 
   { name: "John Doe", student_ID: "ds3a23", printing_time: 35, pages: 5 },
   { name: "Jane Smith", student_ID: "ds3b45", printing_time: 15, pages: 2 },
   { name: "Alice Johnson", student_ID: "ds3c67", printing_time: 20, pages: 3 },
@@ -38,8 +52,7 @@ const columns: Column<StudentData>[] = [
       Header: "Tùy chọn", // Tiêu đề cột mới
       Cell: ({ row }: { row: Row<StudentData> }) => (
         <div className="flex justify-center space-x-3">
-          <button className="pi pi-pencil hover:scale-110" style={{color: "yellow"}}/>
-          <button className="pi pi-trash hover:scale-110" style={{color: "red"}}/>
+          <button className="pi pi-info-circle" style={{color: ""}}/>
         </div>
       ),
     },
@@ -57,12 +70,13 @@ export default function Student() {
 
     const {visible} = useSidebar();
     return (
-      <div className={`${visible? 'pr-0': 'pr-2'} pt-[78px] font-mono ${visible? 'pl-[188px]': 'pl-[0px]'}`}>
-        <div className={`border-2 shadow bg-white rounded ${visible? 'w-[1075px]': 'w-[1260px]'}  h-[465px]`}>
+      <div className={`${visible? 'pr-0': 'pr-2'} pt-[78px] font-mono ${visible? 'pl-[190px]': 'pl-[0px]'} min-h-screen`}>        
+        <div className={`border-2 shadow bg-white rounded ${visible? 'w-[1050px]': 'w-[1260px]'}  h-[650px]`}>
           <div className="pl-2 bg-white space-y-3 space-x-1 flex items-center">
             <input 
             type="text" 
             className="border rounded bg-white shadow h-6 w-52 text-[12px]  focus:outline-none focus:border-gray-400"
+            placeholder="Nhập tên hoặc MSSV"
            />
             <button className="pi pi-search hover:scale-110 pb-2" style={{fontSize: "12px"}}/>
           </div>
@@ -80,7 +94,9 @@ export default function Student() {
               {rows.map((row: Row<StudentData>) => {
                 prepareRow(row);
                 return (
-                    <tr {...row.getRowProps()} className="text-center">
+                    <tr {...row.getRowProps()} 
+                    className="text-center border-b-[1px]"
+                    style={{ lineHeight: "2" }}>
                         {row.cells.map(cell => (
                             <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                         ))}
@@ -89,9 +105,16 @@ export default function Student() {
               })}
             </tbody>
           </table>
-          <div className="flex justify-center mt-[230px] border-2 shadow h-10">
-            <div className="flex justify-between w-[250px]">
+          <div className="flex justify-center border-b-[0.5px] h-11">
+            <div className="flex justify-between w-[250px] py-1">
               <button className="pi pi-arrow-left" />
+              <div className="flex justify-center items-center">
+                <input 
+                type="text" 
+                placeholder={tmpNum.toString()} 
+                className="mt-1 size-6  text-center focus:border-gray-300"/>
+                <p>/ {tmpNum} trang</p>
+              </div>
               <button className="pi pi-arrow-right" />
             </div>
           </div> 

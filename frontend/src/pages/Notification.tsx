@@ -1,41 +1,43 @@
 import { Column, HeaderGroup, Row, useTable } from "react-table"
 import { useSidebar } from "../providers/SidebarContext";
+import CreateNotification from "../components/CreateNotification";
+import { useState } from "react";
 
-interface StudentHistoryData {
-  name: string;
-  student_ID: string;     
-  printing_date: string;   
-  files: number;            
+interface PrinterHistoryData {
+  subject: string;
+  sender: string;     
+  sending_date: string;   
+  noreciever: number;            
 }
 
-const data: StudentHistoryData[] = [
-  { name: "John Doe", student_ID: "ds3a23", printing_date: "20/10/2024", files: 5 },
-  { name: "Jane Smith", student_ID: "ds3b45", printing_date: "20/10/2024", files: 2 },
-  { name: "Alice Johnson", student_ID: "ds3c67", printing_date: "23/10/2024", files: 3 },
-  { name: "Michael Brown", student_ID: "ds3d89", printing_date: "22/10/2024", files: 10 },
-  { name: "Emily Davis", student_ID: "ds3e12", printing_date: "10/10/2024", files: 7 }, 
+const data: PrinterHistoryData[] = [
+  { subject: "Inform", sender: "John Doe", sending_date: "20/10/2024", noreciever: 5 },
+  { subject: "Warning", sender: "John Doe", sending_date: "20/10/2024", noreciever: 2 },
+  { subject: "Warning", sender: "Alice Johnson", sending_date: "23/10/2024", noreciever: 3 },
+  { subject: "Warning", sender: "Alice Johnson", sending_date: "22/10/2024", noreciever: 10 },
+  { subject: "Inform", sender: "Alice Johnson", sending_date: "10/10/2024", noreciever: 7 }, 
   ];
 
-const columns: Column<StudentHistoryData>[] = [
+const columns: Column<PrinterHistoryData>[] = [
     {
-      Header: "Họ và tên",
-      accessor: "name", // Đây là khóa trong đối tượng data
+      Header: "Tiêu đề",
+      accessor: "subject", // Đây là khóa trong đối tượng data
     },
     {
-      Header: "MSSV",
-      accessor: "student_ID",
+      Header: "Người gửi",
+      accessor: "sender",
     },
     {
-      Header: "Ngày in",
-      accessor: "printing_date",
+      Header: "Ngày gửi",
+      accessor: "sending_date",
     },
     {
-      Header: "Số tệp in",
-      accessor: "files",
+      Header: "Số người được gửi",
+      accessor: "noreciever",
     },
     {
       Header: "Tùy chọn", // Tiêu đề cột mới
-      Cell: ({ row }: { row: Row<StudentHistoryData> }) => (
+      Cell: ({ row }: { row: Row<PrinterHistoryData> }) => (
         <div className="flex justify-center space-x-3">
           <button className="pi pi-info-circle" style={{color: ""}}/>
           <button className="pi pi-trash hover:scale-110" style={{color: "red"}}/>
@@ -44,7 +46,7 @@ const columns: Column<StudentHistoryData>[] = [
     },
   ];
 
-export default function StudentHistory() {
+export default function Notifications() {
 
     const {
         getTableProps,
@@ -52,18 +54,24 @@ export default function StudentHistory() {
         headerGroups,
         rows,
         prepareRow,
-      }: any = useTable<StudentHistoryData>({ columns, data });
+      }: any = useTable<PrinterHistoryData>({ columns, data });
 
     const {visible} = useSidebar();
+    const [isOpenCreate, setIsOpenCreate] = useState<boolean>(false)
+
+    const setIsOpen = (val: boolean) => {
+        setIsOpenCreate(val)
+    }
+
     return (
       <div className={`${visible? 'pr-0': 'pr-2'} min-h-screen pt-[78px] font-mono ${visible? 'pl-[195px]': 'pl-[0px]'}`}>
         <div className={`border-2 shadow bg-white rounded ${visible? 'w-[1053px]': 'w-[1260px]'}  h-[600px]`}>
-          <div className="pl-2 bg-white space-y-3 space-x-1 flex items-center justify-between pr-2">
+          <div className="pl-2 bg-white space-y-3 space-x-1 flex items-center justify-between">
             <div className="space-y-3 space-x-1 flex items-center">
                 <input 
                 type="text" 
                 className="border rounded bg-white shadow h-6 w-52 text-[12px]  focus:outline-none focus:border-gray-400"
-                placeholder="Nhập tên hoặc MSSV"/>
+                placeholder="Nhập tiêu đề thông báo"/>
                 <button className="pi pi-search hover:scale-110 pb-2" style={{fontSize: "12px"}}/>
             </div>
             <div className="flex items-center justify-center space-x-2 pb-2">
@@ -76,10 +84,20 @@ export default function StudentHistory() {
                 type="date"
                 className="border rounded bg-white shadow h-6 w-52 text-[12px]  focus:outline-none focus:border-gray-400"/>
             </div>
+            <div className="pr-4 flex items-center pb-2">
+                <button 
+                className="flex rounded justify-center hover:scale-110 active:scale-90 items-center bg-blue-500 space-x-1 px-2 py-1"
+                onClick={() => setIsOpenCreate(true)}>
+                    <i 
+                    className="pi pi-envelope"
+                    style={{color:'white'}}/>
+                    <p className="text-white">Tạo thông báo</p>
+                </button>
+            </div>
           </div>
           <table {...getTableProps()} className=" bg-white rounded w-full">
             <thead>
-              {headerGroups.map((headerGroup: HeaderGroup<StudentHistoryData>) => (
+              {headerGroups.map((headerGroup: HeaderGroup<PrinterHistoryData>) => (
                 <tr {...headerGroup.getHeaderGroupProps()} className="border-2">
                     {headerGroup.headers.map(column => (
                         <th {...column.getHeaderProps()}>{column.render("Header")}</th>
@@ -88,7 +106,7 @@ export default function StudentHistory() {
               ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-              {rows.map((row: Row<StudentHistoryData>) => {
+              {rows.map((row: Row<PrinterHistoryData>) => {
                 prepareRow(row);
                 return (
                     <tr 
@@ -109,6 +127,9 @@ export default function StudentHistory() {
               <button className="pi pi-arrow-right" />
             </div>
           </div> 
+        </div>
+        <div>
+            <CreateNotification isOpen={isOpenCreate} setIsOpen={setIsOpen}/>
         </div>
       </div> 
     )
