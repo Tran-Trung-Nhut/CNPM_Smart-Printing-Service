@@ -6,28 +6,28 @@
     width: 200px !important; /* Giới hạn chiều rộng của sidebar */
 }
 
-.custom-sidebar{
+.custom-sidebar {
     border-radius: 10px;
     max-width: 200px !important;
     overflow: hidden;
 }
 
-.custom-menu{
+.custom-menu {
     padding-top: 20px;
-    font-family: monospace
+    font-family: monospace;
 }
 
-.custom-menu-item{
+.custom-menu-item {
     padding: 10px;
     font-weight: bolder;
 }
 
-.custom-menu-subitem{
+.custom-menu-subitem {
     margin-bottom: 10px;
     margin-left: 15px;
 }
 
-.custom-menu-subitem-last{
+.custom-menu-subitem-last {
     margin-bottom: 10px;
     margin-left: 15px;
 }

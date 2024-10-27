@@ -7,26 +7,24 @@ import Student from './pages/Student';
 import { SidebarProvider } from './providers/SidebarContext';
 import StudentHistory from './pages/StudentHistory';
 
-
 function App() {
-  
-  return (
-    <SidebarProvider>
-      <Router>
-        <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/SPSO' element={<DefaultLayout/>}>
-            <Route path='students' element={<Student/>}/>
-            <Route path='printers' element/>
-            <Route path='printers-printing-history' element/>
-            <Route path='students-printing-history' element={<StudentHistory/>}/>
-            <Route path='informs' element/>
-          </Route>
-        </Routes>
-      </Router>
-    </SidebarProvider>
-  );
+    return (
+        <SidebarProvider>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/SPSO" element={<DefaultLayout />}>
+                        <Route path="students" element={<Student />} />
+                        <Route path="printers" element />
+                        <Route path="printers-printing-history" element />
+                        <Route path="students-printing-history" element={<StudentHistory />} />
+                        <Route path="informs" element />
+                    </Route>
+                </Routes>
+            </Router>
+        </SidebarProvider>
+    );
 }
 
 export default App;
