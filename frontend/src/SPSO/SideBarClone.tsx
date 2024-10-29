@@ -78,7 +78,7 @@ export default function SidebarClone({ visible, setVisible }: SidebarProps){
                     command: () => setVisible(false),
                     template: () => (
                         <Link 
-                        to="/SPSO/informs" 
+                        to="/SPSO/notifications" 
                         className="p-menuitem-link custom-menu-subitem">
                             <i className="pi pi-bell p-menuitem-icon"></i>
                             <span className="p-menuitem-text">Lịch sử thông báo</span>
@@ -95,7 +95,7 @@ export default function SidebarClone({ visible, setVisible }: SidebarProps){
         showCloseIcon={false}
         onHide={() => setVisible(false)} 
         className="p-col-fixe custom-sidebar bg-white shadow w-[200px]" 
-        style={{ width: '200px' , marginLeft: '5px', border: "2px solid #ccc"}}>
+        style={{ width: '200px' , marginLeft: '5px', border: "2px solid #ccc", position: 'fixed'}}>
             <Menu 
             model={items}  
             className="bg-white custom-menu"/>

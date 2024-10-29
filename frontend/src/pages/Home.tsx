@@ -20,7 +20,7 @@ export default function Home(){
                     </div>
                 </div>
                 <div className="pt-24 size-full flex items-center justify-center">
-                    <img src={home1} className="w-[59%] h-[59%]"/>
+                    <img src={home1} className="w-[50%] h-[50%]"/>
                 </div>
             </div>
         </div>
