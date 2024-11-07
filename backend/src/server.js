@@ -18,6 +18,7 @@ const swaggerDocument = require("./swagger.json");
 app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 require("./config/connection.js");
+require("./routers/printConfigRouter.js")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

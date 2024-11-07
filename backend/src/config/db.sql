@@ -1,5 +1,5 @@
 -- Bảng User
-CREATE TABLE User (
+CREATE TABLE IF NOT EXISTS User (
     user_ID INT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
@@ -9,14 +9,14 @@ CREATE TABLE User (
 );
 
 -- Bảng FileType
-CREATE TABLE FileType (
+CREATE TABLE IF NOT EXISTS FileType (
     type VARCHAR(50) PRIMARY KEY,
     spso_ID INT,
     FOREIGN KEY (spso_ID) REFERENCES User(user_ID) ON DELETE SET NULL
 );
 
 -- Bảng AutoPaper
-CREATE TABLE AutoPaper (
+CREATE TABLE IF NOT EXISTS AutoPaper (
     semester VARCHAR(50) PRIMARY KEY,
     number INT NOT NULL,
     scheduler DATETIME,
@@ -25,7 +25,7 @@ CREATE TABLE AutoPaper (
 );
 
 -- Bảng Location
-CREATE TABLE Location (
+CREATE TABLE IF NOT EXISTS Location (
     location_ID INT PRIMARY KEY AUTO_INCREMENT,
     campus VARCHAR(255),
     building VARCHAR(255),
@@ -33,7 +33,7 @@ CREATE TABLE Location (
 );
 
 -- Bảng Printer
-CREATE TABLE Printer (
+CREATE TABLE IF NOT EXISTS Printer (
     Printer_ID INT PRIMARY KEY AUTO_INCREMENT,
     branchName VARCHAR(255),
     model VARCHAR(255),
@@ -44,7 +44,7 @@ CREATE TABLE Printer (
 );
 
 -- Bảng PrintConfiguration
-CREATE TABLE PrintConfiguration (
+CREATE TABLE IF NOT EXISTS PrintConfiguration (
     config_ID INT PRIMARY KEY AUTO_INCREMENT,
     printStart DATETIME,
     printEnd DATETIME,
@@ -55,7 +55,7 @@ CREATE TABLE PrintConfiguration (
 );
 
 -- Bảng Document
-CREATE TABLE Document (
+CREATE TABLE IF NOT EXISTS Document (
     config_ID INT,
     DName VARCHAR(255) NOT NULL,
     noPage INT,

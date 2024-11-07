@@ -20,6 +20,9 @@ async function connectDB() {
     } catch (error) {
       console.error("💀 Error connecting to MySQL:", error);
     }
+  } else {
+    console.log("pool was created");
+    return pool;
   }
 }
 
