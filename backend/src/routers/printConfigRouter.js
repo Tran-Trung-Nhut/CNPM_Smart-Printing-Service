@@ -5,6 +5,9 @@ module.exports = (app) => {
 
     // Get all print configuation
     router.get("/", printConfig.getAllPrintConfigs);
+    router.post("/", printConfig.createPrintConfig);
+    router.put("/:id", printConfig.updatePrintConfig);
+    router.delete("/:id", printConfig.deletePrintConfig);
   
     app.use("/api/v1/printconfig", router);
 };
