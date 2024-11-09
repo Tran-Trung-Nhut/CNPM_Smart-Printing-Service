@@ -48,9 +48,9 @@ CREATE TABLE IF NOT EXISTS `PrintConfiguration` (
     `config_ID` INT PRIMARY KEY AUTO_INCREMENT,
     `printStart` DATETIME,
     `printEnd` DATETIME,
-    `student_ID` INT,
+    `user_ID` INT,
     `printer_ID` INT,
-    FOREIGN KEY (`student_ID`) REFERENCES `User`(`user_ID`) ON DELETE SET NULL,
+    FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE SET NULL,
     FOREIGN KEY (`printer_ID`) REFERENCES `Printer`(`Printer_ID`) ON DELETE SET NULL
 );
 

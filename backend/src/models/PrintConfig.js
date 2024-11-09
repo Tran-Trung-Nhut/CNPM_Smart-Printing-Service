@@ -13,7 +13,6 @@ const PrintConfig = {
     findAll: async () => {
         try {
             const [rows] = await pool.query('SELECT * FROM PrintConfiguration');
-            console.log(rows)
             return rows;
         } catch (error) {
             console.log(error);
@@ -21,15 +20,16 @@ const PrintConfig = {
     },
     createPrintConfig: async (printStart, printEnd, user_ID, printer_ID) => {
         try {
-            const [result] = await pool.query('INSERT INTO PrintConfiguration (printStart, printEnd, user_ID, printer_ID) VALUES (?, ?, ?)', [printStart, printEnd, user_ID, printer_ID]);
-            return result[0];
+            const [result] = await pool.query('INSERT INTO PrintConfiguration (printStart, printEnd, user_ID, printer_ID) VALUES (?, ?, ?, ?)', [printStart, printEnd, user_ID, printer_ID]);
+            const config_ID = result.insertId;
+            return { config_ID, printStart, printEnd, user_ID, printer_ID };
         } catch (error) {
             console.log(error);
         }   
     },
     updatePrintConfig: async (config_ID, printStart, printEnd, user_ID, printer_ID) => {
         try {
-            await pool.query('UPDATE PrintConfiguration SET printStart = ?, printEnd = ?, user_ID = ?, printer_ID WHERE config_ID = ?', [printStart, printEnd, user_ID, printer_ID, config_ID]);
+            await pool.query('UPDATE PrintConfiguration SET printStart = ?, printEnd = ?, user_ID = ?, printer_ID = ? WHERE config_ID = ?', [printStart, printEnd, user_ID, printer_ID, config_ID]);
             return { config_ID, printStart, printEnd, user_ID, printer_ID };
         } catch (error) {
             console.log(error);

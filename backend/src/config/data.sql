@@ -29,7 +29,7 @@ INSERT INTO Printer (branchName, model, description, status, loc_ID) VALUES
 ('Printer3', 'Epson EcoTank', 'Eco-friendly printer', 'enable', 3);
 
 -- Insert data for PrintConfiguration table
-INSERT INTO PrintConfiguration (printStart, printEnd, student_ID, printer_ID) VALUES
+INSERT INTO PrintConfiguration (printStart, printEnd, user_ID, printer_ID) VALUES
 ('2024-11-01 08:00:00', '2024-11-01 09:00:00', 1, 1),
 ('2024-11-02 10:00:00', '2024-11-02 11:00:00', 2, 2),
 ('2024-11-03 13:00:00', '2024-11-03 14:00:00', 1, 3);
