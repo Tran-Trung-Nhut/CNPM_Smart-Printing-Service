@@ -1,5 +1,4 @@
 const { connectDB } = require("../config/config.js");
-const { createPrintConfig } = require("../controllers/printConfigController.js");
 
 let pool;
 
