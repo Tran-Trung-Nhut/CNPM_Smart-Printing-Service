@@ -22,6 +22,7 @@ require("./routers/printConfigRouter.js")(app);
 require("./routers/documentRouter.js")(app);
 require("./routers/orderRouter.js")(app);
 require("./routers/paperPackageRouter.js")(app);
+require("./routers/orderPackageRouter.js")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
