@@ -1,6 +1,4 @@
----
-lang: vi
----
+
 # CÔNG NGHỆ PHẦN MỀM - ASSIGNMENT - HỆ THỐNG IN ẤN THÔNG MINH
 
 ## NHÓM xx
