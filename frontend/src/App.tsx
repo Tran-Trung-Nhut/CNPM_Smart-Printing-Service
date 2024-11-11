@@ -1,32 +1,34 @@
-import { useState } from 'react';
-import Login from './pages/Login';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { UserContext } from './context/UserContext';
 import Home from './pages/Home';
-import DefaultLayout from './SPSO/DefaultLayout';
-import Student from './pages/Student';
-import { SidebarProvider } from './providers/SidebarContext';
-import StudentHistory from './pages/StudentHistory';
+import Login from './pages/Login';
+import MainLayout from './components/MainLayout'; // Import MainLayout
+// import { useCookies } from 'react-cookie';
 
+export default function App() {
+  const [user, setUser] = useState({ token: null, isSPSO: false, listFiles: [] });
+  // const [cookies] = useCookies();
 
-function App() {
-  
+  // useEffect(() => {
+  //   const userCredentials = JSON.parse(localStorage.getItem('userCredentials'));
+
+  //   if (!userCredentials) {
+  //     setUser({ token: null, isSPSO: false, listFiles: [] });
+  //   } else {
+  //     setUser({ ...user, ...userCredentials });
+  //   }
+  // }, [cookies]);
+
   return (
-    <SidebarProvider>
-      <Router>
+    // <UserContext.Provider value={{ user, setUser }}>
+      <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/SPSO' element={<DefaultLayout/>}>
-            <Route path='students' element={<Student/>}/>
-            <Route path='printers' element/>
-            <Route path='printers-printing-history' element/>
-            <Route path='students-printing-history' element={<StudentHistory/>}/>
-            <Route path='informs' element/>
-          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<MainLayout />} /> {/* MainLayout để quản lý các route khác */}
         </Routes>
-      </Router>
-    </SidebarProvider>
+      </BrowserRouter>
+    // </UserContext.Provider>
   );
 }
-
-export default App;
