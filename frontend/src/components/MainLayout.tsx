@@ -9,7 +9,11 @@ const items = new Array(15).fill(null).map((_, index) => ({
   label: `nav ${index + 1}`,
 }));
 
-const MainLayout: React.FC = () => {
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+const MainLayout: React.FC<MainLayoutProps> = ({children}) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -31,7 +35,7 @@ const MainLayout: React.FC = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          {children}
         </div>
       </Content>
       <Footer style={{ textAlign: 'center' }}>

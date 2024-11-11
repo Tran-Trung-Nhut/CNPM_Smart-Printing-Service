@@ -4,6 +4,7 @@ import { UserContext } from './context/UserContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import MainLayout from './components/MainLayout'; // Import MainLayout
+import PrintUpload from './pages/PrintUpload';
 // import { useCookies } from 'react-cookie';
 
 export default function App() {
@@ -26,7 +27,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/*" element={<MainLayout />} /> {/* MainLayout để quản lý các route khác */}
+          <Route path="/print" element={<PrintUpload />} />
+          <Route path="/*" element={<MainLayout children={undefined} />} /> {/* MainLayout để quản lý các route khác */}
         </Routes>
       </BrowserRouter>
     // </UserContext.Provider>

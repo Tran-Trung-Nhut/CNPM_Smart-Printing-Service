@@ -1,5 +1,4 @@
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import MainLayout from '../components/MainLayout';
 import React from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
@@ -27,9 +26,8 @@ const props: UploadProps = {
   },
 };
 
-const App: React.FC = () => (
-  <>
-    <Header />
+const PrintUpload: React.FC = () => (
+    <MainLayout>
     <div className='p-10'>
       <Dragger {...props}>
         <p className="ant-upload-drag-icon">
@@ -42,8 +40,7 @@ const App: React.FC = () => (
         </p>
       </Dragger>
     </div>
-    <Footer />
-  </>
+    </MainLayout>
 );
 
-export default App;
+export default PrintUpload;
