@@ -16,6 +16,19 @@ import { useRecoilValue } from 'recoil';
 import { isLoginAsState } from './state';
 import Forbidden from './pages/Forbidden';
 
+export default function App() {
+  const [user, setUser] = useState({ token: null, isSPSO: false, listFiles: [] });
+  // const [cookies] = useCookies();
+
+  // useEffect(() => {
+  //   const userCredentials = JSON.parse(localStorage.getItem('userCredentials'));
+
+  //   if (!userCredentials) {
+  //     setUser({ token: null, isSPSO: false, listFiles: [] });
+  //   } else {
+  //     setUser({ ...user, ...userCredentials });
+  //   }
+  // }, [cookies]);
 
 function App() {
   const isLoginAs = useRecoilValue(isLoginAsState)
@@ -80,5 +93,3 @@ function App() {
       </Router>
   );
 }
-
-export default App;
