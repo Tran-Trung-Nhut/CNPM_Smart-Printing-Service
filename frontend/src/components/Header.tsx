@@ -1,8 +1,12 @@
 import React, { useContext } from 'react';
 import { Menu, Layout } from 'antd';
 import { UserContext } from '../context/UserContext';
+import '../components/Header.css';
+import school from '../assets/hcmut.png'
 
 const { Header } = Layout;
+
+
 interface User {
   isSPSO: boolean;
   isStudent: boolean;
@@ -35,9 +39,12 @@ const CustomHeader: React.FC = () => {
         width: '100%',
         display: 'flex',
         alignItems: 'center',
+        backgroundColor: 'white'
       }}
     >
-      <div className="demo-logo" />
+      <div className="demo-logo" >
+        <img src={school} alt="bklogo" />
+      </div>
       <Menu theme="dark" mode="horizontal" items={items} style={{ flex: 1, minWidth: 0 }} />
     </Header>
   );
