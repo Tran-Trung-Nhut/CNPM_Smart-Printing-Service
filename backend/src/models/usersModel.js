@@ -1,4 +1,4 @@
-const { connectDB } = require("../../config/config.js");
+const { connectDB } = require("../config/config.js");
 
 let pool;
 
@@ -47,7 +47,28 @@ const usersModel = {
         }
     },
 
-    
+
+    createUser: async (userData) => {
+        try {
+            const { user_ID, email, password, name, role, pageBalance } = userData;
+            const [result] = await pool.query('INSERT INTO User (user_ID, email, password, name, role, pageBalance) VALUES (?, ?, ?, ?, ?, ?)', [user_ID, email, password, name, role, pageBalance]);
+            return { user_ID, email, password, name, role, pageBalance };
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    getUserByEmail: async (email) => {
+        try {
+            const [rows] = await pool.query("SELECT * FROM User WHERE email = ?", [email]);
+            return rows[0];
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+
+
     
 };
 
