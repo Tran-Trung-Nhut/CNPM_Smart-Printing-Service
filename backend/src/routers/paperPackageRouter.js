@@ -4,6 +4,7 @@ module.exports = (app) => {
     const router = express.Router();
 
     router.get("/", paperPackage.getAllPaperPackages);
+    router.get("/:id", paperPackage.getPaperPackageByID);
     router.post("/", paperPackage.createPaperPackage);
     router.put("/:id", paperPackage.updatePaperPackage);
     router.delete("/:id", paperPackage.deletePaperPackage);

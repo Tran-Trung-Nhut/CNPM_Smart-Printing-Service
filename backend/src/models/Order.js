@@ -17,6 +17,14 @@ const Order = {
             console.log(error);
         }
     },
+    getOderByID: async (order_ID) => {
+        try {
+            const [rows] = await pool.query('SELECT * FROM Oders WHERE order_ID = ?', [order_ID]);
+            return rows;
+        } catch (error) {
+            console.log(error);
+        }
+    },
     createOrder: async (user_ID, time, quantity, status) => {
         try {
             const [result] = await pool.query('INSERT INTO Orders (user_ID, time, quantity, status) VALUES (?, ?, ?, ?)', [user_ID, time, quantity, status]);

@@ -17,6 +17,14 @@ const Document = {
             console.log(error);
         }
     },
+    getDocumentByID: async (config_ID) => {
+        try {
+            const [rows] = await pool.query('SELECT * FROM Document WHERE config_ID = ?', [config_ID]);
+            return rows;
+        } catch (error) {
+            console.log(error);
+        }
+    },
     createDocument: async (config_ID, DName, noPage, pageSize) => {
         try {
             const [result] = await pool.query('INSERT INTO Document (config_ID, DName, noPage, pageSize) VALUES (?, ?, ?, ?)', [config_ID, DName, noPage, pageSize]);

@@ -3,9 +3,19 @@ const PaperPackage = require('../models/PaperPackage');
 exports.getAllPaperPackages = async (req, res) => {
     try {
         const allData = await PaperPackage.findAll();
-        res.status(200).json({ status: 200, data: allData, message: "Succesfully Paper Package Retrieved!" });
+        res.status(200).json({ status: 200, data: allData, message: "Succesfully All Paper Package Retrieved!" });
     } catch (error) {
-        res.status(500).json({ status: 500, message: 'Error Retrieving Paper Package' });
+        res.status(500).json({ status: 500, message: 'Error ALL Retrieving Paper Package' });
+    }
+};
+
+exports.getPaperPackageByID = async (req, res) => {
+    try {
+        const pp_ID = req.params.id;
+        const data = await PaperPackage.getPaperPackageByID(pp_ID);
+        res.status(200).json({ status: 200, data: data, message: "Succesfully Paper Package Retrieved By ID!" });
+    } catch (error) {
+        res.status(500).json({ status: 500, message: 'Error Retrieving Paper Package By ID!' });
     }
 };
 

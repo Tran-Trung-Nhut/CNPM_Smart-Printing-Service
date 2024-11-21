@@ -3,9 +3,31 @@ const PrintConfig = require('../models/PrintConfig.js');
 exports.getAllPrintConfigs = async (req, res) => {
     try {
         const allData = await PrintConfig.findAll();
-        res.status(200).json({ status: 200, data: allData, message: "Succesfully Print Configurations Retrieved!" });
+        res.status(200).json({ status: 200, data: allData, message: "Succesfully All Print Configurations Retrieved!" });
     } catch (error) {
-        res.status(500).json({ status: 500, message: 'Error Retrieving Print Configuration' });
+        res.status(500).json({ status: 500, message: 'Error ALl Retrieving Print Configuration' });
+    }
+};
+
+exports.getPrintConfigByID = async (req, res) => {
+    try {
+        const config_ID = req.params.id;
+        const allData = await PrintConfig.getPrintConfigByID(config_ID);
+        const config = allData.row;
+        const doc = allData.doc;
+        const prop = allData.prop;
+        res.status(200).json({ status: 200,
+            data: {
+                id: config.config_ID,
+                document: doc,
+                total_pages: prop.noPage,
+                page_size: prop.pageSize,
+                start_time: config.printStart,
+                end_time: config.printEnd
+            },
+            message: "Succesfully Print Configurations Retrieved By ID!" });
+    } catch (error) {
+        res.status(500).json({ status: 500, message: 'Error Retrieving Print Configuration BY ID' });
     }
 };
 

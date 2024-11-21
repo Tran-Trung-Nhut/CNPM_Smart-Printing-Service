@@ -4,6 +4,7 @@ module.exports = (app) => {
     const router = express.Router();
 
     router.get("/", order.getAllOrders);
+    router.get("/:id", order.getOrderByID);
     router.post("/", order.createOrder);
     router.put("/:id", order.updateOrder);
     router.delete("/:id", order.deleteOrder);

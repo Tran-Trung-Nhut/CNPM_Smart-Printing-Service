@@ -17,6 +17,14 @@ const PaperPackage = {
             console.log(error);
         }
     },
+    getPaperPackageByID: async () => {
+        try {
+            const [rows] = await pool.query('SELECT * FROM Paper_Package WHERE id = ?', [pp_ID]);
+            return rows;
+        } catch (error) {
+            console.log(error);
+        }
+    },
     createPaperPackage: async (name, quantity, price) => {
         try {
             const [result] = await pool.query('INSERT INTO Paper_Package (name, quantity, price) VALUES (?, ?, ?)', [name, quantity, price]);
