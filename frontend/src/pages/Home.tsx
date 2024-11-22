@@ -4,9 +4,8 @@ import home1 from "../assets/home1.png"
 export default function Home(){
     return(
         <div
-      className="z-1 fixed size-full drop-shadow-lg [background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]"
+      className="z-1 size-full"
     >
-            <Header/>
             <div className="flex items-center size-auto">
                 <div className="font-mono text-white text-center space-y-3 pt-16 ml-20">
                     <p className="text-6xl font-bold">HỆ THỐNG IN ẤN THÔNG MINH</p>
