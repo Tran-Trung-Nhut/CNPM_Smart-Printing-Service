@@ -21,6 +21,7 @@ async function executeSqlScript() {
   try {
     const sqlScript = fs.readFileSync(sqlScriptPath, "utf8");
     const commands = sqlScript.split(/;\s*$/m); // Phân tách theo dấu ;
+    console.log(commands);
 
     const pool = await connectDB();
     await waitForMysql(pool);

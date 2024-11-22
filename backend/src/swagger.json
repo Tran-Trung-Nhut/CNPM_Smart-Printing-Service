@@ -4,5 +4,10 @@
       "title": "Smart Print Service API",
       "description": "CRUD operations for SPS",
       "version": "1.0.0"
+    },
+    "servers": [
+    {
+      "url": "/api/v1"
     }
+  ]
 }
