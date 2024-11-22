@@ -1,18 +1,28 @@
 import Header from "../components/Header"
 import login1 from "../assets/login1.png"
 import school from "../assets/hcmut.png"
+import { useNavigate } from "react-router-dom"
+import { useRecoilState } from "recoil"
+import { isLoginAsState } from "../state"
 
 export default function Login() {
+    const navigate = useNavigate()
+    const [isLoginAs, setISLoginAs] = useRecoilState(isLoginAsState)
+
+    const handleLogin = () => {
+        if(isLoginAs === 'SPSO') navigate('/SPSO')
+        if(isLoginAs === 'student') navigate('/')
+    }
   return (
     <div
-      className="z-1 size-full drop-shadow-lg [background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]"
+      className="min-h-screen drop-shadow-lg [background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]"
     >
         <div className="flex flex-col">
             <div className="flex items-center justify-center space-x-4">
                 <img src={school} className="size-16 mt-5"/>
                 <p className="font-bold font-mono text-white text-5xl mt-5">HỆ THỐNG IN ẤN THÔNG MINH</p>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-center items-center">
                 <div className="bg-transparent font-mono size-full py-3">
                     <div className="flex flex-col items-center justify-center px-4">
                         <div className="p-8 rounded-2xl bg-transparent">
@@ -54,11 +64,13 @@ export default function Login() {
                             </div>
 
                             <div className="!mt-8">
-                                <button type="button" className="shadow w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">
+                                <button 
+                                type="button" 
+                                className="shadow w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                                onClick={() => handleLogin()}>
                                 Đăng nhập
                                 </button>
                             </div>
-                            <p className="text-white text-sm !mt-8 text-center">Chưa có tài khoản? <a href="javascript:void(0);" className="text-white hover:underline ml-1 whitespace-nowrap font-semibold">Đăng ký</a></p>
                             </form>
                         </div>
                     </div>
