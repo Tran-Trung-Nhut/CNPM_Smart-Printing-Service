@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Table, Button, Modal } from 'antd';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import MainLayout from '../components/MainLayout';
+import { InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 
 interface DataType {
   key: React.Key;
@@ -31,16 +32,17 @@ export default function PrintHistory() {
   };
 
   const paginationOptions = {
-    pageSize,
-    showSizeChanger: true,
-    pageSizeOptions: ['5', '10', '20'],
-    onShowSizeChange: (_current: any, size: any) => handlePageSizeChange(size),
+      pageSize,
+      showSizeChanger: true,
+      pageSizeOptions: ['5', '10', '20'],
+      onShowSizeChange: (_current: any, size: any) => handlePageSizeChange(size),
   };
   
   const columns = [
     {
       title: <span style={{ fontWeight: '600' }}>STT</span>,
       dataIndex: 'key',
+      width: 80,
     },
     {
       title: <span style={{ fontWeight: '600' }}>Máy in</span>,
@@ -60,9 +62,10 @@ export default function PrintHistory() {
     },
     {
       title: <span style={{ fontWeight: '600' }}>Chi tiết</span>,
+      width: 150,
       render: (_: any, record: DataType) => (
         <Button type="link" onClick={() => showModal()}>
-            <i className="fa-regular fa-circle-info"></i>
+            <InfoCircleOutlined />
         </Button>
       ),
     },
@@ -77,34 +80,35 @@ export default function PrintHistory() {
   }));
   
   return (
-    <div className="">
-      <div className="my-6 flex justify-between">
-        <div className="relative mt-1 rounded-full bg-white px-4 py-2 shadow outline-none">
-          {/* search */}
-          <i className="fa-regular fa-magnifying-glass"></i>
+    <MainLayout>
+      <div className="">
+        <div className="my-6 flex justify-between">
+          <div className="relative mt-1 rounded-full bg-white px-4 py-2 shadow outline-none">
+            <SearchOutlined />
             <input
                 type="text"
                 placeholder="Tìm kiếm"
-                className="outline-none"
+                className="outline-none p-2"
                 // value={searchTerm}
                 // onChange={handleSearch}
             />
-        </div>
-      </div> 
-      <Table<DataType>
-        className="rounded-lg border-[1px] shadow"
-        columns={columns}
-        dataSource={dataSource}
-        pagination={paginationOptions}
-        scroll={{ x: 500, y: 300 }}
-        rowClassName="cursor-pointer"
-      />
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
-    </div>
+          </div>
+          </div>
+        <Table<DataType>
+          className="styles.customTable"
+          columns={columns}
+          dataSource={dataSource}
+          pagination={paginationOptions}
+          scroll={{ x: 500, y: 300 }}
+          rowClassName="cursor-pointer"
+        />
+        <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+          <p>Some contents...</p>
+        </Modal>
+      </div>
+    </MainLayout>
     
   );
 }

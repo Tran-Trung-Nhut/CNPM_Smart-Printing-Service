@@ -5,3 +5,7 @@
 :where(.css-dev-only-do-not-override-apn68).ant-upload-wrapper .ant-upload-list {
   padding-left: 10px;
 }
+
+.ant-upload-drag {
+  height: 300px;
+}
