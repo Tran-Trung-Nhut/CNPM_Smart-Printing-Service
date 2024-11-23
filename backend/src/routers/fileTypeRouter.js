@@ -1,5 +1,5 @@
 module.exports = (router) => {
-    const fileTypeController = require("../../controllers/fileTypeController");
+    const fileTypeController = require("../controllers/fileTypeController");
 
     router.get("/filetypes", fileTypeController.getAllFileTypes);
     router.post("/filetypes", fileTypeController.createFileType);

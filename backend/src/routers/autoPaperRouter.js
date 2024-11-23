@@ -1,5 +1,5 @@
 module.exports = (router) => {
-    const autoPaperController = require("../../controllers/autoPaperController");
+    const autoPaperController = require("../controllers/autoPaperController");
 
     router.get("/paper", autoPaperController.getAllAutoPapers);
     router.post("/paper", autoPaperController.createAutoPaper);

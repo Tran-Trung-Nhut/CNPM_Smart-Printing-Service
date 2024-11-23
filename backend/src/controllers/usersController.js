@@ -1,11 +1,14 @@
 const usersModel = require("../models/usersModel");
 
-exports.getAllUsers = async (req, res) => {
+exports.getUsers = async (req, res) => {
     try {
-        const allData = await usersModel.getAllUsers();
-        res.status(200).json({ status: 200, data: allData, message: "Succesfully Users Retrieved!" });
+        const { role } = req.query; 
+        const condition = role ? { role } : {}; 
+        const users = await usersModel.getUsers(condition);
+        res.status(200).json({ status: 200, data: users, message: "Successfully retrieved users!" });
     } catch (error) {
-        res.status(500).json({ status: 500, message: 'Error Retrieving Users' });
+        console.log(error);
+        res.status(500).json({ status: 500, message: "Error retrieving users." });
     }
 };
 
@@ -54,15 +57,15 @@ exports.createUser = async (req, res) => {
     }
 };
 
-exports.login = async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await usersModel.getUserByEmail(email);
-        if (!user || user.password !== password) {
-            return res.status(401).json({ status: 401, message: "Email hoặc mật khẩu không đúng" });
-        }
-        res.status(200).json({ status: 200, data: user, message: "Đăng nhập thành công!" });
-    } catch (error) {
-        res.status(500).json({ status: 500, message: 'Lỗi khi đăng nhập' });
-    }
-};
+// exports.login = async (req, res) => {
+//     const { email, password } = req.body;
+//     try {
+//         const user = await usersModel.getUserByEmail(email);
+//         if (!user || user.password !== password) {
+//             return res.status(401).json({ status: 401, message: "Email hoặc mật khẩu không đúng" });
+//         }
+//         res.status(200).json({ status: 200, data: user, message: "Đăng nhập thành công!" });
+//     } catch (error) {
+//         res.status(500).json({ status: 500, message: 'Lỗi khi đăng nhập' });
+//     }
+// };
