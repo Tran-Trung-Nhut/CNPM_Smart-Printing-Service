@@ -1,5 +1,5 @@
 const { connectDB } = require("../config/config.js");
-
+const Query = require("../config/query");
 let pool;
 
 async function initDB() {
@@ -8,40 +8,46 @@ async function initDB() {
 
 initDB();
 
+
+
 const PaperPackage = {
     findAll: async () => {
         try {
-            const [rows] = await pool.query('SELECT * FROM Paper_Package');
-            return rows;
+            return await Query.getAll("Paper_Package");
         } catch (error) {
-            console.log(error);
+            console.error("Error fetching all Paper Packages:", error);
+            throw error;
         }
     },
     createPaperPackage: async (name, quantity, price) => {
         try {
-            const [result] = await pool.query('INSERT INTO Paper_Package (name, quantity, price) VALUES (?, ?, ?)', [name, quantity, price]);
-            const pp_ID = result.insertId;
-            return { pp_ID, name, quantity, price};
+            const data = { name, quantity, price };
+            const result = await Query.insertSingleRow("Paper_Package", data);
+            return { pp_ID: result.insertId, ...data };
         } catch (error) {
-            console.log(error);
-        }   
+            console.error("Error creating Paper Package:", error);
+            throw error;
+        }
     },
-    updatePaperPackage: async ( pp_ID, name, quantity, price) => {
+    updatePaperPackage: async (pp_ID, name, quantity, price) => {
         try {
-            await pool.query('UPDATE Paper_Package SET name = ?, quantity = ?, price = ? WHERE pp_ID = ?', [name, quantity, price, pp_ID]);
-            return {pp_ID, name, quantity, price};
+            const data = { name, quantity, price };
+            await Query.updateRow("Paper_Package", data, { pp_ID });
+            return { pp_ID, ...data };
         } catch (error) {
-            console.log(error);
-        } 
+            console.error("Error updating Paper Package:", error);
+            throw error;
+        }
     },
     deletePaperPackage: async (pp_ID) => {
         try {
-            await pool.query('DELETE FROM Paper_Package WHERE pp_ID = ?', [pp_ID]);
-            return {pp_ID};
+            await Query.deleteRow("Paper_Package", { pp_ID });
+            return { pp_ID };
         } catch (error) {
-            console.log(error);
-        } 
-    } 
+            console.error("Error deleting Paper Package:", error);
+            throw error;
+        }
+    }
 };
 
 module.exports = PaperPackage;

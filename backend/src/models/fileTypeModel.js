@@ -1,4 +1,5 @@
 const { connectDB } = require("../config/config.js");
+const Query = require("../config/query"); 
 
 let pool;
 
@@ -8,46 +9,50 @@ async function initDB() {
 
 initDB();
 
+
 const fileTypeModel = {
     getAllFileTypes: async () => {
         try {
-            const [rows] = await pool.query("SELECT * FROM FileType");
-            return rows;
+            return await Query.getAll("FileType");
         } catch (error) {
-            console.error(error);
+            console.error("Error fetching all FileTypes:", error);
             throw error;
         }
     },
 
     createFileType: async (type, spso_ID) => {
         try {
-            const sql = "INSERT INTO FileType (type, spso_ID) VALUES (?, ?)";
-            await pool.query(sql, [type, spso_ID]);
+            const data = { type, spso_ID };
+            await Query.insertSingleRow("FileType", data);
+            return data;
         } catch (error) {
-            console.error(error);
+            console.error("Error creating FileType:", error);
             throw error;
         }
     },
 
     deleteFileType: async (type) => {
         try {
-            const sql = "DELETE FROM FileType WHERE type = ?";
-            await pool.query(sql, [type]);
+            const condition = { type };
+            await Query.deleteRow("FileType", condition);
+            return condition;
         } catch (error) {
-            console.error(error);
+            console.error("Error deleting FileType:", error);
             throw error;
         }
     },
+
     isFileTypeValid: async (type) => {
         try {
-            const [rows] = await pool.query("SELECT * FROM FileType WHERE type = ?", [type]);
-            return rows.length > 0;
+            const condition = { type };
+            const result = await Query.getRows("FileType", condition);
+            return result.length > 0;
         } catch (error) {
-            console.error(error);
+            console.error("Error validating FileType:", error);
             throw error;
         }
-    },
-    
+    }
 };
 
 module.exports = fileTypeModel;
+

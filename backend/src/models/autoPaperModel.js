@@ -1,4 +1,5 @@
 const { connectDB } = require("../config/config.js");
+const Query = require("../config/query"); 
 
 let pool;
 
@@ -8,11 +9,11 @@ async function initDB() {
 
 initDB();
 
+
 const autoPaperModel = {
     getAllAutoPapers: async () => {
         try {
-            const [rows] = await pool.query("SELECT * FROM AutoPaper");
-            return rows;
+            return await Query.getAll("AutoPaper");
         } catch (error) {
             console.error("Error in getAllAutoPapers:", error);
             throw error;
@@ -21,17 +22,21 @@ const autoPaperModel = {
 
     createAutoPapers: async (semester, number, scheduler, spso_ID) => {
         try {
-            const sql = "INSERT INTO AutoPaper (semester, number, scheduler, spso_ID) VALUES (?, ?, ?, ?)";
-            await pool.query(sql, [semester, number, scheduler, spso_ID]);
+            const data = { semester, number, scheduler, spso_ID };
+            await Query.insertSingleRow("AutoPaper", data);
+            return data;
         } catch (error) {
             console.error("Error in createAutoPaper:", error);
             throw error;
         }
     },
+
     updateAutoPaper: async (semester, number, scheduler) => {
         try {
-            const sql = "UPDATE AutoPaper SET number = ?, scheduler = ? WHERE semester = ?";
-            await pool.query(sql, [number, scheduler, semester]);
+            const condition = { semester };
+            const newData = { number, scheduler };
+            await Query.updateRow("AutoPaper", newData, condition);
+            return { semester, number, scheduler };
         } catch (error) {
             console.error("Error in updateAutoPaper:", error);
             throw error;
@@ -40,8 +45,9 @@ const autoPaperModel = {
 
     getStudentPageBalance: async (user_ID) => {
         try {
-            const [rows] = await pool.query("SELECT pageBalance FROM User WHERE user_ID = ?", [user_ID]);
-            return rows[0]?.pageBalance || 0;
+            const condition = { user_ID };
+            const result = await Query.getRows("User", condition);
+            return result[0]?.pageBalance || 0;
         } catch (error) {
             console.error("Error in getStudentPageBalance:", error);
             throw error;
@@ -50,8 +56,9 @@ const autoPaperModel = {
 
     updateStudentPageBalance: async (user_ID, additionalPages) => {
         try {
-            const sql = "UPDATE User SET pageBalance = pageBalance + ? WHERE user_ID = ?";
-            await pool.query(sql, [additionalPages, user_ID]);
+            const condition = { user_ID };
+            const newData = { pageBalance: `pageBalance + ${additionalPages}` };
+            await Query.updateRow("User", newData, condition);
         } catch (error) {
             console.error("Error in updateStudentPageBalance:", error);
             throw error;

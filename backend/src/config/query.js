@@ -1,4 +1,4 @@
-const { connectDB } = require("../config/config.js");
+const { connectDB } = require("./config.js");
 
 let pool;
 
