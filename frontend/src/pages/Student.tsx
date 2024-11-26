@@ -2,12 +2,19 @@ import "primeicons/primeicons.css";
 import { useState } from "react";
 import StudentInformationPopup from "../components/StudentInformationPopup";
 
-const datas = [
-    { name: "Trần Trung Nhựt", MSSV: "2212483", numberOfPrinting: 354, pages: 102 },
-    { name: "Lâm Bảo Minh", MSSV: "2212484", numberOfPrinting: 120, pages: 58 },
-    { name: "Đặng Tiến Đạt", MSSV: "2212485", numberOfPrinting: 200, pages: 76 },
-];
+interface Student {
+    name: string,
+    MSSV: string,
+    numberOfPrinting: number,
+    pages: number,
+}
 
+const datas = Array.from({ length: 30 }).map<Student>((_, i) => ({
+    name: `Student ${i + 1}`,
+    MSSV: `${i}`,
+    numberOfPrinting: 10 + i*2,
+    pages: 10*2 + i,
+}));
 export default function Student() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false)
     return (

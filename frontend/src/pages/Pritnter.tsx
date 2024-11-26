@@ -2,11 +2,19 @@ import "primeicons/primeicons.css";
 import { useState } from "react";
 import PrinterInformationPopup from "../components/PrinterInformationPopup";
 
-const datas = [
-    { name: "Trần Trung Nhựt", MSSV: "2212483", numberOfPrinting: 354, pages: 102 },
-    { name: "Lâm Bảo Minh", MSSV: "2212484", numberOfPrinting: 120, pages: 58 },
-    { name: "Đặng Tiến Đạt", MSSV: "2212485", numberOfPrinting: 200, pages: 76 },
-];
+interface Student {
+    brand: string,
+    ID: string,
+    location: string,
+    status: string,
+}
+
+const datas = Array.from({ length: 30 }).map<Student>((_, i) => ({
+    brand: `Dell`,
+    ID: `${i}`,
+    location: `H1-CS${i % 2 === 0? 2 : 1}`,
+    status:  `${i % 2 === 0? 'Hoạt động' : 'Bảo trì'}`,
+}));
 
 export default function Printer() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false)
@@ -38,10 +46,10 @@ export default function Printer() {
                         {datas.map((data, index) => (
                             <tr key={index} className={index % 2 === 0 ? "" : "bg-gray-100"}>
                                 <td className="px-4 py-2 text-center">{index + 1}</td>
-                                <td className="px-4 py-2 text-center">{data.name}</td>
-                                <td className="px-4 py-2 text-center">{data.MSSV}</td>
-                                <td className="px-4 py-2 text-center">{data.numberOfPrinting}</td>
-                                <td className="px-4 py-2 text-center">{data.pages}</td>
+                                <td className="px-4 py-2 text-center">{data.brand}</td>
+                                <td className="px-4 py-2 text-center">{data.ID}</td>
+                                <td className="px-4 py-2 text-center">{data.location}</td>
+                                <td className="px-4 py-2 text-center">{data.status}</td>
                                 <td className="px-4 py-2 text-center">
                                     <button 
                                     type="button"
