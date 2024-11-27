@@ -1,141 +1,168 @@
-import { Column, HeaderGroup, Row, useTable } from "react-table"
-import { useSidebar } from "../providers/SidebarContext";
+import "primeicons/primeicons.css";
+import { useEffect, useState } from "react";
+import PrinterInformationPopup from "../components/PrinterInformationPopup";
+import CreatePrinterPopup from "../components/CreatePrinterPopup";
+import axios from "axios";
 
-interface PrinterData {
-  brand: string;
-  printer_name: string; 
-  printer_ID: string;       
-  location: string;
-  status: string            
+interface Printer {
+    brand: string;
+    ID: string;
+    location: string;
+    status: string;
 }
 
-const tmpNum = 1
-
-const data: PrinterData[] = [
-  { brand: "John Doe", printer_ID: "ds3a23", printer_name: "20/10/2024", location: "A3-HCMUT", status: "on" },
-  { brand: "Jane Smith", printer_ID: "ds3b45", printer_name: "20/10/2024", location: "A3-HCMUT", status: "on" },
-  { brand: "Alice Johnson", printer_ID: "ds3c67", printer_name: "23/10/2024", location: "A3-HCMUT", status: "off" },
-  { brand: "Michael Brown", printer_ID: "ds3d89", printer_name: "22/10/2024", location: "A3-HCMUT", status: "off" },
-  { brand: "Emily Davis", printer_ID: "ds3e12", printer_name: "10/10/2024", location: "A3-HCMUT", status: "on" }, 
-  ];
-
-const columns: Column<PrinterData>[] = [
-    {
-        Header: "Trạng thái",   
-        Cell: ({ row }: { row: Row<PrinterData> }) => {
-            const statusText = row.original.status === 'on'? "Hoạt động": "Đã dừng"
-            return(
-                <div className="flex justify-center">
-                    <div className="flex space-x-3 justify-start w-[110px]">
-                        <button className="pi pi-power-off hover:scale-110 active:scale-95" 
-                        style={{color:row.original.status === 'on'? 'green':'red'}}
-                        onClick={()=>{}}/>
-                        <p 
-                        className={`${row.original.status === 'on' ? 'text-green-700' : 'text-red-600'}`}>
-                            {statusText}
-                        </p>
-                    </div>
-                </div>
-            )
-        }
-    },
-    {
-      Header: "Thương hiệu",
-      accessor: "brand", // Đây là khóa trong đối tượng data
-    },
-    {
-        Header: "Tên máy in",
-        accessor: "printer_name",
-      },
-    {
-      Header: "Mã số máy",
-      accessor: "printer_ID",
-    },
-    {
-      Header: "Địa chỉ",
-      accessor: "location",
-    },
-    {
-      Header: "Tùy chọn", // Tiêu đề cột mới
-      Cell: ({ row }: { row: Row<PrinterData> }) => (
-        <div className="flex justify-center space-x-3">
-          <button className="pi pi-info-circle" style={{color: ""}}/>
-          <button className="pi pi-trash hover:scale-110" style={{color: "red"}}/>
-        </div>
-      ),
-    },
-  ];
+const datas = Array.from({ length: 30 }).map<Printer>((_, i) => ({
+    brand: `Dell`,
+    ID: `${i}`,
+    location: `H1-CS${i % 2 === 0 ? 2 : 1}`,
+    status: `${i % 2 === 0 ? 'Hoạt động' : 'Bảo trì'}`,
+}));
 
 export default function Printer() {
+    const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
+    const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
+    const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [printer, setPrinter] = useState<any>()
 
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-      }: any = useTable<PrinterData>({ columns, data });
+    const totalPages = Math.ceil(datas.length / rowsPerPage);
+    const currentData = datas.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+    );
 
-    const {visible} = useSidebar();
+    const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setRowsPerPage(Number(event.target.value));
+        setCurrentPage(1); 
+    };
+
+    const handlePageChange = (newPage: number) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
+
+    const fetchPrinters = async () => {
+        try {
+            const response = await axios.get('/api/printers'); 
+            setPrinter(response.data);
+        } catch (error) {
+            alert('Get printer false!')
+        }
+    }
+
+    useEffect(() => {
+        fetchPrinters()
+    }, [printer])
+
     return (
-      <div className={`${visible? 'pr-0': 'pr-2'} min-h-screen pt-[78px] font-mono ${visible? 'pl-[195px]': 'pl-[0px]'}`}>
-        <div className={`border-2 shadow bg-white rounded ${visible? 'w-[1053px]': 'w-[1260px]'}  h-[600px]`}>
-          <div className="pl-2 bg-white space-y-3 space-x-1 flex items-center justify-between">
-            <div className="space-y-3 space-x-1 flex items-center">
-                <input 
-                type="text" 
-                className="border rounded bg-white shadow h-6 w-52 text-[12px]  focus:outline-none focus:border-gray-400"
-                placeholder="Nhập tên hoặc mã số máy"/>
-                <button className="pi pi-search hover:scale-110 pb-2" style={{fontSize: "12px"}}/>
-            </div>
-            <div className="flex items-center justify-center space-x-2 pb-2 pr-5">
-                <button className="flex hover:scale-110 active:scale-90 justify-center items-center py-1 px-2 rounded space-x-1 bg-blue-500">
-                    <i className="pi pi-print" style={{color: 'white'}}/>
-                    <p className="text-white">Thêm máy in</p>
+        <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
+            {isShowInformation && (
+                <PrinterInformationPopup onClose={() => setIsShowInformation(false)} />
+            )}
+            {isShowCreate && (<CreatePrinterPopup onClose={() => setIsShowCreate(false)}/>)}
+
+            <div className="w-full">
+            <div className="bg-[#C6DCFE] flex items-center justify-between px-4 py-2">
+                <div className="flex items-center space-x-2">
+                    <input
+                        placeholder="Nhập thông tin tìm kiếm"
+                        className="w-64 pl-1 rounded placeholder:italic"
+                    />
+                    <button
+                        className="flex items-center justify-center bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200"
+                    >
+                        <i className="pi pi-search mr-1"></i> Tìm kiếm
+                    </button>
+                </div>
+
+                <button
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
+                    onClick={() => setIsShowCreate(true)} // Mở popup thêm máy in
+                >
+                    <i className="pi pi-print mr-2"></i> Thêm máy in
                 </button>
             </div>
-          </div>
-          <table {...getTableProps()} className=" bg-white rounded w-full">
-            <thead>
-              {headerGroups.map((headerGroup: HeaderGroup<PrinterData>) => (
-                <tr {...headerGroup.getHeaderGroupProps()} 
-                className="border-2">
-                    {headerGroup.headers.map(column => (
-                        <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-                    ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows.map((row: Row<PrinterData>) => {
-                prepareRow(row);
-                return (
-                    <tr 
-                    {...row.getRowProps()} 
-                    className="text-center hover:bg-gray-300 border-b-[1px]"
-                    style={{ lineHeight: "2" }}>
-                        {row.cells.map(cell => (
-                            <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+
+                <table className="table-auto w-full bg-white">
+                    <thead className="bg-[#C6DCFE]">
+                        <tr>
+                            <th className="px-4 py-2">#</th>
+                            <th className="px-4 py-2">Hãng máy in</th>
+                            <th className="px-4 py-2">Mã số máy in</th>
+                            <th className="px-4 py-2">Vị trí</th>
+                            <th className="px-4 py-2">Tình trạng</th>
+                            <th className="px-4 py-2">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {currentData.map((data, index) => (
+                            <tr
+                                key={index}
+                                className={index % 2 === 0 ? "" : "bg-gray-100"}
+                            >
+                                <td className="px-4 py-2 text-center">
+                                    {(currentPage - 1) * rowsPerPage + index + 1}
+                                </td>
+                                <td className="px-4 py-2 text-center">{data.brand}</td>
+                                <td className="px-4 py-2 text-center">{data.ID}</td>
+                                <td className="px-4 py-2 text-center">{data.location}</td>
+                                <td className="px-4 py-2 text-center">{data.status}</td>
+                                <td className="px-4 py-2 text-center">
+                                    <button
+                                        type="button"
+                                        className="text-gray-400"
+                                        onClick={() => setIsShowInformation(true)}
+                                    >
+                                        <i className="pi pi-info-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
                         ))}
-                    </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <div className="flex justify-center h-10 border-b-[0.5px]">
-            <div className="flex justify-between w-[250px]">
-              <button className="pi pi-arrow-left" />
-              <div className="flex justify-center items-center">
-                <input 
-                type="text" 
-                placeholder={tmpNum.toString()} 
-                className="mt-1 size-6  text-center focus:border-gray-300"/>
-                <p>/ {tmpNum} trang</p>
-              </div>
-              <button className="pi pi-arrow-right" />
+                    </tbody>
+                </table>
             </div>
-          </div> 
+
+            <div className="bg-[#C6DCFE] h-12 flex items-center justify-between w-full rounded px-4">
+                <div className="flex justify-center items-center space-x-2">
+                    <p className="pl-2">Tổng số hàng: {datas.length}</p>
+                    <div className="border-x-2 border-black"></div>
+                    <div className="flex items-center space-x-2">
+                    <label htmlFor="rows-per-page" className="text-sm">
+                        Số hàng mỗi trang:
+                    </label>
+                    <select
+                        id="rows-per-page"
+                        className="rounded border-gray-300 p-1"
+                        value={rowsPerPage}
+                        onChange={handleRowsPerPageChange}
+                    >
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                    </select>
+                </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <button
+                        className="px-2 py-1 border rounded"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        Trước
+                    </button>
+                    <span className="text-sm">
+                        Trang {currentPage}/{totalPages}
+                    </span>
+                    <button
+                        className="px-2 py-1 border rounded"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        Sau
+                    </button>
+                </div>
+            </div>
         </div>
-      </div> 
-    )
+    );
 }

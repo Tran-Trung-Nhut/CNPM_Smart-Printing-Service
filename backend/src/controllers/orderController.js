@@ -3,9 +3,19 @@ const Order = require('../models/Order');
 exports.getAllOrders = async (req, res) => {
     try {
         const allData = await Order.findAll();
-        res.status(200).json({ status: 200, data: allData, message: "Succesfully Order Retrieved!" });
+        res.status(200).json({ status: 200, data: allData, message: "Succesfully All Order Retrieved!" });
     } catch (error) {
-        res.status(500).json({ status: 500, message: 'Error Retrieving Order' });
+        res.status(500).json({ status: 500, message: 'Error All Retrieving Order' });
+    }
+};
+
+exports.getOrderByID = async (req, res) => {
+    try {
+        const order_ID = req.params.id;
+        const data = await Order.findAll(order_ID);
+        res.status(200).json({ status: 200, data: data, message: "Succesfully Order Retrieved By ID!" });
+    } catch (error) {
+        res.status(500).json({ status: 500, message: 'Error Retrieving Order By ID' });
     }
 };
 

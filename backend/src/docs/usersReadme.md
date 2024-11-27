@@ -1,7 +1,7 @@
 # Tài liệu API Quản lý Người Dùng
 
 <!-- Gỏ CTRL + Shift + V để trông OK hơn-->
-
+<!-- Xem thử mẫu API: nhấp vào route api (nếu có) -->
 Tài liệu này mô tả các route API và chức năng cho việc quản lý người dùng trong hệ thống.
 API nguồn: http://localhost:3000/api/v1
 
