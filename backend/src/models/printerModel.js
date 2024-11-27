@@ -1,5 +1,5 @@
 const { connectDB } = require("../config/config.js");
-const query = require("../database/query.js");
+const query = require("../config/query.js");
 
 let pool;
 

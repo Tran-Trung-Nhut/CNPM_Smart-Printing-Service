@@ -12,7 +12,7 @@ module.exports = (app) => {
     require("./orderRouter")(router);
     require("./printConfigRouter")(router);
     require("./documentRouter")(router);
-    require("./verify/verifiy_authorizationRouter")(router);
+    require("./verify/[example]authorizationRouter")(router);
     require("./verify/authenticationRouter")(router);
     app.use("/api/v1", router);
 };
