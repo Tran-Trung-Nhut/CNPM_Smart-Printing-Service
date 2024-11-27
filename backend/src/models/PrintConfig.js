@@ -4,7 +4,6 @@ const properties = require("./Properties.js")
 
 const Query = require("../config/query"); 
 
-const Query = require("../config/query"); 
 
 let pool;
 
@@ -18,8 +17,6 @@ const PrintConfig = {
     findAll: async () => {
         try {
             return await Query.getAll("PrintConfiguration");
-<<<<<<< HEAD
-=======
         } catch (error) {
             console.error("Error fetching all PrintConfigurations:", error);
             throw error;
@@ -31,7 +28,6 @@ const PrintConfig = {
             const doc = await document.getDocumentByID(row.config_ID);
             const prop = await properties.getPropertiesByID(row.config_ID);
             return { row, doc, prop };
->>>>>>> 6554a74ea8c2a5f7f82ef5d36fc5ea8e39f9e7e6
         } catch (error) {
             console.error("Error fetching all PrintConfigurations:", error);
             throw error;

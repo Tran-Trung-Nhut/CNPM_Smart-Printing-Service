@@ -41,7 +41,7 @@ VALUES
 (1, 'Document 1', 10, 'A4', 'PDF'),
 (2, 'Document 2', 20, 'A4', 'DOCX');
 
--- Bảng Properties
+-- -- Bảng Properties
 INSERT INTO `Properties` (`config_ID`, `pageSize`, `noCopy`, `noPage`, `startPage`, `endPage`, `scale`, `isDuplex`, `orientation`)
 VALUES 
 (1, 'A4', 1, 10, 1, 10, 100, '1', 'Dọc'),
