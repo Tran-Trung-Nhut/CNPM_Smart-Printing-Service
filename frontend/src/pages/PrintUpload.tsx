@@ -1,7 +1,7 @@
 import MainLayout from "../components/MainLayout";
 import React from "react";
 import { InboxOutlined } from "@ant-design/icons";
-import { UploadProps, Steps } from "antd";
+import { UploadProps, Steps, Button } from "antd";
 import { message, Upload } from "antd";
 import { SmileOutlined, PrinterOutlined, UploadOutlined } from '@ant-design/icons';
 import "../pages/PrintUpload.css";
@@ -65,6 +65,7 @@ const PrintUpload: React.FC = () => (
         </Dragger>
       </div>
     </div>
+    <Button type="primary">In tài liệu</Button>
   </MainLayout>
 );
 
