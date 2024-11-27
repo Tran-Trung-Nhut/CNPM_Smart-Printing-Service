@@ -3,9 +3,19 @@ const Document = require('../models/Document');
 exports.getAllDocuments = async (req, res) => {
     try {
         const allData = await Document.findAll();
-        res.status(200).json({ status: 200, data: allData, message: "Succesfully Document Retrieved!" });
+        res.status(200).json({ status: 200, data: allData, message: "Succesfully All Document Retrieved!" });
     } catch (error) {
-        res.status(500).json({ status: 500, message: 'Error Retrieving Document' });
+        res.status(500).json({ status: 500, message: 'Error All Retrieving Document' });
+    }
+};
+
+exports.getDocumentByID = async (req, res) => {
+    try {
+        const config_ID = req.params.id;
+        const data = await Document.getDocumentByID(config_ID);
+        res.status(200).json({ status: 200, data: data, message: "Succesfully Document Retrieved By Config ID!" });
+    } catch (error) {
+        res.status(500).json({ status: 500, message: 'Error Retrieving Document By Config ID' });
     }
 };
 

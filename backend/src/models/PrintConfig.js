@@ -1,4 +1,6 @@
 const { connectDB } = require("../config/config.js");
+const document = require("./Document.js");
+const properties = require("./Properties.js")
 
 const Query = require("../config/query"); 
 
@@ -19,6 +21,16 @@ const PrintConfig = {
             throw error;
         }
     },
+    getPrintConfigByID: async (config_ID) => {
+        try {
+            const [row] = await pool.query('SELECT * FROM PrintConfiguration WHERE config_ID = ?', [config_ID]);
+            const doc = await document.getDocumentByID(row.config_ID);
+            const prop = await properties.getPropertiesByID(row.config_ID);
+            return { row, doc, prop };
+        } catch (error) {
+            console.log(error);
+        }
+    },    
     createPrintConfig: async (printStart, printEnd, user_ID, printer_ID) => {
         try {
             const data = { printStart, printEnd, user_ID, printer_ID };

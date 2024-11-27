@@ -1,33 +1,76 @@
 import Login from './pages/Login';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Home from './pages/Home';
-import DefaultLayout from './SPSO/DefaultLayout';
+import DefaultLayout from './DefaultLayout';
+import ChooseLogin from './pages/ChooseLogin';
+import HomeSPSO from './pages/HomeSPSO';
 import Student from './pages/Student';
-import { SidebarProvider } from './providers/SidebarContext';
-import StudentHistory from './pages/StudentHistory';
-import Printer from './pages/Printer';
-import PrinterHistory from './pages/PrinterHistory';
-import Notifications from './pages/Notification';
+import Printer from './pages/Pritnter';
+import Notification from './pages/Notification';
+import LearnMore from './pages/LearnMore';
+import NotFound from './pages/NotFound';
+import ProtectedRoute from './ProtectedRoute';
+import { useRecoilValue } from 'recoil';
+import { isLoginAsState } from './state';
+import Forbidden from './pages/Forbidden';
 
 
 function App() {
+  const isLoginAs = useRecoilValue(isLoginAsState)
   
   return (
-    <SidebarProvider>
       <Router>
         <Routes>
-          <Route path='/' element={<Home/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/SPSO' element={<DefaultLayout/>}>
-            <Route path='students' element={<Student/>}/>
-            <Route path='printers' element={<Printer/>}/>
-            <Route path='printers-printing-history' element={<PrinterHistory/>}/>
-            <Route path='students-printing-history' element={<StudentHistory/>}/>
-            <Route path='notifications' element={<Notifications/>}/>
+          <Route path='/' element={<DefaultLayout/>}>
+            <Route path='/' element={<Home/>}/>
+            <Route path='/learn-more' element={<LearnMore/>}/>
+            <Route 
+            path='/SPSO' 
+            element={
+              <ProtectedRoute
+                  allowedRoles={["SPSO"]}
+                  currentRole={isLoginAs}
+              >
+              <HomeSPSO/>
+              </ProtectedRoute>
+            }/>
+            <Route 
+            path='/SPSO/student' 
+            element={
+                  <ProtectedRoute
+                  allowedRoles={["SPSO"]}
+                  currentRole={isLoginAs}
+              >
+              <Student/>
+              </ProtectedRoute>
+            }/>
+            <Route 
+            path='/SPSO/printer' 
+            element={
+                  <ProtectedRoute
+                  allowedRoles={["SPSO"]}
+                  currentRole={isLoginAs}
+              >
+              <Printer/>
+              </ProtectedRoute>
+            }/>
+            <Route 
+            path='/SPSO/notification' 
+            element={
+                  <ProtectedRoute
+                  allowedRoles={["SPSO"]}
+                  currentRole={isLoginAs}
+              >
+              <Notification/>
+              </ProtectedRoute>
+            }/>
           </Route>
+          <Route path='/login-as' element={<ChooseLogin/>}/>
+          <Route path='/login' element={<Login/>}/>
+          <Route path="/403" element={<Forbidden />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
-    </SidebarProvider>
   );
 }
 
