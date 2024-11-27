@@ -5,7 +5,7 @@ export default function PrinterInformationPopup({ onClose }: { onClose: () => vo
             onClick={onClose} // Đóng popup khi bấm vào backdrop
         >
             <div
-                className="bg-white p-6 rounded-sm shadow-lg w-96 text-center space-y-4 font-mono"
+                className="bg-white p-6 rounded-sm shadow-lg w-96 text-center space-y-4"
                 onClick={(e) => e.stopPropagation()} // Ngăn sự kiện lan truyền
             >
                 <div className="flex justify-start">

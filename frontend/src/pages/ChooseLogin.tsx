@@ -1,45 +1,58 @@
-import { useRecoilState, useRecoilValue } from 'recoil'
-import logo from '../assets/hcmut.png'
-import { useNavigate } from 'react-router-dom'
-import { isLoginAsState } from '../state'
+import { useRecoilState } from "recoil";
+import logo from "../assets/hcmut.png";
+import { useNavigate } from "react-router-dom";
+import { isLoginAsState } from "../state";
 
-export default function ChooseLogin(){
-    const navigate = useNavigate()
-    const [isLoginAs, setISLoginAs] = useRecoilState(isLoginAsState)
+export default function ChooseLogin() {
+    const navigate = useNavigate();
+    const [isLoginAs, setIsLoginAs] = useRecoilState(isLoginAsState);
 
     const loginAs = (role: string) => {
-        setISLoginAs(role)
+        setIsLoginAs(role);
+        navigate("/login");
+    };
 
-        console.log(isLoginAs)
-        navigate('/login')
-    }
-
-    return(
-        <div className="z-1 fixed size-full flex items-center justify-center drop-shadow-lg [background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]">
-             <div className="bg-white p-6 rounded-sm shadow-lg w-96 text-center space-y-4 font-mono">
-                <div className='flex items-center justify-center'>
-                    <img src={logo} className='size-20 '/>
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-[90%] max-w-md text-center space-y-8">
+                {/* Logo */}
+                <div>
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        className="mx-auto w-24 h-24 object-contain"
+                    />
                 </div>
-                <div className="w-full max-w-sm border-t border-gray-300 mt-4"></div>
-               <div className='flex justify-start'>
-                    <p className='text-blue-400'>Đăng nhập với tư cách:</p>
-               </div>
-               <div>
-                    <button 
-                    className='border-[1px] rounded w-full hover:bg-gray-300 py-1'
-                    onClick={() => loginAs('student')}
+
+                {/* Tiêu đề */}
+                <div className="space-y-2">
+                    <h1 className="text-2xl font-bold text-blue-600">
+                        Chọn vai trò đăng nhập
+                    </h1>
+                    <p className="text-gray-600">
+                        Vui lòng chọn vai trò để tiếp tục truy cập hệ thống.
+                    </p>
+                </div>
+
+                {/* Nút lựa chọn */}
+                <div className="space-y-4">
+                    <button
+                        className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg shadow hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition"
+                        onClick={() => loginAs("student")}
                     >
                         Sinh viên
                     </button>
-                    <button 
-                    className='border-[1px] rounded w-full hover:bg-gray-300 py-1'
-                    onClick={() => loginAs('SPSO')}>
+                    <button
+                        className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg shadow hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition"
+                        onClick={() => loginAs("SPSO")}
+                    >
                         SPSO
                     </button>
-               </div>
-               <div className="w-full max-w-sm border-t border-gray-300 mt-4"></div>
+                </div>
+
+                {/* Gạch ngang */}
+                <div className="w-full border-t border-gray-200"></div>
             </div>
         </div>
-        
-    )
+    );
 }

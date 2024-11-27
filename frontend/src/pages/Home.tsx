@@ -12,7 +12,7 @@ export default function Home(){
       className="z-1 size-full"
     >
             <div className="flex items-center size-auto">
-                <div className="font-mono text-white text-center space-y-3 pt-16 ml-20">
+                <div className=" text-white text-center space-y-3 pt-16 ml-20">
                     <p className="text-6xl font-bold">HỆ THỐNG IN ẤN THÔNG MINH</p>
                     <div>
                         <p>Đây là hệ thống hỗ trợ sinh viên in tài liệu một cách dễ dàng và nhanh chóng.</p>
@@ -27,7 +27,8 @@ export default function Home(){
                         </button>
                         <button 
                         type="button"
-                        className="hover:scale-105 shadow-xl text-blue-700 bg-white font-medium rounded-lg text-xl px-5 py-2.5 text-center me-2 mb-2">
+                        className="hover:scale-105 shadow-xl text-blue-700 bg-white font-medium rounded-lg text-xl px-5 py-2.5 text-center me-2 mb-2 active:scale-90"
+                        onClick={() => navigate('/learn-more')}>
                             Tìm hiểm thêm
                         </button>
                     </div>
