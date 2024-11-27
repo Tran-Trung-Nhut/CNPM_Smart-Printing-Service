@@ -1,5 +1,5 @@
 const { connectDB } = require("../config/config.js");
-
+const Query = require("../config/query");
 let pool;
 
 async function initDB() {
@@ -8,13 +8,15 @@ async function initDB() {
 
 initDB();
 
+
+
 const Order = {
     findAll: async () => {
         try {
-            const [rows] = await pool.query('SELECT * FROM Orders');
-            return rows;
+            return await Query.getAll("Orders");
         } catch (error) {
-            console.log(error);
+            console.error("Error fetching all Orders:", error);
+            throw error;
         }
     },
     getOderByID: async (order_ID) => {
@@ -27,29 +29,35 @@ const Order = {
     },
     createOrder: async (user_ID, time, quantity, status) => {
         try {
-            const [result] = await pool.query('INSERT INTO Orders (user_ID, time, quantity, status) VALUES (?, ?, ?, ?)', [user_ID, time, quantity, status]);
-            const order_ID = result.insertId;
-            return { order_ID, user_ID, time, quantity, status};
+            const data = { user_ID, time, quantity, status };
+            const result = await Query.insertSingleRow("Orders", data);
+            return { order_ID: result.insertId, ...data };
         } catch (error) {
-            console.log(error);
-        }   
+            console.error("Error creating Order:", error);
+            throw error;
+        }
     },
     updateOrder: async (order_ID, user_ID, time, quantity, status) => {
         try {
-            await pool.query('UPDATE Orders SET user_ID = ?, time = ?, quantity = ?, status = ? WHERE order_ID = ?', [user_ID, time, quantity, status, order_ID]);
-            return {order_ID, user_ID, time, quantity, status};
+            const data = { user_ID, time, quantity, status };
+            const condition = { order_ID };
+            await Query.updateRow("Orders", data, condition);
+            return { order_ID, ...data };
         } catch (error) {
-            console.log(error);
-        } 
+            console.error("Error updating Order:", error);
+            throw error;
+        }
     },
     deleteOrder: async (order_ID) => {
         try {
-            await pool.query('DELETE FROM Orders WHERE order_ID = ?', [order_ID]);
-            return {order_ID};
+            const condition = { order_ID };
+            await Query.deleteRow("Orders", condition);
+            return condition;
         } catch (error) {
-            console.log(error);
-        } 
-    } 
+            console.error("Error deleting Order:", error);
+            throw error;
+        }
+    }
 };
 
 module.exports = Order;
