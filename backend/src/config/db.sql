@@ -83,9 +83,13 @@ CREATE TABLE IF NOT EXISTS `Properties` (
 CREATE TABLE IF NOT EXISTS `Orders` (
     `order_ID` INT PRIMARY KEY AUTO_INCREMENT,
     `user_ID` INT,
-    `time` DATE NOT NULL,
-    `quantity` INT NOT NULL,
-    `status` ENUM('chưa thanh toán', 'đã thanh toán') NOT NULL,
+    `quantityPaper` INT DEFAULT 0,
+    `quantityPackage1` INT DEFAULT 0,
+    `quantityPackage2` INT DEFAULT 0,
+    `quantityPackage3` INT DEFAULT 0,
+    `dateOrder` DATE NOT NULL,
+    `datePaid` DATE DEFAULT NULL,
+    `status` ENUM('chưa thanh toán', 'đã thanh toán') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'chưa thanh toán',
     FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -100,8 +104,10 @@ CREATE TABLE IF NOT EXISTS `Paper_Package` (
 -- Bảng `Order_Package`
 CREATE TABLE IF NOT EXISTS `Order_Package` (
     `order_ID` INT NOT NULL,
-    `pp_ID` INT NOT NULL,
-    PRIMARY KEY (`order_ID`, `pp_ID`),
-    FOREIGN KEY (`order_ID`) REFERENCES `Orders`(`order_ID`) ON DELETE CASCADE,
-    FOREIGN KEY (`pp_ID`) REFERENCES `Paper_Package`(`pp_ID`) ON DELETE CASCADE
-);
+    `description` VARCHAR(255) NOT NULL,
+    `price` INT NOT NULL,
+    `originalPrice` INT NOT NULL,
+    `discount` INT NOT NULL,
+    PRIMARY KEY (`order_ID`, `description`),
+    FOREIGN KEY (`order_ID`) REFERENCES `Orders`(`order_ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
