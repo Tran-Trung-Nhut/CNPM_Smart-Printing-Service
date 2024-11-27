@@ -18,14 +18,14 @@ const BuyPaper: React.FC = () => {
 
   const data: PaymentItem[] = [
     { id: 1, quantity: "Giấy lẻ: 15", time: "10g00", date: "20/10/2024", status: "Chờ thanh toán", amount: "40.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 3 (SL:1)" },
-    { id: 2, quantity: "Giấy lẻ:", time: "10g00", date: "20/10/2024", status: "Chờ thanh toán", amount: "20.000 đồng" },
-    { id: 3, quantity: "Giấy lẻ:", time: "08g00", date: "20/10/2024", status: "Đã thanh toán", amount: "100.000 đồng" },
-    { id: 4, quantity: "Giấy lẻ:", time: "07g59", date: "20/10/2024", status: "Đã thanh toán", amount: "50.000 đồng" },
-    { id: 5, quantity: "Giấy lẻ:", time: "07g59", date: "20/10/2024", status: "Đã thanh toán", amount: "50.000 đồng" },
-    { id: 6, quantity: "Giấy lẻ:", time: "15g30", date: "19/10/2024", status: "Đã huỷ", amount: "200.000 đồng" },
-    { id: 7, quantity: "Giấy lẻ:", time: "13g30", date: "20/10/2024", status: "Đã thanh toán", amount: "5.000 đồng" },
-    { id: 8, quantity: "Giấy lẻ:", time: "13g00", date: "20/10/2024", status: "Đã thanh toán", amount: "50.000 đồng" },
-    { id: 9, quantity: "Giấy lẻ:", time: "12g00", date: "20/10/2024", status: "Đã huỷ", amount: "100.000 đồng" },
+    { id: 2, quantity: "Giấy lẻ: 20", time: "11g00", date: "20/10/2024", status: "Chờ thanh toán", amount: "20.000 đồng", packageInfo: "Gói 1 (SL:1)"  },
+    { id: 3, quantity: "Giấy lẻ: 10", time: "12g00", date: "20/10/2024", status: "Đã thanh toán", amount: "100.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 2 (SL:1), Gói 3 (SL:1)"  },
+    { id: 4, quantity: "Giấy lẻ: 5", time: "07g59", date: "21/10/2024", status: "Đã thanh toán", amount: "50.000 đồng", packageInfo: "Gói 1 (SL:2), Gói 3 (SL:1)"  },
+    { id: 5, quantity: "Giấy lẻ: 7", time: "07g59", date: "21/10/2024", status: "Đã thanh toán", amount: "50.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 3 (SL:2)"  },
+    { id: 6, quantity: "Giấy lẻ: 0", time: "15g30", date: "21/10/2024", status: "Đã huỷ", amount: "200.000 đồng", packageInfo: "Gói 1 (SL:10), Gói 3 (SL:10)"  },
+    { id: 7, quantity: "Giấy lẻ: 0", time: "13g30", date: "22/10/2024", status: "Đã thanh toán", amount: "5.000 đồng", packageInfo: "Gói 1 (SL:1)"  },
+    { id: 8, quantity: "Giấy lẻ: 12", time: "13g00", date: "22/10/2024", status: "Đã thanh toán", amount: "50.000 đồng", packageInfo: "Gói 2 (SL:2), Gói 3 (SL:1)"  },
+    { id: 9, quantity: "Giấy lẻ: 6", time: "12g00", date: "23/10/2024", status: "Đã huỷ", amount: "100.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 3 (SL:3)" },
   ];
 
   const [filteredData, setFilteredData] = useState(data);

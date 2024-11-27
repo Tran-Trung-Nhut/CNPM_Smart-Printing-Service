@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import printer from "../assets/printer.png";
+import printer from '../assets/printer.png'
 
 interface PrinterProps {
     id: number;
