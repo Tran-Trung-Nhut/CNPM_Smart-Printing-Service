@@ -25,8 +25,9 @@ Trước khi tiếp tục, hãy chắc chắn bạn đáp ứng đủ những đ
 ### KHỞI ĐỘNG ỨNG DỤNG
 #### Back-end
 1. `cd backend`: Nếu bạn đang không trong thư mục **backend**
-2. `npm install`: Tải cải tất cả các gói tin dependencies cần thiết
-3. 
+2. `docker compose up -d`: Đóng gói image và chạy container của bakend app
+3. [optional] `docker exec -i backend-sps-mysql-1 mysql -uroot -p123456 SPS_database < src/config/data.sql`: thêm dữ liệu trong data.sql để thử nghiệm 
+4. `docker compose down`: Để dừng và xóa container của backend
 
 #### Front-end
 1. `cd frontend`:  Nếu bạn đang không trong thư mục **frontend**
