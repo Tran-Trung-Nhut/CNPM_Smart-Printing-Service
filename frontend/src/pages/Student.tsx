@@ -1,27 +1,18 @@
 import "primeicons/primeicons.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StudentInformationPopup from "../components/StudentInformationPopup";
+import axios from "axios";
+import { StudentDto } from "../dtos/Student.dto";
 
-interface Student {
-    name: string,
-    MSSV: string,
-    numberOfPrinting: number,
-    pages: number,
-}
 
-const datas = Array.from({ length: 30 }).map<Student>((_, i) => ({
-    name: `Student ${i + 1}`,
-    MSSV: `${i}`,
-    numberOfPrinting: 10 + i*2,
-    pages: 10*2 + i,
-}));
 export default function Student() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [student, setStudent] = useState<StudentDto[]>([])
 
-    const totalPages = Math.ceil(datas.length / rowsPerPage);
-    const currentData = datas.slice(
+    const totalPages = Math.ceil(student.length / rowsPerPage);
+    const currentData = student.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
     );
@@ -36,6 +27,19 @@ export default function Student() {
             setCurrentPage(newPage);
         }
     };
+
+    const fetchStudents = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/v1/users?role=student'); 
+            setStudent(response.data.data);
+        } catch (error) {
+            alert('Get printer false!')
+        }
+    }
+
+    useEffect(() => {
+        fetchStudents()
+    }, [])
 
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
@@ -74,9 +78,9 @@ export default function Student() {
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
                                 <td className="px-4 py-2 text-center">{data.name}</td>
-                                <td className="px-4 py-2 text-center">{data.MSSV}</td>
-                                <td className="px-4 py-2 text-center">{data.numberOfPrinting}</td>
-                                <td className="px-4 py-2 text-center">{data.pages}</td>
+                                <td className="px-4 py-2 text-center">{data.user_ID}</td>
+                                <td className="px-4 py-2 text-center">{0}</td>
+                                <td className="px-4 py-2 text-center">{data.pageBalance}</td>
                                 <td className="px-4 py-2 text-center">
                                     <button
                                         type="button"
@@ -94,7 +98,7 @@ export default function Student() {
 
             <div className="bg-[#C6DCFE] h-12 flex items-center justify-between w-full rounded px-4">
                 <div className="flex justify-center items-center space-x-2">
-                    <p className="pl-2">Tổng số hàng: {datas.length}</p>
+                    <p className="pl-2">Tổng số hàng: {student.length}</p>
                     <div className="border-x-2 border-black"></div>
                     <div className="flex items-center space-x-2">
                     <label htmlFor="rows-per-page" className="text-sm">
