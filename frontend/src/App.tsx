@@ -5,7 +5,9 @@ import DefaultLayout from './DefaultLayout';
 import ChooseLogin from './pages/ChooseLogin';
 import HomeSPSO from './pages/HomeSPSO';
 import Student from './pages/Student';
-import Printer from './pages/Pritnter';
+import Printer from './pages/Printer';
+import BuyPaper from './pages/BuyPaper';
+import ChoosePrinter from './pages/ChoosePrinter';
 import Notification from './pages/Notification';
 import LearnMore from './pages/LearnMore';
 import NotFound from './pages/NotFound';
@@ -23,6 +25,11 @@ function App() {
         <Routes>
           <Route path='/' element={<DefaultLayout/>}>
             <Route path='/' element={<Home/>}/>
+            <Route path='/SPSO' element={<HomeSPSO/>}/>
+            <Route path='/SPSO/student' element={<Student/>}/>
+            <Route path='/SPSO/printer' element={<Printer/>}/>
+            <Route path='/buypaper' element={<BuyPaper/>}/>
+            <Route path='/choose' element={<ChoosePrinter/>}/>
             <Route path='/learn-more' element={<LearnMore/>}/>
             <Route 
             path='/SPSO' 
