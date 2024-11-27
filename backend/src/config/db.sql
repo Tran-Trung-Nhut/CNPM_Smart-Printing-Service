@@ -57,12 +57,27 @@ CREATE TABLE IF NOT EXISTS `PrintConfiguration` (
 -- Bảng `Document`
 CREATE TABLE IF NOT EXISTS `Document` (
     `config_ID` INT,
-    `DName` VARCHAR(255) NOT NULL,
+    `DName` VARCHAR(255),
     `noPage` INT,
     `pageSize` VARCHAR(50),
+    `docType` VARCHAR(255),
     PRIMARY KEY (`config_ID`, `DName`),
     FOREIGN KEY (`config_ID`) REFERENCES `PrintConfiguration`(`config_ID`) ON DELETE CASCADE
 );
+
+-- Bảng `Properties`
+CREATE TABLE IF NOT EXISTS `Properties` (
+    `config_ID` INT PRIMARY KEY,
+    `pageSize` ENUM('A4', 'A3') DEFAULT 'A4',
+    `noCopy` INT DEFAULT 1,
+    `noPage` INT,
+    `startPage` INT,
+    `endPage` INT,
+    `scale` INT DEFAULT 100,
+    `isDuplex` ENUM( '1', '2') DEFAULT '1',
+    `orientation` ENUM( 'Dọc', 'Ngang') DEFAULT 'Dọc' ,
+    FOREIGN KEY (`config_ID`) REFERENCES `PrintConfiguration`(`config_ID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Bảng `Orders`
 CREATE TABLE IF NOT EXISTS `Orders` (
@@ -70,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `Orders` (
     `user_ID` INT,
     `time` DATE NOT NULL,
     `quantity` INT NOT NULL,
-    `status` ENUM('chưa thanh toán', 'đã thanh toán') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `status` ENUM('chưa thanh toán', 'đã thanh toán') NOT NULL,
     FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
