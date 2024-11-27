@@ -1,12 +1,7 @@
-module.exports = (app) => {
+module.exports = (router) => {
     const orderPackage = require("../controllers/orderPackageController");
-    const express = require("express");
-    const router = express.Router();
-
-    router.get("/", orderPackage.getAllOrderPackages);
-    router.post("/", orderPackage.createOrderPackage);
-    router.put("/:id1/:id2", orderPackage.updateOrderPackage);
-    router.delete("/:id1/:id2", orderPackage.deleteOrderPackage);
-  
-    app.use("/api/v1/orderpackage", router);
+    router.get("/orderpackage", orderPackage.getAllOrderPackages);
+    router.post("/orderpackage", orderPackage.createOrderPackage);
+    router.put("/orderpackage/:id1/:id2", orderPackage.updateOrderPackage);
+    router.delete("/orderpackage/:id1/:id2", orderPackage.deleteOrderPackage);
 };

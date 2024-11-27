@@ -1,13 +1,7 @@
-module.exports = (app) => {
+module.exports = (router) => {
     const paperPackage = require("../controllers/paperPackageController");
-    const express = require("express");
-    const router = express.Router();
-
-    router.get("/", paperPackage.getAllPaperPackages);
-    router.get("/:id", paperPackage.getPaperPackageByID);
-    router.post("/", paperPackage.createPaperPackage);
-    router.put("/:id", paperPackage.updatePaperPackage);
-    router.delete("/:id", paperPackage.deletePaperPackage);
-  
-    app.use("/api/v1/paperpackage", router);
+    router.get("/paperpackage", paperPackage.getAllPaperPackages);
+    router.post("/paperpackage", paperPackage.createPaperPackage);
+    router.put("/paperpackage/:id", paperPackage.updatePaperPackage);
+    router.delete("/paperpackage/:id", paperPackage.deletePaperPackage);
 };

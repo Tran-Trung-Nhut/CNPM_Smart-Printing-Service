@@ -2,6 +2,8 @@ const { connectDB } = require("../config/config.js");
 const document = require("./Document.js");
 const properties = require("./Properties.js")
 
+const Query = require("../config/query"); 
+
 let pool;
 
 async function initDB() {
@@ -13,10 +15,10 @@ initDB();
 const PrintConfig = {
     findAll: async () => {
         try {
-            const [rows] = await pool.query('SELECT * FROM PrintConfiguration');
-            return rows;
+            return await Query.getAll("PrintConfiguration");
         } catch (error) {
-            console.log(error);
+            console.error("Error fetching all PrintConfigurations:", error);
+            throw error;
         }
     },
     getPrintConfigByID: async (config_ID) => {
@@ -31,29 +33,33 @@ const PrintConfig = {
     },    
     createPrintConfig: async (printStart, printEnd, user_ID, printer_ID) => {
         try {
-            const [result] = await pool.query('INSERT INTO PrintConfiguration (printStart, printEnd, user_ID, printer_ID) VALUES (?, ?, ?, ?)', [printStart, printEnd, user_ID, printer_ID]);
-            const config_ID = result.insertId;
-            return { config_ID, printStart, printEnd, user_ID, printer_ID };
+            const data = { printStart, printEnd, user_ID, printer_ID };
+            const result = await Query.insertSingleRow("PrintConfiguration", data);
+            return { config_ID: result.insertId, ...data };
         } catch (error) {
-            console.log(error);
-        }   
+            console.error("Error creating PrintConfiguration:", error);
+            throw error;
+        }
     },
     updatePrintConfig: async (config_ID, printStart, printEnd, user_ID, printer_ID) => {
         try {
-            await pool.query('UPDATE PrintConfiguration SET printStart = ?, printEnd = ?, user_ID = ?, printer_ID = ? WHERE config_ID = ?', [printStart, printEnd, user_ID, printer_ID, config_ID]);
-            return { config_ID, printStart, printEnd, user_ID, printer_ID };
+            const data = { printStart, printEnd, user_ID, printer_ID };
+            await Query.updateRow("PrintConfiguration", data, { config_ID });
+            return { config_ID, ...data };
         } catch (error) {
-            console.log(error);
-        } 
+            console.error("Error updating PrintConfiguration:", error);
+            throw error;
+        }
     },
     deletePrintConfig: async (config_ID) => {
         try {
-            await pool.query('DELETE FROM PrintConfiguration WHERE config_ID = ?', [config_ID]);
-            return {config_ID};
+            await Query.deleteRow("PrintConfiguration", { config_ID });
+            return { config_ID };
         } catch (error) {
-            console.log(error);
-        } 
-    } 
+            console.error("Error deleting PrintConfiguration:", error);
+            throw error;
+        }
+    }
 };
 
 module.exports = PrintConfig;
