@@ -9,7 +9,7 @@ export default function NotFound() {
             <div className="text-center space-y-6">
                 {/* Biểu tượng */}
                 <div className="flex justify-center">
-                    <div className="bg-white/20 p-6 rounded-full shadow-lg">
+                    <div className="bg-white/20 p-6 rounded-full shadow-lg  animate-pulse">
                         <i className="pi pi-times-circle text-8xl text-white"></i>
                     </div>
                 </div>
@@ -18,7 +18,7 @@ export default function NotFound() {
                 <h1 className="text-8xl font-extrabold tracking-wide">404</h1>
                 <p className="text-3xl font-bold">Trang không tồn tại</p>
                 <p className="text-lg text-blue-200 max-w-lg mx-auto">
-                    Xin lỗi, đường dẫn bạn truy cập không chính xác hoặc đã bị di chuyển. Vui lòng quay về trang chính để tiếp tục sử dụng dịch vụ.
+                    Đường dẫn bạn truy cập không chính xác hoặc đã bị di chuyển. Vui lòng quay về trang chính để tiếp tục sử dụng dịch vụ.
                 </p>
             </div>
 
