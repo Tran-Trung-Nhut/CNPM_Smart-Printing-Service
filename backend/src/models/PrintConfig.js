@@ -4,6 +4,7 @@ const properties = require("./Properties.js")
 
 const Query = require("../config/query"); 
 
+
 let pool;
 
 async function initDB() {
@@ -28,7 +29,8 @@ const PrintConfig = {
             const prop = await properties.getPropertiesByID(row.config_ID);
             return { row, doc, prop };
         } catch (error) {
-            console.log(error);
+            console.error("Error fetching all PrintConfigurations:", error);
+            throw error;
         }
     },    
     createPrintConfig: async (printStart, printEnd, user_ID, printer_ID) => {
