@@ -1,16 +1,17 @@
 import "primeicons/primeicons.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PrinterInformationPopup from "../components/PrinterInformationPopup";
 import CreatePrinterPopup from "../components/CreatePrinterPopup";
+import axios from "axios";
 
-interface Student {
+interface Printer {
     brand: string;
     ID: string;
     location: string;
     status: string;
 }
 
-const datas = Array.from({ length: 30 }).map<Student>((_, i) => ({
+const datas = Array.from({ length: 30 }).map<Printer>((_, i) => ({
     brand: `Dell`,
     ID: `${i}`,
     location: `H1-CS${i % 2 === 0 ? 2 : 1}`,
@@ -22,6 +23,7 @@ export default function Printer() {
     const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [printer, setPrinter] = useState<any>()
 
     const totalPages = Math.ceil(datas.length / rowsPerPage);
     const currentData = datas.slice(
@@ -31,7 +33,7 @@ export default function Printer() {
 
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setRowsPerPage(Number(event.target.value));
-        setCurrentPage(1); // Reset to the first page when rows per page changes
+        setCurrentPage(1); 
     };
 
     const handlePageChange = (newPage: number) => {
@@ -39,6 +41,19 @@ export default function Printer() {
             setCurrentPage(newPage);
         }
     };
+
+    const fetchPrinters = async () => {
+        try {
+            const response = await axios.get('/api/printers'); 
+            setPrinter(response.data);
+        } catch (error) {
+            alert('Get printer false!')
+        }
+    }
+
+    useEffect(() => {
+        fetchPrinters()
+    }, [printer])
 
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">

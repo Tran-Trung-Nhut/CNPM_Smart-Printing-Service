@@ -5,7 +5,7 @@ import DefaultLayout from './DefaultLayout';
 import ChooseLogin from './pages/ChooseLogin';
 import HomeSPSO from './pages/HomeSPSO';
 import Student from './pages/Student';
-import Printer from './pages/Pritnter';
+import Printer from './pages/Printer';
 import Notification from './pages/Notification';
 import LearnMore from './pages/LearnMore';
 import NotFound from './pages/NotFound';
