@@ -20,10 +20,10 @@ export default function Login() {
         <div className="flex flex-col">
             <div className="flex items-center justify-center space-x-4">
                 <img src={school} className="size-16 mt-5"/>
-                <p className="font-bold font-mono text-white text-5xl mt-5">HỆ THỐNG IN ẤN THÔNG MINH</p>
+                <p className="font-bold text-white text-5xl mt-5">HỆ THỐNG IN ẤN THÔNG MINH</p>
             </div>
             <div className="flex justify-center items-center">
-                <div className="bg-transparent font-mono size-full py-3">
+                <div className="bg-transparent  size-full py-3">
                     <div className="flex flex-col items-center justify-center px-4">
                         <div className="p-8 rounded-2xl bg-transparent">
                             <h2 className="text-white text-center text-3xl font-bold pb-4">Thông tin đăng nhập</h2>

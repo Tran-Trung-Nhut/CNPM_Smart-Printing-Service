@@ -1,27 +1,34 @@
 import "primeicons/primeicons.css";
 import { useState } from "react";
-import PrinterInformationPopup from "../components/PrinterInformationPopup";
-import CreatePrinterPopup from "../components/CreatePrinterPopup";
+import NotificationInformationPopup from "../components/NotificationInformationPopup";
+import CreateNotificationPopup from "../components/CreateNotificationPopup";
 
-interface Student {
-    brand: string;
-    ID: string;
-    location: string;
-    status: string;
+
+interface Notification {
+    title: string,
+    content: string,
+    createDate: Date,
+    updateDate: Date,
 }
 
-const datas = Array.from({ length: 30 }).map<Student>((_, i) => ({
-    brand: `Dell`,
-    ID: `${i}`,
-    location: `H1-CS${i % 2 === 0 ? 2 : 1}`,
-    status: `${i % 2 === 0 ? 'Hoạt động' : 'Bảo trì'}`,
+const datas = Array.from({ length: 30 }).map<Notification>((_, i) => ({
+    title: `Hoàn thành in cho sinh viên có mã số ${i + 100}`,
+    content: 'Hoàn thành việc in bạn hãy đến nhận ở tòa ... cơ sở ...',
+    createDate: new Date(),
+    updateDate: new Date()
 }));
 
-export default function Printer() {
+export default function Notification() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
     const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [selectedNotification, setSelectedNotification] = useState<Notification>({
+        title: `Unknow`,
+        content: 'Unknow',
+        createDate: new Date(),
+        updateDate: new Date()
+    })
 
     const totalPages = Math.ceil(datas.length / rowsPerPage);
     const currentData = datas.slice(
@@ -40,32 +47,39 @@ export default function Printer() {
         }
     };
 
+    const handleShowInformation = (notification: Notification) => {
+        setSelectedNotification(notification)
+        setIsShowInformation(true)
+    }
+
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
             {isShowInformation && (
-                <PrinterInformationPopup onClose={() => setIsShowInformation(false)} />
+                <NotificationInformationPopup 
+                onClose={() => setIsShowInformation(false)} 
+                title={selectedNotification.title}
+                content={selectedNotification.content}
+                createDate={selectedNotification.createDate}
+                updateDate={selectedNotification.updateDate}/>
             )}
-            {isShowCreate && (<CreatePrinterPopup onClose={() => setIsShowCreate(false)}/>)}
+
+            {isShowCreate && (<CreateNotificationPopup onClose={() => setIsShowCreate(false)}/>)}
 
             <div className="w-full">
-            <div className="bg-[#C6DCFE] flex items-center justify-between px-4 py-2">
+            <div className="bg-[#C6DCFE] flex items-center justify-between space-x-1 px-4 py-2">
                 <div className="flex items-center space-x-2">
                     <input
-                        placeholder="Nhập thông tin tìm kiếm"
+                        placeholder="Nhập nội dung tìm kiếm"
                         className="w-64 pl-1 rounded placeholder:italic"
                     />
-                    <button
-                        className="flex items-center justify-center bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200"
-                    >
-                        <i className="pi pi-search mr-1"></i> Tìm kiếm
-                    </button>
+                    <i className="pi pi-search mr-1"></i>
                 </div>
 
                 <button
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
-                    onClick={() => setIsShowCreate(true)} // Mở popup thêm máy in
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200 active:scale-90"
+                    onClick={() => setIsShowCreate(true)} 
                 >
-                    <i className="pi pi-print mr-2"></i> Thêm máy in
+                    <i className="pi pi-bell mr-2"></i> Tạo thông báo mới
                 </button>
             </div>
 
@@ -73,10 +87,9 @@ export default function Printer() {
                     <thead className="bg-[#C6DCFE]">
                         <tr>
                             <th className="px-4 py-2">#</th>
-                            <th className="px-4 py-2">Hãng máy in</th>
-                            <th className="px-4 py-2">Mã số máy in</th>
-                            <th className="px-4 py-2">Vị trí</th>
-                            <th className="px-4 py-2">Tình trạng</th>
+                            <th className="px-4 py-2">Tiêu đề</th>
+                            <th className="px-4 py-2">Ngày tạo</th>
+                            <th className="px-4 py-2">Ngày chỉnh sửa</th>
                             <th className="px-4 py-2">Hành động</th>
                         </tr>
                     </thead>
@@ -89,15 +102,30 @@ export default function Printer() {
                                 <td className="px-4 py-2 text-center">
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
-                                <td className="px-4 py-2 text-center">{data.brand}</td>
-                                <td className="px-4 py-2 text-center">{data.ID}</td>
-                                <td className="px-4 py-2 text-center">{data.location}</td>
-                                <td className="px-4 py-2 text-center">{data.status}</td>
+                                <td className="px-4 py-2 text-center">{data.title}</td>
+                                <td className="px-4 py-2 text-center">{new Intl.DateTimeFormat('vi-VN', { 
+                                                                            weekday: 'long', 
+                                                                            year: 'numeric', 
+                                                                            month: 'long', 
+                                                                            day: 'numeric', 
+                                                                            hour: 'numeric', 
+                                                                            minute: 'numeric', 
+                                                                            second: 'numeric'
+                                                                        }).format(data.createDate)}</td>
+                                <td className="px-4 py-2 text-center">{new Intl.DateTimeFormat('vi-VN', { 
+                                                                            weekday: 'long', 
+                                                                            year: 'numeric', 
+                                                                            month: 'long', 
+                                                                            day: 'numeric', 
+                                                                            hour: 'numeric', 
+                                                                            minute: 'numeric', 
+                                                                            second: 'numeric'
+                                                                        }).format(data.updateDate)}</td>
                                 <td className="px-4 py-2 text-center">
                                     <button
                                         type="button"
                                         className="text-gray-400"
-                                        onClick={() => setIsShowInformation(true)}
+                                        onClick={() => handleShowInformation(data)}
                                     >
                                         <i className="pi pi-info-circle"></i>
                                     </button>
@@ -130,7 +158,7 @@ export default function Printer() {
                 </div>
                 <div className="flex items-center space-x-2">
                     <button
-                        className="px-2 py-1 border rounded"
+                        className="px-2 py-1 border rounded bg-slate-300"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                     >
@@ -140,7 +168,7 @@ export default function Printer() {
                         Trang {currentPage}/{totalPages}
                     </span>
                     <button
-                        className="px-2 py-1 border rounded"
+                        className="px-2 py-1 border rounded bg-slate-300"
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                     >
@@ -151,3 +179,4 @@ export default function Printer() {
         </div>
     );
 }
+

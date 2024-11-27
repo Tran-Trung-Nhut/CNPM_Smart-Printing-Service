@@ -12,7 +12,7 @@ export default function Header() {
     }
 
     return (
-      <div className="flex shadow border-2 w-full h-16 z-10 bg-white justify-between font-mono  ">
+      <div className="flex shadow border-2 w-full h-16 z-10 bg-white justify-between">
         <div className="space-x-7 flex">
             <img src={school} alt="school_logo" className="ml-6 size-14"/>
 
@@ -21,7 +21,7 @@ export default function Header() {
             className="font-black hover:scale-110 px-1 active:scale-90"
             onClick={() => {
               if(isLoginAs === "SPSO") navigate('/SPSO')
-              if(isLoginAs === "student") navigate('/')
+              if(isLoginAs === "student" || isLoginAs === '') navigate('/')
             }}> 
               Trang chủ 
             </button>
@@ -52,6 +52,7 @@ export default function Header() {
               <button 
               type="button" 
               className="font-black hover:scale-110 px-1 active:scale-90"
+              onClick={() => navigate('/SPSO/notification')}
               > 
                 Thông báo 
               </button>
