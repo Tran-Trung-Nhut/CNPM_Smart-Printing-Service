@@ -136,9 +136,9 @@ export default function Login() {
                     </button>
                 </div>
                 <div className="w-1/2 bg-blue-600 flex items-center justify-center">
-                    <div className="bg-white rounded-full p-8 shadow-lg">
+                    <div className="bg-white rounded-full p-8 shadow-lg animate-bounce">
                         <i 
-                            className="pi pi-print text-blue-600 text-9xl animate-bounce"
+                            className="pi pi-print text-blue-600 text-9xl"
                             style={{
                                 padding: '20px', 
                             }}
