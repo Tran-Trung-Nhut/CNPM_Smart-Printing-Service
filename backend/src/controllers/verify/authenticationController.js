@@ -15,12 +15,7 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign({ id: user.user_ID, role: user.role }, SECRET_KEY, { expiresIn: "1h" });
 
-        res.cookie("SessionID", token, {
-            httpOnly: true, 
-            secure: false, 
-            maxAge: 3600000,
-        });
-        res.status(200).json({ message: "Login successful" });
+        res.status(200).json({ message: "Login successful", id: user.user_ID, role: user.role, name: user.name, token });
     } catch (error) {
         res.status(500).json({ message: "Internal Server Error" });
     }
@@ -37,15 +32,15 @@ exports.register = async (req, res) => {
         res.status(500).json({ message:    "Internal Server Error" });
     }
 };
-exports.logout = (req, res) => {
-    try {
-        res.clearCookie("SessionID", {
-            httpOnly: true,
-            secure: false
-        });
+// exports.logout = (req, res) => {
+//     try {
+//         res.clearCookie("SessionID", {
+//             httpOnly: true,
+//             secure: false
+//         });
 
-        res.status(200).json({ message: "Logout successful" });
-    } catch (error) {
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
+//         res.status(200).json({ message: "Logout successful" });
+//     } catch (error) {
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// };
