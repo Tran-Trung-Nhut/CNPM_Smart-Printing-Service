@@ -1,33 +1,38 @@
-import React from "react";
-import { InboxOutlined, UploadOutlined, SmileOutlined, PrinterOutlined, SettingOutlined, FileOutlined } from '@ant-design/icons';
-import { Upload, Button, message, Steps } from "antd";
-import Dragger from "antd/es/upload";
+import React, { useState } from "react";
+import { InboxOutlined, UploadOutlined, SmileOutlined, PrinterOutlined, SettingOutlined } from '@ant-design/icons';
+import { Button, message, Steps, Upload } from "antd";
 import { useNavigate } from "react-router-dom";
-
-const props = {
-  name: 'file',
-  multiple: true,  // Chỉ cho phép upload 1 file
-  action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-  onChange(info: any) {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e: any) {
-    console.log('Dropped files', e.dataTransfer.files);
-  },
-  maxCount: 2,  // Chỉ cho phép upload tối đa 1 file
-};
+import { useRecoilState } from "recoil";
+import { DocumentDto } from "../dtos/File.dto";
+import { documentState } from "../state";
 
 const PrintUpload: React.FC = () => {
+  const navigate = useNavigate();
+  
+  const [file, setFile] = useRecoilState(documentState);
 
-  const navigate = useNavigate()
+  const handleChoosePrinter = () => {
+    if(file.length === 0) alert("Vui lòng tải tệp cần in trước khi đến bước tiếp theo!")
+    if(file.length > 0) navigate('/choose-printer')
+  }
+
+  const customRequest = (options: any) => {
+    const { file, onSuccess } = options;
+
+  
+    setTimeout(() => {
+      onSuccess("ok"); 
+      message.success(`${file.name} đã được tải lên thành công.`);
+
+      const fileDetails = {
+        name: file.name,
+        size: file.size,
+        lastModifiedDate: file.lastModifiedDate, 
+      };
+
+      setFile((prev) => [...prev, fileDetails]);
+    }, 1000); 
+  };
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center p-8 bg-white shadow-lg rounded-lg mt-5 mx-40">
@@ -48,28 +53,35 @@ const PrintUpload: React.FC = () => {
         <div className="w-[64%] border-y border-gray-200 my-8"></div>
 
         <div className="my-6 flex justify-center w-full">
-          <Dragger {...props} className="border-2 border-dashed border-blue-500 p-8 rounded-lg hover:border-blue-700">
-            <p className="ant-upload-drag-icon text-4xl text-blue-500">
+          <Upload
+            multiple={true}
+            customRequest={customRequest} 
+            showUploadList={true} 
+            maxCount={10}
+            className="border-2 border-dashed border-blue-500 p-8 rounded-lg hover:border-blue-700"
+          >
+            <div className="ant-upload-drag-icon text-4xl text-blue-500">
               <InboxOutlined />
-            </p>
+            </div>
             <p className="ant-upload-text text-xl text-center text-gray-800">
-              Click or drag file to this area to upload
+              Chọn tệp hoặc kéo thả tệp vào đây để tải lên
             </p>
             <p className="ant-upload-hint text-center text-gray-500">
-              Drop your printable document here (PDF, Word, etc.). Single file upload only.
+              Thả các tệp có thể in và đây (PDF, Word, etc.).
             </p>
-          </Dragger>
+          </Upload>
         </div>
 
         <div className="w-[64%] border-y border-gray-200 my-8"></div>
 
         <Button 
-        type="primary" 
-        style={{ width: '64%' }} 
-        className="font-bold text-xl h-10"
-        onClick={() => navigate('/choose-printer')}>
+          type="primary" 
+          style={{ width: '64%' }} 
+          className="font-bold text-xl h-10"
+          onClick={() => handleChoosePrinter()}
+        >
           Chọn máy in
-        </Button>
+        </Button>    
       </div>
     </div>
   );

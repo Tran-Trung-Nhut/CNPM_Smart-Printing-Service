@@ -1,12 +1,18 @@
 import home1 from "../assets/home1.png";
 import { useNavigate } from "react-router-dom";
 import "./css/Home.css"
-import { useRecoilValue } from "recoil";
-import { userState } from "../state";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { documentState, userState } from "../state";
+import { useEffect } from "react";
 
 export default function Home() {
     const navigate = useNavigate();
+    const setDocument = useSetRecoilState(documentState)
     const user = useRecoilValue(userState)
+
+    useEffect(() => {
+        setDocument([])
+    }, [])
 
     return (
         <div className="min-h-screen flex items-center justify-center text-white">

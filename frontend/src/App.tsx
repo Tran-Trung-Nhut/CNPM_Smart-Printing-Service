@@ -58,7 +58,7 @@ export default function App() {
                   allowedRoles={["student"]}
                   currentRole={user.role}
               >
-              <HomeSPSO/>
+              <ChoosePrinter/>
               </ProtectedRoute>
             }/>
             <Route path='/learn-more' element={<LearnMore/>}/>
