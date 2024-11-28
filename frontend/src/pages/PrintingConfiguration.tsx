@@ -4,21 +4,19 @@ import { LeftOutlined, CheckOutlined, UploadOutlined, PrinterOutlined, SettingOu
 import { Steps } from 'antd';
 import papernormal from '../assets/papernormal.png'
 import paperhori from '../assets/paperhori.png'
+import { useRecoilState } from 'recoil';
+import { numCopiesState, numPagesState, orientationState, paperSizeState, printSideState } from '../state';
 
 export default function PrintingConfiguration() {
   const navigate = useNavigate();
   
-  // State để quản lý các thông số in
-  const [numPages, setNumPages] = useState(1);
-  const [numCopies, setNumCopies] = useState(1);
-  const [paperSize, setPaperSize] = useState("A4");
-  const [printSide, setPrintSide] = useState("1 mặt");
-  const [colorMode, setColorMode] = useState("Màu");
-  const [orientation, setOrientation] = useState("Dọc");
+  const [numPages, setNumPages] = useRecoilState(numPagesState);
+  const [numCopies, setNumCopies] = useRecoilState(numCopiesState);
+  const [paperSize, setPaperSize] = useRecoilState(paperSizeState);
+  const [printSide, setPrintSide] = useRecoilState(printSideState);
+  const [orientation, setOrientation] = useRecoilState(orientationState);
 
-  // Các tùy chọn kích thước giấy
   const paperSizes = ["A4", "A3"];
-  const orientations = ["Dọc", "Ngang"];
 
   const handleSubmit = () => {
     const printSettings = { numPages, numCopies, paperSize, printSide, orientation };
@@ -42,7 +40,6 @@ export default function PrintingConfiguration() {
         </div>
         <h2 className="text-center text-2xl font-bold mb-6">Tùy chỉnh thông số in</h2>
 
-        {/* Số trang và Số bản sao (2 input 1 dòng) */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label htmlFor="numPages" className="block text-lg font-semibold mb-2">Số trang:</label>
@@ -88,7 +85,6 @@ export default function PrintingConfiguration() {
                 </select>
             </div>
 
-                    {/* Chọn mặt in */}
             <div className="mb-4">
                 <label htmlFor="printSide" className="block text-lg font-semibold mb-2">Mặt in:</label>
                 <select
@@ -97,33 +93,30 @@ export default function PrintingConfiguration() {
                     onChange={(e) => setPrintSide(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                    <option value="1 mặt">1 mặt</option>
-                    <option value="2 mặt">2 mặt</option>
+                    <option value="single-sided">1 mặt</option>
+                    <option value="double-sided">2 mặt</option>
                 </select>
             </div>
         </div>
 
-
-        {/* Chế độ dọc hay ngang với icon */}
         <div className="mb-6">
           <label htmlFor="orientation" className="block text-lg font-semibold mb-2">Chế độ in:</label>
           <div className="flex items-center space-x-4">
             <div 
-              onClick={() => setOrientation("Dọc")}
-              className={`p-3 rounded-lg cursor-pointer border-2 ${orientation === "Dọc" ? 'border-blue-500' : 'border-gray-300'} hover:bg-gray-100`}
+              onClick={() => setOrientation("portrait")}
+              className={`p-3 rounded-lg cursor-pointer border-2 ${orientation === "portrait" ? 'border-blue-500' : 'border-gray-300'} hover:bg-gray-100`}
             >
               <img src={papernormal} className='size-16'/>
             </div>
             <div 
-              onClick={() => setOrientation("Ngang")}
-              className={`p-3 rounded-lg cursor-pointer border-2 ${orientation === "Ngang" ? 'border-blue-500' : 'border-gray-300'} hover:bg-gray-100`}
+              onClick={() => setOrientation("landscape")}
+              className={`p-3 rounded-lg cursor-pointer border-2 ${orientation === "landscape" ? 'border-blue-500' : 'border-gray-300'} hover:bg-gray-100`}
             >
               <img src={paperhori} className='size-16'/>
             </div>
           </div>
         </div>
 
-        {/* Button Quay lại và Xác nhận */}
         <div className="flex justify-between">
           <button 
             onClick={() => navigate('/choose-printer')}

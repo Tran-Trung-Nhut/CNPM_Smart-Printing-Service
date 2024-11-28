@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import { Result, Button, Steps } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined, PrinterOutlined, SettingOutlined, SmileOutlined, UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { isPrintingSuccessState } from '../state';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { documentState, isPrintingSuccessState } from '../state';
 
 export default function PrintingComplete() {
   const navigate = useNavigate();
   const isSuccess = useRecoilValue(isPrintingSuccessState);
+  const setDocument = useSetRecoilState(documentState)
 
   useEffect(() => {
     // You can perform some side effect or tracking here if needed
@@ -38,7 +39,10 @@ export default function PrintingComplete() {
             <Button
               key="home"
               type="primary"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => {
+                setDocument([])
+                navigate('/')
+              }}
               className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-8 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
             >
               Quay lại trang chủ

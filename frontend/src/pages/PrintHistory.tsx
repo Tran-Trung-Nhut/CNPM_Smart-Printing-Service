@@ -2,6 +2,8 @@ import "primeicons/primeicons.css";
 import { useEffect, useState } from "react";
 import PrinterInformationPopup from "../components/PrinterInformationPopup";
 import CreatePrinterPopup from "../components/CreatePrinterPopup";
+import { useSetRecoilState } from "recoil";
+import { documentState } from "../state";
 
 interface DataType {
   printerID: string;
@@ -19,6 +21,7 @@ const dataSource = Array.from({ length: 30 }).map<DataType>((_, i) => ({
 
 
 export default function PrintHistory() {
+    const setDocument = useSetRecoilState(documentState)
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
     const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -39,6 +42,10 @@ export default function PrintHistory() {
             setCurrentPage(newPage);
         }
     }; 
+
+    useEffect(() => {
+        setDocument([])
+    }, [])
 
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">

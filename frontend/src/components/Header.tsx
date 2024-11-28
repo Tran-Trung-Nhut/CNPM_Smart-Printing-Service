@@ -1,18 +1,49 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import school from "../assets/hcmut.png"
 import { useRecoilState } from "recoil";
 import { isLoginAsState, userState } from "../state";
+import { useState } from "react";
+import { defaultLoginUser } from "../dtos/User.dto";
+import LogoutConfirm from "./LogoutConfirm";
+import UserProfile from "./UserProfile";
 
 export default function Header() {
     const navigate = useNavigate();
+    const location = useLocation()
     const [user, setUser] = useRecoilState(userState)
+    const [isOpenDropdown, setIsOpenDropDown] = useState(false);
+    const [isLoginAs, setIsLoginAs] = useRecoilState(isLoginAsState)
+    const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
+    const [isShowProfile, setIsShowProfile] = useState<boolean>(false);
 
     const SigninClick = () =>{
       navigate('/login-as')
     }
 
+    const handleClickDropDown = (action: string) => {
+      if(action === 'logout') setIsShowConfirm(true)
+      
+      if(action === 'information') setIsShowProfile(true)
+    }
+
+    const handlePrintNow = () => {
+      const currentLocation = location.pathname
+      if(user.role === '') navigate('/login-as')
+      if(user.role === 'student' && 
+        currentLocation !== '/print' &&
+        currentLocation !== '/choose-printer' &&
+        currentLocation !== '/print-config' &&
+        currentLocation !== '/print-complete') navigate('/print')
+    }
+
     return (
       <div className="flex shadow-2xl border-2 w-full h-16 z-10 bg-white justify-between">
+        {isShowConfirm && (
+          <LogoutConfirm onClose={() => setIsShowConfirm(false)}/>
+        )}
+        {isShowProfile && (
+          <UserProfile onClose={() => setIsShowProfile(false)}/>
+        )}
         <div className="space-x-7 flex">
             <img src={school} alt="school_logo" className="ml-6 size-14"/>
 
@@ -68,11 +99,7 @@ export default function Header() {
               <button 
               type="button" 
               className="hover:scale-110 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-xl px-5 py-2.5 text-center me-2 mb-2"
-              onClick={() => {
-                if(user.role === '') navigate('/login-as')
-
-                if(user.role === 'student') navigate('/print')
-              }}>
+              onClick={() => handlePrintNow()}>
                 In ngay
               </button>
           </div>
@@ -82,12 +109,30 @@ export default function Header() {
           {user.role === 'student' || user.role === 'spso' ? (
             <>
               <i className="pi pi-bell" style={{fontSize: '20px'}}/>
-              <button 
-                  type="button" 
-                  className="rounded border-2 border-blue-600 py-2 px-7 text-blue-600 font-bold"
-                  onClick={() => {}}>
-                  {user?.name} 
-              </button>
+              <div className="relative">
+                <button 
+                    type="button" 
+                    className="rounded border-2 border-black  p-2 font-bold"
+                    onClick={() => setIsOpenDropDown(!isOpenDropdown)}>
+                    {user?.name} 
+                </button>
+                {isOpenDropdown && (
+                  <ul className="absolute right-0 bg-white border border-gray-200 shadow-md rounded-md w-48 z-10">
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleClickDropDown('information')}
+                    >
+                      Thông tin cá nhân
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleClickDropDown('logout')}
+                    >
+                      Đăng xuất
+                    </li>
+                  </ul>
+                )}
+              </div>
             </>
           ) : (
             <button 
