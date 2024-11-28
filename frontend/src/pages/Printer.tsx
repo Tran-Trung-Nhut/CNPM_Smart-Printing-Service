@@ -91,11 +91,11 @@ export default function Printer() {
                                 <td className="px-4 py-2 text-center">
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
-                                <td className="px-4 py-2 text-center">{data.branchName}</td>
-                                <td className="px-4 py-2 text-center">{data.model}</td>
-                                <td className="px-4 py-2 text-center">{data.loc_ID}</td>
-                                <td className="px-4 py-2 text-center">{data.status}</td>
-                                <td className="px-4 py-2 text-center">
+                                <td className="px-4 py-3 text-center">{data.branchName}</td>
+                                <td className="px-4 py-3 text-center">{data.model}</td>
+                                <td className="px-4 py-3 text-center">{data.loc_ID}</td>
+                                <td className="px-4 py-3 text-center">{data.status}</td>
+                                <td className="px-4 py-3 text-center">
                                     <button
                                         type="button"
                                         className="text-gray-400"

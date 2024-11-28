@@ -12,17 +12,27 @@ import Notification from './pages/Notification';
 import LearnMore from './pages/LearnMore';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './ProtectedRoute';
-import { useRecoilValue } from 'recoil';
-import { isLoginAsState } from './state';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { isLoginAsState, userState } from './state';
 import Forbidden from './pages/Forbidden';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PrintUpload from './pages/PrintUpload';
 import PrintHistory from './pages/PrintHistory';
 
 export default function App() {
-  const [user, setUser] = useState({ token: null, isSPSO: false, listFiles: [] });
   const isLoginAs = useRecoilValue(isLoginAsState)
+  const [user, setUser] = useRecoilState(userState)
   
+  useEffect(() => {
+    const userDataString = sessionStorage.getItem('userData');
+    const userData =  userDataString ? JSON.parse(userDataString) : null
+
+    if(userData){
+      setUser(userData)
+    }
+  }, [])
+
+
   return (
       <Router>
         <Routes>
@@ -32,15 +42,16 @@ export default function App() {
             <Route path='/SPSO/student' element={<Student/>}/>
             <Route path='/SPSO/printer' element={<Printer/>}/>
             <Route path='/buypaper' element={<BuyPaper/>}/>
-            <Route path='/choose' element={<ChoosePrinter/>}/>
+            <Route path='/choose-printer' element={<ChoosePrinter/>}/>
             <Route path='/learn-more' element={<LearnMore/>}/>
             <Route path='/printhistory' element={<PrintHistory/>}/>
+            <Route path='/print' element={<PrintUpload/>}/>
             <Route 
             path='/SPSO' 
             element={
               <ProtectedRoute
                   allowedRoles={["SPSO"]}
-                  currentRole={isLoginAs}
+                  currentRole={user?.role || ''}
               >
               <HomeSPSO/>
               </ProtectedRoute>
@@ -50,7 +61,7 @@ export default function App() {
             element={
                   <ProtectedRoute
                   allowedRoles={["SPSO"]}
-                  currentRole={isLoginAs}
+                  currentRole={user?.role || ''}
               >
               <Student/>
               </ProtectedRoute>
@@ -60,7 +71,7 @@ export default function App() {
             element={
                   <ProtectedRoute
                   allowedRoles={["SPSO"]}
-                  currentRole={isLoginAs}
+                  currentRole={user?.role || ''}
               >
               <Printer/>
               </ProtectedRoute>
@@ -70,7 +81,7 @@ export default function App() {
             element={
                   <ProtectedRoute
                   allowedRoles={["SPSO"]}
-                  currentRole={isLoginAs}
+                  currentRole={user?.role || ''}
               >
               <Notification/>
               </ProtectedRoute>
@@ -78,7 +89,6 @@ export default function App() {
           </Route>
           <Route path='/login-as' element={<ChooseLogin/>}/>
           <Route path='/login' element={<Login/>}/>
-          <Route path='/print' element={<PrintUpload/>}/>
           <Route path="/403" element={<Forbidden />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
