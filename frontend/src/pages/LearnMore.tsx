@@ -44,11 +44,6 @@ export default function LearnMore() {
                 <section className="space-y-12">
                     <h2 className="text-3xl font-bold text-center">Hướng dẫn sử dụng</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                        {/* <img
-                            src={printerImage}
-                            alt="Printer Illustration"
-                            className="rounded-lg shadow-lg"
-                        /> */}
                         <ul className="space-y-4 text-lg">
                             <li>
                                 <span className="font-bold text-yellow-300">1. Đăng nhập:</span> Truy cập hệ thống và đăng nhập bằng tài khoản sinh viên.

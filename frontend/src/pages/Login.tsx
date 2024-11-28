@@ -1,6 +1,6 @@
 import school from "../assets/hcmut.png";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoginAsState, userState } from "../state";
 import { useState } from "react";
 import axios from "axios";
@@ -8,6 +8,7 @@ import { LoginUserDto } from "../dtos/User.dto";
 
 export default function Login() {
     const navigate = useNavigate();
+    const isLoginAs = useRecoilValue(isLoginAsState)
     const [user, setUser]  = useRecoilState(userState);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -27,6 +28,11 @@ export default function Login() {
                 }
             );
 
+            if(response.data.role !== isLoginAs) {
+                alert("Đăng nhập sai vai trò, vui lòng đăng nhập lại!")
+                return
+            }
+
             const userFromBackend : LoginUserDto = {
                 role: response.data.role,
                 name: response.data.name,
@@ -35,9 +41,10 @@ export default function Login() {
             }
 
             setUser(userFromBackend)
+            sessionStorage.setItem('userData', JSON.stringify(userFromBackend))
 
             if(user?.role === 'student') navigate('/')
-            if(user?.role === 'SPSO') navigate('/SPSO')
+            if(user?.role === 'spso') navigate('/SPSO')
 
         } catch (error) {
             console.error("Login error:", error);

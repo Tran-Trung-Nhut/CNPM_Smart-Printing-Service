@@ -2,7 +2,11 @@ export interface PrinterDto {
     Printer_ID: number
     branchName: string
     description: string
-    loc_ID: number
+    location: {
+        campus: string,
+        building: string,
+        room: string
+    }
     model: string
     status: string
 }

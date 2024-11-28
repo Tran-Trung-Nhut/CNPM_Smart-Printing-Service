@@ -44,7 +44,7 @@ export default function ChooseLogin() {
                     </button>
                     <button
                         className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg shadow hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition"
-                        onClick={() => loginAs("SPSO")}
+                        onClick={() => loginAs("spso")}
                     >
                         SPSO
                     </button>
