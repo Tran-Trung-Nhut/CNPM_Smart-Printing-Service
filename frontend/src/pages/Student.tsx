@@ -77,11 +77,11 @@ export default function Student() {
                                 <td className="px-4 py-2 text-center">
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
-                                <td className="px-4 py-2 text-center">{data.name}</td>
-                                <td className="px-4 py-2 text-center">{data.user_ID}</td>
-                                <td className="px-4 py-2 text-center">{0}</td>
-                                <td className="px-4 py-2 text-center">{data.pageBalance}</td>
-                                <td className="px-4 py-2 text-center">
+                                <td className="px-4 py-3 text-center">{data.name}</td>
+                                <td className="px-4 py-3 text-center">{data.user_ID}</td>
+                                <td className="px-4 py-3 text-center">{0}</td>
+                                <td className="px-4 py-3 text-center">{data.pageBalance}</td>
+                                <td className="px-4 py-3 text-center">
                                     <button
                                         type="button"
                                         className="text-gray-400"

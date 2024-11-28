@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { LoginUserDto } from './dtos/User.dto';
 
 
 export const isLoginAsState = atom<string>({
@@ -6,6 +7,7 @@ export const isLoginAsState = atom<string>({
     default: ''
 })
 
-export const userState = atom<any>({
+export const userState = atom<LoginUserDto | null>({
     key: 'userState',
+    default: null
 })

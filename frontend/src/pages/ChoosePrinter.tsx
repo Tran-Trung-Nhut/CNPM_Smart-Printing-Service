@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import printer from '../assets/printer.png'
+import { Steps } from 'antd';
+import { PrinterOutlined, SmileOutlined, UploadOutlined, SettingOutlined, FileOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 interface PrinterProps {
     id: number;
@@ -24,6 +27,8 @@ const data: PrinterProps[] = [
 ];
 
 const PrinterCard: React.FC<PrinterProps> = ({ id, position, queue, status }) => {
+    const navigate = useNavigate()
+    
     return (
         <div
             className={`flex-col items-center justify-center p-2 border-[1px] border-white rounded-lg overflow-hidden ${status !== 'Hoạt động' ? 'opacity-30' : ''}`}
@@ -57,7 +62,8 @@ const PrinterCard: React.FC<PrinterProps> = ({ id, position, queue, status }) =>
             <div className="flex justify-center items-center">
                 <button 
                 disabled={status === "Bảo trì"}
-                className="border-[3px] bg-white text-blue-700 border-black w-20 text-[20px] hover:scale-110 rounded-lg font-bold">
+                className="border-[3px] bg-white text-blue-700 border-black w-20 text-[20px] hover:scale-110 rounded-lg font-bold"
+                onClick={() => navigate('/print-config')}>
                     Chọn
                 </button>
             </div>
@@ -98,7 +104,21 @@ export default function ChoosePrinter() {
     };
 
     return (
-        <div className="[background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]">
+        <div className="">
+
+            <Steps
+                current={0}
+                className="space-x-8 w-full p-b"
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+                items={[
+                    { title: 'Tải lên', status: 'wait', icon: <UploadOutlined/> },
+                    { title: 'Chọn máy in', status: 'process', icon: <PrinterOutlined /> },
+                    { title: 'Tùy chỉnh thông số in', status: 'wait', icon: <SettingOutlined /> },
+                    { title: 'Xem trước khi in', status: 'wait', icon: <FileOutlined    /> },
+                    { title: 'Hoàn thành', status: 'wait', icon: <SmileOutlined /> },
+                ]}
+                />
+
             <div className='flex flex-col min-h-screen w-full overflow-hidden'>
             <div className="space-y-2 ml-3 mt-2">
                 <div className="text-white font-bold text-xl w-full">

@@ -1,15 +1,14 @@
-import Header from "../components/Header";
-import login1 from "../assets/login1.png";
 import school from "../assets/hcmut.png";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { isLoginAsState } from "../state";
+import { isLoginAsState, userState } from "../state";
 import { useState } from "react";
 import axios from "axios";
+import { LoginUserDto } from "../dtos/User.dto";
 
 export default function Login() {
     const navigate = useNavigate();
-    const [isLoginAs, setISLoginAs] = useRecoilState(isLoginAsState);
+    const [user, setUser]  = useRecoilState(userState);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
@@ -27,14 +26,24 @@ export default function Login() {
                     headers: { "Content-Type": "application/json" },
                 }
             );
-            console.log(response.data);
+
+            const userFromBackend : LoginUserDto = {
+                role: response.data.role,
+                name: response.data.name,
+                user_ID: response.data.user_ID,
+                token: response.data.token
+            }
+
+            setUser(userFromBackend)
+
+            if(user?.role === 'student') navigate('/')
+            if(user?.role === 'SPSO') navigate('/SPSO')
+
         } catch (error) {
             console.error("Login error:", error);
-            alert("Đăng nhập thất bại. Vui lòng thử lại sau.");
+            alert("Đăng nhập thất bại. Vui lòng thử lại.");
         }
 
-        if (isLoginAs === 'SPSO') navigate('/SPSO');
-        if (isLoginAs === 'student') navigate('/');
     };
 
     return (
