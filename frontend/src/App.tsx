@@ -15,7 +15,24 @@ import ProtectedRoute from './ProtectedRoute';
 import { useRecoilValue } from 'recoil';
 import { isLoginAsState } from './state';
 import Forbidden from './pages/Forbidden';
+import Printer from './pages/Pritnter';
+import { useState } from 'react';
+import PrintUpload from './pages/PrintUpload';
+import PrintHistory from './pages/PrintHistory';
 
+export default function App() {
+  const [user, setUser] = useState({ token: null, isSPSO: false, listFiles: [] });
+  // const [cookies] = useCookies();
+
+  // useEffect(() => {
+  //   const userCredentials = JSON.parse(localStorage.getItem('userCredentials'));
+
+  //   if (!userCredentials) {
+  //     setUser({ token: null, isSPSO: false, listFiles: [] });
+  //   } else {
+  //     setUser({ ...user, ...userCredentials });
+  //   }
+  // }, [cookies]);
 
 function App() {
   const isLoginAs = useRecoilValue(isLoginAsState)
@@ -74,11 +91,11 @@ function App() {
           </Route>
           <Route path='/login-as' element={<ChooseLogin/>}/>
           <Route path='/login' element={<Login/>}/>
+          <Route path='/print' element={<PrintUpload/>}/>
+          <Route path='/printhistory' element={<PrintHistory/>}/>
           <Route path="/403" element={<Forbidden />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
   );
 }
-
-export default App;
