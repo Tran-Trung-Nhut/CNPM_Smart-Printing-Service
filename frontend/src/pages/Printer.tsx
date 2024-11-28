@@ -93,8 +93,8 @@ export default function Printer() {
                                 </td>
                                 <td className="px-4 py-3 text-center">{data.branchName}</td>
                                 <td className="px-4 py-3 text-center">{data.model}</td>
-                                <td className="px-4 py-3 text-center">{data.loc_ID}</td>
-                                <td className="px-4 py-3 text-center">{data.status}</td>
+                                <td className="px-4 py-3 text-center">{data.location.campus} - {data.location.building} - {data.location.room}</td>
+                                <td className={`px-4 py-3 text-center ${data.status === 'enable' ? 'text-green-500' : 'text-red-500'}`}>{data.status === 'enable' ? 'Hoạt động': 'Bảo trì'}</td>
                                 <td className="px-4 py-3 text-center">
                                     <button
                                         type="button"

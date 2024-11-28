@@ -7,7 +7,6 @@ export default function DefaultLayout(){
 
     const location = useLocation()
 
-    const isRootRoute = location.pathname === "/SPSO"
 
     return(
         <div className="z-1 min-h-screen flex flex-col [background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]"> 

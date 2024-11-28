@@ -5,16 +5,13 @@ export default function NotFound() {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 text-white">
-            {/* Biểu tượng và Tiêu đề */}
             <div className="text-center space-y-6">
-                {/* Biểu tượng */}
                 <div className="flex justify-center">
                     <div className="bg-white/20 p-6 rounded-full shadow-lg  animate-pulse">
                         <i className="pi pi-times-circle text-8xl text-white"></i>
                     </div>
                 </div>
 
-                {/* Tiêu đề lỗi */}
                 <h1 className="text-8xl font-extrabold tracking-wide">404</h1>
                 <p className="text-3xl font-bold">Trang không tồn tại</p>
                 <p className="text-lg text-blue-200 max-w-lg mx-auto">
@@ -22,7 +19,6 @@ export default function NotFound() {
                 </p>
             </div>
 
-            {/* Nút quay về */}
             <div className="mt-10">
                 <button
                     onClick={() => navigate("/")}

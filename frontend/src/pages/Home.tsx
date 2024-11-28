@@ -1,9 +1,12 @@
 import home1 from "../assets/home1.png";
 import { useNavigate } from "react-router-dom";
 import "./css/Home.css"
+import { useRecoilValue } from "recoil";
+import { userState } from "../state";
 
 export default function Home() {
     const navigate = useNavigate();
+    const user = useRecoilValue(userState)
 
     return (
         <div className="min-h-screen flex items-center justify-center text-white">
@@ -21,7 +24,10 @@ export default function Home() {
                         <button 
                             type="button" 
                             className="hover:scale-110 shadow-xl text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-bold rounded-lg text-xl px-14 py-2.5 text-center me-2 mb-2"
-                            onClick={() => navigate('/login-as')}>
+                            onClick={() => {
+                                if(user.role === '') navigate('/login-as')
+                                if(user.role === 'student') navigate('/print')
+                            }}>
                                 In ngay
                         </button>
                         <button 

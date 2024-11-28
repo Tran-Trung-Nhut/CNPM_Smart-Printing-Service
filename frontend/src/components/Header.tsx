@@ -20,8 +20,8 @@ export default function Header() {
             type="button" 
             className="font-black hover:scale-110 px-1 active:scale-90"
             onClick={() => {
-              if(user?.role === "student" || user?.role === '') navigate('/')
-              if(user?.role === "SPSO") navigate('/SPSO')
+              if(user.role === "student" || user.role === '') navigate('/')
+              if(user.role === "spso") navigate('/SPSO')
             }}> 
               Trang chủ 
             </button>
@@ -34,25 +34,25 @@ export default function Header() {
             type="button" 
             className="font-black hover:scale-110 px-1 active:scale-90"
             onClick={() => {
-              if(!user) navigate('/login-as')
-              if(user?.role === 'SPSO') navigate('/SPSO/student')
-              if(user?.role === 'student') navigate('/printhistory')
+              if(user.role === '') navigate('/login-as')
+              if(user.role === 'spso') navigate('/SPSO/student')
+              if(user.role === 'student') navigate('/printhistory')
             }}
             > 
-              {user?.role === 'SPSO'? 'Sinh viên':'Lịch sử in' }
+              {user?.role === 'spso'? 'Sinh viên':'Lịch sử in' }
             </button>
 
             <button 
             type="button" 
             className="font-black hover:scale-110 px-1 active:scale-90"
             onClick={() => {
-              if(!user) navigate('/login-as')
-              if(user?.role === 'SPSO') navigate('/SPSO/printer')
-              if(user?.role === 'student') navigate('/')
+              if(user.role === '') navigate('/login-as')
+              if(user.role === 'spso') navigate('/SPSO/printer')
+              if(user.role === 'student') navigate('/')
             }}> 
-              {user?.role === 'SPSO'? 'Máy in':'Mua giấy in' } 
+              {user.role === 'spso'? 'Máy in':'Mua giấy in' } 
             </button>
-            {user?.role === 'SPSO' && (
+            {user.role === 'spso' && (
               <button 
               type="button" 
               className="font-black hover:scale-110 px-1 active:scale-90"
@@ -63,28 +63,40 @@ export default function Header() {
             )}
         </div>
 
-        {(user?.role === 'student' || !user ) && (
+        {(user.role === 'student' || user.role === '' ) && (
           <div className="flex items-center mt-2 mr-64">
               <button 
               type="button" 
               className="hover:scale-110 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-xl px-5 py-2.5 text-center me-2 mb-2"
               onClick={() => {
-                if(!user) navigate('/login-as')
+                if(user.role === '') navigate('/login-as')
 
-                if(user?.role === 'student') navigate('/print')
+                if(user.role === 'student') navigate('/print')
               }}>
                 In ngay
               </button>
           </div>
         )}
         
-        <div className="justify-end items-center flex mr-8">
+        <div className="justify-end items-center flex mr-5 space-x-2">
+          {user.role === 'student' || user.role === 'spso' ? (
+            <>
+              <i className="pi pi-bell" style={{fontSize: '20px'}}/>
+              <button 
+                  type="button" 
+                  className="rounded border-2 border-blue-600 py-2 px-7 text-blue-600 font-bold"
+                  onClick={() => {}}>
+                  {user?.name} 
+              </button>
+            </>
+          ) : (
             <button 
-            type="button" 
-            className="rounded-xl bg-blue-500 px-4 py-2 text-white font-bold hover:scale-110"
-            onClick={SigninClick}
-            >Đăng nhập
+                type="button" 
+                className="rounded-xl bg-blue-500 px-4 py-2 text-white font-bold hover:scale-110"
+                onClick={() => SigninClick()}>
+                Đăng nhập
             </button>
+          )}
         </div>
       </div>
     );

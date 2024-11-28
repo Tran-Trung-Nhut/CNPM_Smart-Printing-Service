@@ -10,7 +10,7 @@ interface PaymentItem {
   packageInfo?: string;
 }
 
-const BuyPaper: React.FC = () => {
+const BuyPaperHistory: React.FC = () => {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -232,5 +232,5 @@ const BuyPaper: React.FC = () => {
   );
 };
 
-export default BuyPaper;
+export default BuyPaperHistory;
 
