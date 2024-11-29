@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LeftOutlined, CheckOutlined, UploadOutlined, PrinterOutlined, SettingOutlined, FileOutlined, SmileOutlined, VerticalAlignTopOutlined, AlignCenterOutlined } from '@ant-design/icons';  // Cập nhật ở đây
 import { Steps } from 'antd';
 import papernormal from '../assets/papernormal.png'
 import paperhori from '../assets/paperhori.png'
-import { useRecoilState } from 'recoil';
-import { numCopiesState, numPagesState, orientationState, paperSizeState, printSideState } from '../state';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { documentState, isPrintingSuccessState, numCopiesState, numPagesState, orientationState, paperSizeState, printerIDState, printSideState, userState } from '../state';
+import axios from 'axios';
 
 export default function PrintingConfiguration() {
   const navigate = useNavigate();
@@ -15,13 +16,55 @@ export default function PrintingConfiguration() {
   const [paperSize, setPaperSize] = useRecoilState(paperSizeState);
   const [printSide, setPrintSide] = useRecoilState(printSideState);
   const [orientation, setOrientation] = useRecoilState(orientationState);
+  const printer_ID = useRecoilValue(printerIDState)
+  const documents = useRecoilValue(documentState)
+  const user = useRecoilValue(userState)
+  const setIsPrintingSuccess = useSetRecoilState(isPrintingSuccessState)
 
   const paperSizes = ["A4", "A3"];
 
-  const handleSubmit = () => {
-    const printSettings = { numPages, numCopies, paperSize, printSide, orientation };
-    navigate('/print-complete')
+  const handleSubmit = async () => {
+    
+    try{
+      const response = await axios.post('http://localhost:3000/api/v1/printconfig',{
+        user_ID: user.user_ID,
+        printer_ID,
+        numPages,
+        numCopies,
+        paperSize,
+        printSide,
+        orientation
+      })
+
+      console.log(response.data.data.config_ID)
+
+      if(response.data.status === 200) {
+        const config_ID = response.data.data.config_ID
+        for(const document of documents){
+          const responseDocument = await axios.post('http://localhost:3000/api/v1/document',{
+            config_ID,
+            name: document.name,
+            size: document.size,
+            lastModifiedDate: document.lastModifiedDate
+          })
+
+          console.log(responseDocument)
+        }
+      
+        setIsPrintingSuccess(true)
+        navigate('/print-complete')
+      }
+      
+    }catch(e){
+      console.log(e)
+      setIsPrintingSuccess(false)
+      navigate('/print-complete')
+    }
   };
+
+  useEffect(() => {
+    console.log(documents)
+  }, [])
 
   return (
     <div className="mt-10">
