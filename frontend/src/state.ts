@@ -10,7 +10,7 @@ export const isLoginAsState = atom<string>({
 
 export const isPrintingSuccessState = atom<boolean>({
     key: 'isPrintingSuccessState',
-    default: true
+    default: false
 })
 
 export const userState = atom<LoginUserDto>({

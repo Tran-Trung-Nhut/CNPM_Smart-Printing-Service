@@ -2,22 +2,11 @@ import "primeicons/primeicons.css";
 import { useEffect, useState } from "react";
 import PrinterInformationPopup from "../components/PrinterInformationPopup";
 import CreatePrinterPopup from "../components/CreatePrinterPopup";
-import { useSetRecoilState } from "recoil";
-import { documentState } from "../state";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { documentState, userState } from "../state";
+import axios from "axios";
+import { PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
 
-interface DataType {
-  printerID: string;
-  file: string;
-  requestedTime: string;
-  printedTime: string;
-}
-  
-const dataSource = Array.from({ length: 30 }).map<DataType>((_, i) => ({
-  printerID: `Máy in Sony HP4 H6-11${i + 5}`,
-  file: `Số file: ${i + 1}\nSố trang: ${10 + i}`,
-  requestedTime: `10h00\n20/${10 + i}/2024`,
-  printedTime: `10h30\n20/${10 + i}/2024`,
-}));
 
 
 export default function PrintHistory() {
@@ -26,10 +15,12 @@ export default function PrintHistory() {
     const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [printConfig, setPrintConfig] = useState<PrintConfigurationDto[]>([])
+    const user = useRecoilValue(userState)
 
-    const totalPages = Math.ceil(dataSource.length / rowsPerPage);
-    const currentData = Array.isArray(dataSource)
-    ? dataSource.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+    const totalPages = Math.ceil(printConfig.length / rowsPerPage);
+    const currentData = Array.isArray(printConfig)
+    ? printConfig.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
     : [];
 
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -43,7 +34,19 @@ export default function PrintHistory() {
         }
     }; 
 
+    const fetchPrintConfiguration = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/api/v1/printconfig?user_ID=${user.user_ID}`);
+            console.log(response.data.data.configs)
+
+            setPrintConfig(response.data.data.configs)
+        } catch (error) {
+            alert('Get configuration false!')
+        }
+    }
+
     useEffect(() => {
+        fetchPrintConfiguration()
         setDocument([])
     }, [])
 
@@ -81,7 +84,7 @@ export default function PrintHistory() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentData.map((data: DataType, index: number) => (
+                        {currentData.map((data: PrintConfigurationDto, index: number) => (
                             <tr
                                 key={index}
                                 className={index % 2 === 0 ? "" : "bg-gray-100"}
@@ -89,10 +92,10 @@ export default function PrintHistory() {
                                 <td className="px-4 py-3 text-center">
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
-                                <td className="px-4 py-3 text-center">{data.printerID}</td>
-                                <td className="px-4 py-3 text-center">{data.file}</td>
-                                <td className="px-4 py-3 text-center">{data.requestedTime}</td>
-                                <td className="px-4 py-3 text-center">{data.printedTime}</td>
+                                <td className="px-4 py-3 text-center">{data.printer_ID}</td>
+                                <td className="px-4 py-3 text-center">{data.numPages  || 'Không xác định'}</td>
+                                <td className="px-4 py-3 text-center">{data.printStart?.toISOString() || 'Không xác định'}</td>
+                                <td className="px-4 py-3 text-center">{data.status === 'unCompleted'? 'Chưa được in' : data.printEnd.toISOString()}</td>
                                 <td className="px-4 py-3 text-center">
                                     <button
                                         type="button"
@@ -110,7 +113,7 @@ export default function PrintHistory() {
 
             <div className="bg-[#C6DCFE] h-12 flex items-center justify-between w-full rounded px-4">
                 <div className="flex justify-center items-center space-x-2">
-                    <label className="pl-2 text-sm">Tổng số hàng: {dataSource.length}</label>
+                    <label className="pl-2 text-sm">Tổng số hàng: {printConfig.length}</label>
                     <div className="w-1 border-l-2 border-gray-200"></div>
                     <div className="border-x-2 border-black"></div>
                     <div className="flex items-center space-x-2">
