@@ -35,10 +35,6 @@ exports.getAllPrintConfigs = async (req, res) => {
     }
 };
 
-
-
-
-
 exports.createPrintConfig = async (req, res) => {
     try {
         const { printStart, printEnd, user_ID, printer_ID } = req.body;
