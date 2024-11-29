@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `Printer` (
 -- Bảng `PrintConfiguration`
 CREATE TABLE IF NOT EXISTS `PrintConfiguration` (
     `config_ID` INT PRIMARY KEY AUTO_INCREMENT,
-    `printStart` DATETIME,
+    `printStart` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `printEnd` DATETIME,
     `user_ID` INT,
     `printer_ID` INT,

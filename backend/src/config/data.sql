@@ -33,11 +33,11 @@ VALUES
 ('Printer Gamma', 'Epson EcoTank L3150', 'Cost-efficient.', 'disable', 3);
 
 -- Dữ liệu cho bảng `PrintConfiguration` (thêm mới với các thuộc tính đã cập nhật)
-INSERT INTO `PrintConfiguration` (`printStart`, `printEnd`, `user_ID`, `printer_ID`, `numPages`, `numCopies`, `paperSize`, `printSide`, `orientation`, `status`)
+INSERT INTO `PrintConfiguration` (`user_ID`, `printer_ID`, `numPages`, `numCopies`, `paperSize`, `printSide`, `orientation`)
 VALUES
-('2024-12-01 08:00:00', '2024-12-01 12:00:00', 1, 1, 120, 1, 'A4', 'single', 'portrait', 'unCompleted'),
-('2024-12-02 08:00:00', '2024-12-02 12:00:00', 2, 2, 50, 1, 'A4', 'double', 'landscape', 'unCompleted'),
-('2024-12-03 08:00:00', '2024-12-03 12:00:00', 1, 2, 100, 2, 'A4', 'single', 'portrait', 'unCompleted');
+( 1, 1, 120, 1, 'A4', 'single', 'portrait'),
+( 2, 2, 50, 1, 'A4', 'double', 'landscape'),
+( 1, 2, 100, 2, 'A4', 'single', 'portrait');
 
 -- Dữ liệu cho bảng `Document`
 INSERT INTO `Document` (`config_ID`, `name`, `size`, `lastModifiedDate`)
