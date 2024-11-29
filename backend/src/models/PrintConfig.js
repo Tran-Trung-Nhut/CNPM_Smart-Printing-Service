@@ -14,25 +14,17 @@ async function initDB() {
 initDB();
 
 const PrintConfig = {
-    findAll: async () => {
+    findAll: async (condition = {}) => {
         try {
-            return await Query.getAll("PrintConfiguration");
+            return await Query.getAll("PrintConfiguration", condition);
         } catch (error) {
             console.error("Error fetching all PrintConfigurations:", error);
             throw error;
         }
     },
-    getPrintConfigByID: async (config_ID) => {
-        try {
-            const [row] = await pool.query('SELECT * FROM PrintConfiguration WHERE config_ID = ?', [config_ID]);
-            const doc = await document.getDocumentByID(row.config_ID);
-            const prop = await properties.getPropertiesByID(row.config_ID);
-            return { row, doc, prop };
-        } catch (error) {
-            console.error("Error fetching all PrintConfigurations:", error);
-            throw error;
-        }
-    },    
+
+
+
     createPrintConfig: async (printStart, printEnd, user_ID, printer_ID) => {
         try {
             const data = { printStart, printEnd, user_ID, printer_ID };

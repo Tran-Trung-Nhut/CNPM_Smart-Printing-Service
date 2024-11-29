@@ -5,13 +5,15 @@ Tài liệu này mô tả các route API và chức năng dùng để quản lý
 API nguồn: http://localhost:3000/api/v1
 ---
 
-## 1. Route: **[/printconfig](http://localhost:3000/api/v1/printconfig)**
+## 1. Route: **[/printconfig](http://localhost:3000/api/v1/printconfig)** hoặc **[/printconfig(kèm parameters)](http://localhost:3000/api/v1/printconfig/?config_ID=${config_ID}&user_ID=${user_ID}&printer_ID=${printer_ID}&status=${status})**
+các parameter có thể được thay đổi theo nhu cầu xem như một bộ lọc (có thể thay đổi vị trí para) ví dụ:
+http://localhost:3000/api/v1/printconfig?user_ID=1&config_ID=1 nhấp vào xem kết quả
 
-- **Phương thức:** `GET`
+- **Phương thức:** `GET` kèm parameter (không dùng body vì phải dùng post mất định nghĩa get)
 - **Mục đích:** Lấy danh sách tất cả cấu hình in ấn.
 - **Tham số yêu cầu:** Không có.
 - **Dữ liệu trả về:**
-  - **Thành công:**
+  - **Thành công:** gọi /printconfig (không có parameter)
     ```json
     {
       "status": 200,
