@@ -12,7 +12,7 @@ exports.getAllDocuments = async (req, res) => {
 exports.getDocumentByID = async (req, res) => {
     try {
         const config_ID = req.params.id;
-        const data = await Document.getDocumentByID(config_ID);
+        const data = await Document.findAll({config_ID})
         res.status(200).json({ status: 200, data: data, message: "Succesfully Document Retrieved By Config ID!" });
     } catch (error) {
         res.status(500).json({ status: 500, message: 'Error Retrieving Document By Config ID' });
@@ -21,8 +21,8 @@ exports.getDocumentByID = async (req, res) => {
 
 exports.createDocument = async (req, res) => {
     try {
-        const {config_ID, DName, noPage, pageSize} = req.body;
-        const postData = await Document.createDocument(config_ID, DName, noPage, pageSize);
+        const {config_ID, name, size, lastModifiedDate} = req.body;
+        const postData = await Document.createDocument(config_ID, name, size, lastModifiedDate);
         res.status(200).json({ status: 200, data: postData, message: "Succesfully Create Document!" });
     } catch (error) {
         console.log(error);
@@ -33,9 +33,9 @@ exports.createDocument = async (req, res) => {
 exports.updateDocument = async (req, res) => {
     try {
         const config_ID = req.params.id;
-        const DName = req.params.name;
-        const {noPage, pageSize} = req.body;
-        const updateData = await Document.updateDocument(config_ID, DName, noPage, pageSize);
+        const name = req.params.name;
+        const {size, lastModifiedDate} = req.body;
+        const updateData = await Document.updateDocument(config_ID, name, size, lastModifiedDate);
         res.status(200).json({ status: 200, data: updateData, message: "Succesfully Update Document!" });
     } catch (error) {
         res.status(500).json({ status: 500, message: 'Error Update Document' });
@@ -45,8 +45,8 @@ exports.updateDocument = async (req, res) => {
 exports.deleteDocument = async (req, res) => {
     try {
         const config_ID = req.params.id;
-        const DName = req.params.name;
-        const deleteData = await Document.deleteDocument(config_ID, DName);
+        const name = req.params.name;
+        const deleteData = await Document.deleteDocument(config_ID, name);
         res.status(200).json({ status: 200, data: deleteData, message: "Succesfully Delete Document!" });
     } catch (error) {
         res.status(500).json({ status: 500, message: 'Error Delete Document' });
