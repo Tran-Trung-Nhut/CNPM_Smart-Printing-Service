@@ -11,9 +11,9 @@ initDB();
 
 
 const Document = {
-    findAll: async () => {
+    findAll: async (condition = {}) => {
         try {
-            return await Query.getAll("Document");
+            return await Query.getAll("Document", condition);
         } catch (error) {
             console.error("Error fetching all Documents:", error);
             throw error;

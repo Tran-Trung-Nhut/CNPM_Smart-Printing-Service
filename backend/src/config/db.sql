@@ -50,20 +50,27 @@ CREATE TABLE IF NOT EXISTS `PrintConfiguration` (
     `printEnd` DATETIME,
     `user_ID` INT,
     `printer_ID` INT,
+    `numPages` INT DEFAULT 0,
+    `numCopies` INT DEFAULT 1,
+    `paperSize` VARCHAR(50),
+    `printSide` VARCHAR(50),
+    `orientation` VARCHAR(50),
+    `status` VARCHAR(50) DEFAULT 'unCompleted',
     FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE SET NULL,
     FOREIGN KEY (`printer_ID`) REFERENCES `Printer`(`Printer_ID`) ON DELETE SET NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 -- Bảng `Document`
 CREATE TABLE IF NOT EXISTS `Document` (
     `config_ID` INT,
-    `DName` VARCHAR(255),
-    `noPage` INT,
-    `pageSize` VARCHAR(50),
-    `docType` VARCHAR(255),
-    PRIMARY KEY (`config_ID`, `DName`),
+    `name` VARCHAR(255) NOT NULL,
+    `size` INT NOT NULL,
+    `lastModifiedDate` DATETIME NOT NULL,
+    PRIMARY KEY (`config_ID`, `name`),
     FOREIGN KEY (`config_ID`) REFERENCES `PrintConfiguration`(`config_ID`) ON DELETE CASCADE
 );
+
 
 -- Bảng `Properties`
 CREATE TABLE IF NOT EXISTS `Properties` (
