@@ -60,7 +60,6 @@ CREATE TABLE IF NOT EXISTS `PrintConfiguration` (
     FOREIGN KEY (`printer_ID`) REFERENCES `Printer`(`Printer_ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
 -- Bảng `Document`
 CREATE TABLE IF NOT EXISTS `Document` (
     `config_ID` INT,
@@ -70,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `Document` (
     PRIMARY KEY (`config_ID`, `name`),
     FOREIGN KEY (`config_ID`) REFERENCES `PrintConfiguration`(`config_ID`) ON DELETE CASCADE
 );
-
 
 -- Bảng `Properties`
 CREATE TABLE IF NOT EXISTS `Properties` (
@@ -82,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `Properties` (
     `endPage` INT,
     `scale` INT DEFAULT 100,
     `isDuplex` ENUM( '1', '2') DEFAULT '1',
-    `orientation` ENUM( 'Dọc', 'Ngang') DEFAULT 'Dọc' ,
+    `orientation` ENUM( 'Dọc', 'Ngang') DEFAULT 'Dọc',
     FOREIGN KEY (`config_ID`) REFERENCES `PrintConfiguration`(`config_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -119,20 +117,3 @@ CREATE TABLE IF NOT EXISTS `Order_Package` (
     FOREIGN KEY (`order_ID`) REFERENCES `Orders`(`order_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng `Notification_Message`
-CREATE TABLE IF NOT EXISTS `Notification_Message` (
-    `notification_ID` INT PRIMARY KEY AUTO_INCREMENT,
-    `createDate` DATETIME DEFAULT CURRENT_TIMESTAMP,    -- Ngày tạo
-    `updateDate` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Ngày cập nhật
-    `title` VARCHAR(255) NOT NULL, -- Tiêu đề của thông báo
-    `content` TEXT NOT NULL        -- Nội dung thông báo
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Bảng `Receiver_Message` (liên kết thông báo với người nhận)
-CREATE TABLE IF NOT EXISTS `Receiver_Message` (
-    `notification_ID` INT NOT NULL,  -- ID của thông báo
-    `user_ID` INT NOT NULL,          -- ID của người nhận
-    PRIMARY KEY (`notification_ID`, `user_ID`),
-    FOREIGN KEY (`notification_ID`) REFERENCES `Notification_Message`(`notification_ID`) ON DELETE CASCADE,
-    FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

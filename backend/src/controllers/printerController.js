@@ -1,29 +1,36 @@
 const printerModel = require('../models/printerModel');
 const locationModel = require('../models/locationModel');
 
+// Lấy tất cả các máy in kèm theo thông tin vị trí
 exports.getAllPrinters = async (req, res) => {
     try {
         const printers = await printerModel.getAllPrinters();
+
+        if (!printers || printers.length === 0) {
+            return res.status(404).json({ status: 404, message: "No Printers Found" });
+        }
+
         const formattedPrinters = printers.map(printer => ({
             Printer_ID: printer.Printer_ID,
             branchName: printer.branchName,
             model: printer.model,
             description: printer.description,
             status: printer.status,
-            location: {
-                campus: printer.location?.campus,
-                building: printer.location?.building,
-                room: printer.location?.room
-            }
+            location: printer.location ? {
+                campus: printer.location.campus,
+                building: printer.location.building,
+                room: printer.location.room
+            } : null
         }));
-
+        
         res.status(200).json({ status: 200, data: formattedPrinters, message: "Successfully Retrieved Printers!" });
     } catch (error) {
-        console.error("Error Retrieving Printers:", error);
-        res.status(500).json({ status: 500, message: 'Error Retrieving Printers' });
+        console.error("Error Retrieving Printers:", error.message);
+        res.status(500).json({ status: 500, message: 'Error Retrieving Printers', error: error.message });
     }
 };
 
+// Tạo mới máy in
 exports.createPrinter = async (req, res) => {
     try {
         const { branchName, model, description, status = 'enable', location } = req.body;
@@ -46,6 +53,7 @@ exports.createPrinter = async (req, res) => {
         res.status(500).json({ status: 500, message: 'Error Creating Printer' });
     }
 };
+
 
 exports.updatePrinter = async (req, res) => {
     try {

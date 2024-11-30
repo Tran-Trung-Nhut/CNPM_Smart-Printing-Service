@@ -16,5 +16,7 @@ module.exports = (app) => {
     require("./verify/authenticationRouter")(router);
     require("./propertiesRouter")(router);
     require("./locationRouter")(router);
+    require("./receiverMessageRounter")(router);
+    require("./notificationRouter")(router);
     app.use("/api/v1", router);
 };
