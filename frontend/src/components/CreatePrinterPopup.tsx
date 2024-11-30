@@ -1,19 +1,44 @@
+import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function CreatePrinterPopup({ onClose }: { onClose: () => void }) {
-    const [brand, setBrand] = useState<string>("");
-    const [ID, setID] = useState<string>("");
-    const [location, setLocation] = useState<string>("");
-    const [status, setStatus] = useState<string>("Hoạt động");
+export default function CreatePrinterPopup({
+    onClose,
+    fetchPrinters, // Nhận hàm fetchPrinters từ props
+  }: {
+    onClose: () => void;
+    fetchPrinters: () => void;
+  }) {
+    const navigate = useNavigate()
+    const [branchName, setBranchName] = useState<string>("");
+    const [model, setModel] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const status : string = 'enable'
+    const [location, setLocation] = useState({
+        campus: "",
+        building: "",
+        room: "",
+    });
 
-    const handleAdd = () => {
-        if (!brand || !ID || !location) {
+    const handleAdd = async () => {
+        if (!branchName || !model || !description || !location.campus || !location.building || !location.room) {
             alert("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
 
-        // Gửi dữ liệu máy in hoặc thực hiện hành động thêm máy in
-        console.log("Thêm máy in thành công!", { brand, ID, location, status });
+        try{
+            const response = await axios.post('http://localhost:3000/api/v1/printers',{
+                branchName,
+                model,
+                description,
+                status,
+                location
+            })
+
+            fetchPrinters()
+        }catch(e){
+            console.log(e)
+        }
 
         onClose();
     };
@@ -41,59 +66,76 @@ export default function CreatePrinterPopup({ onClose }: { onClose: () => void })
                     </button>
                 </div>
 
-                {/* Body */}
                 <div className="space-y-6">
-                    {/* Hãng máy in */}
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Hãng máy in</label>
+                        <label className="block text-sm font-medium text-gray-700">Hãng sản xuất</label>
                         <input
                             type="text"
                             className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-gray-400"
-                            placeholder="VD: HP, Canon, Epson..."
-                            value={brand}
-                            onChange={(e) => setBrand(e.target.value)}
+                            placeholder="Nhập tên chi nhánh"
+                            value={branchName}
+                            onChange={(e) => setBranchName(e.target.value)}
                         />
                     </div>
 
-                    {/* Mã số máy in */}
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Mã số máy in</label>
+                        <label className="block text-sm font-medium text-gray-700">Model máy in</label>
                         <input
                             type="text"
                             className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-gray-400"
-                            placeholder="Nhập mã số (VD: PR12345)"
-                            value={ID}
-                            onChange={(e) => setID(e.target.value)}
+                            placeholder="Nhập model máy in"
+                            value={model}
+                            onChange={(e) => setModel(e.target.value)}
                         />
                     </div>
 
-                    {/* Vị trí */}
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700">Mô tả</label>
+                        <textarea
+                            className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-gray-400"
+                            placeholder="Mô tả về máy in"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </div>
+
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Vị trí</label>
-                        <input
-                            type="text"
-                            className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-gray-400"
-                            placeholder="VD: Tầng 1, Phòng 101..."
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                        />
-                    </div>
-
-                    {/* Tình trạng */}
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Tình trạng</label>
-                        <select
-                            className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500"
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                        >
-                            <option value="Hoạt động">Hoạt động</option>
-                            <option value="Bảo trì">Bảo trì</option>
-                        </select>
+                        <div className="flex space-x-4">
+                            <div className="w-1/3">
+                                <label className="block text-sm">Khuôn viên</label>
+                                <input
+                                    type="text"
+                                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-gray-400"
+                                    placeholder="Khuôn viên"
+                                    value={location.campus}
+                                    onChange={(e) => setLocation({ ...location, campus: e.target.value })}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                                <label className="block text-sm">Tòa nhà</label>
+                                <input
+                                    type="text"
+                                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-gray-400"
+                                    placeholder="Tòa nhà"
+                                    value={location.building}
+                                    onChange={(e) => setLocation({ ...location, building: e.target.value })}
+                                />
+                            </div>
+                            <div className="w-1/3">
+                                <label className="block text-sm">Phòng</label>
+                                <input
+                                    type="text"
+                                    className="block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-green-500 focus:border-green-500 placeholder-gray-400"
+                                    placeholder="Phòng"
+                                    value={location.room}
+                                    onChange={(e) => setLocation({ ...location, room: e.target.value })}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Footer */}
                 <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
                     <button
                         onClick={onClose}

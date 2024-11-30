@@ -1,0 +1,4 @@
+.overflow-x-auto {
+    max-height: 400px; /* Bạn có thể điều chỉnh chiều cao tối đa tùy ý */
+    overflow-y: auto;
+}
