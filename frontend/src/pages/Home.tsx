@@ -2,16 +2,18 @@ import home1 from "../assets/home1.png";
 import { useNavigate } from "react-router-dom";
 import "./css/Home.css"
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { documentState, userState } from "../state";
+import { documentState, errorState, userState } from "../state";
 import { useEffect } from "react";
 
 export default function Home() {
     const navigate = useNavigate();
     const setDocument = useSetRecoilState(documentState)
     const user = useRecoilValue(userState)
+    const setError = useSetRecoilState(errorState)
 
     useEffect(() => {
         setDocument([])
+        setError('')
     }, [])
 
     return (

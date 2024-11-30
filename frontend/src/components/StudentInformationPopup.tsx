@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { StudentShowDto } from "../dtos/Student.dto";
 import axios from "axios";
 import { PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
+import "./css/StudentInformationPopup.css"
 
 export default function StudentInformationPopup({
     student,
@@ -61,11 +62,11 @@ export default function StudentInformationPopup({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto"
             onClick={onClose}
         >
             <div
-                className="bg-white p-6 rounded-2xl shadow-2xl w-[90vw] max-w-4xl text-left space-y-6"
+                className="bg-white p-6 rounded-2xl shadow-2xl w-[90vw] max-w-4xl text-left space-y-6 mt-40 mb-5"
                 onClick={(e) => e.stopPropagation()}
             >
                 <h2 className="text-3xl font-semibold text-center text-indigo-600">
@@ -73,6 +74,7 @@ export default function StudentInformationPopup({
                 </h2>
 
                 <div className="space-y-4">
+                    {/* Các thông tin sinh viên */}
                     <div className="flex justify-between text-lg">
                         <span className="font-semibold text-gray-700">Tên:</span>
                         <span className="text-gray-600">{student.name}</span>
@@ -242,5 +244,6 @@ export default function StudentInformationPopup({
                 </div>
             </div>
         </div>
+
     );
 }

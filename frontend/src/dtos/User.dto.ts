@@ -20,3 +20,12 @@ export const defaultLoginUser : LoginUserDto = {
     token: '',
     name: ''
 }
+
+export const defaultUser: UserDto = {
+    user_ID: -111,
+    email: '',
+    password: '',
+    name: '',
+    role: '',
+    pageBalance: 0
+}

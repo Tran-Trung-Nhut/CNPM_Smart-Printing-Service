@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InboxOutlined, UploadOutlined, SmileOutlined, PrinterOutlined, SettingOutlined } from '@ant-design/icons';
 import { Button, message, Steps, Upload } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { DocumentDto } from "../dtos/File.dto";
-import { documentState } from "../state";
+import { documentState, errorState } from "../state";
 
 const PrintUpload: React.FC = () => {
   const navigate = useNavigate();
-  
+  const setError = useSetRecoilState(errorState)
   const [file, setFile] = useRecoilState(documentState);
 
   const handleChoosePrinter = () => {
@@ -35,6 +35,10 @@ const PrintUpload: React.FC = () => {
       setFile((prev) => [...prev, fileDetails]);
     }, 1000); 
   };
+
+  useEffect(() => {
+    setError('')
+  }, [])
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center p-8 bg-white shadow-lg rounded-lg mt-5 mx-40">

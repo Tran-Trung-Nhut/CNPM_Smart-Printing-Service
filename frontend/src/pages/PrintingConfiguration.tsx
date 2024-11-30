@@ -5,8 +5,9 @@ import { Steps } from 'antd';
 import papernormal from '../assets/papernormal.png'
 import paperhori from '../assets/paperhori.png'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { documentState, isPrintingSuccessState, numCopiesState, numPagesState, orientationState, paperSizeState, printerIDState, printSideState, userState } from '../state';
+import { documentState, errorState, isPrintingSuccessState, numCopiesState, numPagesState, orientationState, paperSizeState, printerIDState, printSideState, userState } from '../state';
 import axios from 'axios';
+import { defaultLoginUser, defaultUser, UserDto } from '../dtos/User.dto';
 
 export default function PrintingConfiguration() {
   const navigate = useNavigate();
@@ -16,43 +17,81 @@ export default function PrintingConfiguration() {
   const [paperSize, setPaperSize] = useRecoilState(paperSizeState);
   const [printSide, setPrintSide] = useRecoilState(printSideState);
   const [orientation, setOrientation] = useRecoilState(orientationState);
+  const [userData, setUserData] = useState<UserDto>(defaultUser)
   const printer_ID = useRecoilValue(printerIDState)
   const documents = useRecoilValue(documentState)
   const user = useRecoilValue(userState)
   const setIsPrintingSuccess = useSetRecoilState(isPrintingSuccessState)
+  const setError = useSetRecoilState(errorState)
 
   const paperSizes = ["A4", "A3"];
+
+  const getNumberOfPageForPrint  = async () : Promise<number> => {
+    if(printSide === 'single-sided'){
+      return numPages * numCopies
+    }else if(numPages === 1 || numPages === 2){
+      return numCopies
+    }else if(numPages % 2 === 0){
+      return (numPages / 2) * numCopies
+    } else return (numPages / 2 + 1) * numCopies
+  }
 
   const handleSubmit = async () => {
     
     try{
-      const response = await axios.post('http://localhost:3000/api/v1/printconfig',{
-        user_ID: user.user_ID,
-        printer_ID,
-        numPages,
-        numCopies,
-        paperSize,
-        printSide,
-        orientation
-      })
+      const res = await axios.get(`http://localhost:3000/api/v1/users/${user.user_ID}`)
 
-      console.log(response.data.data.config_ID)
+      // setUserData(res.data.data)
 
-      if(response.data.status === 200) {
-        const config_ID = response.data.data.config_ID
-        for(const document of documents){
-          const responseDocument = await axios.post('http://localhost:3000/api/v1/document',{
-            config_ID,
-            name: document.name,
-            size: document.size,
-            lastModifiedDate: document.lastModifiedDate
+      const numberNeededPages = await getNumberOfPageForPrint()
+
+      if(res.data.data.pageBalance < numberNeededPages) {
+        console.log(userData)
+        setIsPrintingSuccess(false)
+        setError('Số trang còn lại của bạn không đủ. Vui lòng mua thêm trang in!')
+        navigate('/print-complete')
+        return
+      } else{
+
+        const response = await axios.post('http://localhost:3000/api/v1/printconfig',{
+          user_ID: user.user_ID,
+          printer_ID,
+          numPages,
+          numCopies,
+          paperSize,
+          printSide,
+          orientation
+        })
+  
+        console.log(response.data.data.config_ID)
+  
+        if(response.data.status === 200) {
+          const config_ID = response.data.data.config_ID
+          for(const document of documents){
+            const responseDocument = await axios.post('http://localhost:3000/api/v1/document',{
+              config_ID,
+              name: document.name,
+              size: document.size,
+              lastModifiedDate: document.lastModifiedDate
+            })
+  
+            console.log(responseDocument)
+          }
+        
+          setIsPrintingSuccess(true)
+
+          await axios.put(`http://localhost:3000/api/v1/users/${user.user_ID}`,{
+            user_ID: res.data.data.user_ID,
+            email: res.data.data.email,
+            password: res.data.data.password,
+            name: res.data.data.name,
+            role: res.data.data.role,
+            pageBalance: res.data.data.pageBalance - numberNeededPages
+            
           })
 
-          console.log(responseDocument)
+          navigate('/print-complete')
         }
-      
-        setIsPrintingSuccess(true)
-        navigate('/print-complete')
       }
       
     }catch(e){

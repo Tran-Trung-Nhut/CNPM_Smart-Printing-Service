@@ -21,6 +21,7 @@ import PrintHistory from './pages/PrintHistory';
 import PrintingConfiguration from './pages/PrintingConfiguration';
 import PrintingComplete from './pages/PrintingComplete';
 import BuyPaperHistory from './pages/BuyPaperHistory';
+import PaperShop from './pages/BuyPaper';
 
 export default function App() {
   const [user, setUser] = useRecoilState(userState)
@@ -109,6 +110,16 @@ export default function App() {
                   currentRole={user.role}
               >
               <PrintingComplete/>
+              </ProtectedRoute>
+            }/>
+            <Route 
+            path='/buy-paper'
+            element={
+              <ProtectedRoute
+                  allowedRoles={["student"]}
+                  currentRole={user.role}
+              >
+              <PaperShop/>
               </ProtectedRoute>
             }/>
             <Route 

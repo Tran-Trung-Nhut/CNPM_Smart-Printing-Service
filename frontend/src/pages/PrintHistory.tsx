@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import PrinterInformationPopup from "../components/PrinterInformationPopup";
 import CreatePrinterPopup from "../components/CreatePrinterPopup";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { documentState, userState } from "../state";
+import { documentState, errorState, userState } from "../state";
 import axios from "axios";
 import { defaultPrintConfigurationDto, PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
 import PrintConfigInformation from "../components/PrintConfigInformationPopup";
@@ -18,6 +18,7 @@ export default function PrintHistory() {
     const [printConfig, setPrintConfig] = useState<PrintConfigurationDto[]>([])
     const [selectedPrintConfig, setSelectedPrintConfig] = useState<PrintConfigurationDto>(defaultPrintConfigurationDto)
     const user = useRecoilValue(userState)
+    const setError = useSetRecoilState(errorState)
 
     const totalPages = Math.ceil(printConfig.length / rowsPerPage);
     const currentData = Array.isArray(printConfig)
@@ -50,6 +51,7 @@ export default function PrintHistory() {
     useEffect(() => {
         fetchPrintConfiguration()
         setDocument([])
+        setError('')
     }, [])
 
     return (
