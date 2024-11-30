@@ -5,6 +5,15 @@ export interface LoginUserDto{
     name: string
 }
 
+export interface UserDto{
+    user_ID: number
+    email: string
+    password: string
+    name: string
+    role: string
+    pageBalance: number
+}
+
 export const defaultLoginUser : LoginUserDto = {
     user_ID: -1111,
     role: '',

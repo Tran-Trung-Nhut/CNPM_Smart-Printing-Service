@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../state';
 import axios from 'axios';
+import { PrintConfigurationDto } from '../dtos/PrintConfiguration.dto';
+import { UserDto } from '../dtos/User.dto';
 
 export default function UserProfile({ onClose }: { onClose: () => void }) {
   const user = useRecoilValue(userState);
-  const [userData, setUserData] = useState<any | null>(null);
+  const [userData, setUserData] = useState<UserDto | null>(null);
+  const [userPrintConfig, setUserPrintConfig] = useState<PrintConfigurationDto[]>([])
 
   const fetchUserData = async () => {
     try {
@@ -16,8 +19,18 @@ export default function UserProfile({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const fetchUserPrintConfig = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/printconfig?user_ID=${user.user_ID}`);
+      setUserPrintConfig(response.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   useEffect(() => {
     fetchUserData();
+    fetchUserPrintConfig() 
   }, []);
 
   return (
@@ -44,9 +57,23 @@ export default function UserProfile({ onClose }: { onClose: () => void }) {
             <span>{userData?.email || 'Chưa có email'}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="font-semibold">Số điện thoại:</span>
-            <span>{userData?.phone || 'Chưa có số điện thoại'}</span>
+            <span className="font-semibold">{user.role === 'student' ? 'MSSV' : 'MSCB'}</span>
+            <span>{userData?.user_ID || 'Không xác định'}</span>
           </div>
+
+          {user.role === 'student' && (
+            <>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold">Số trang giấy còn lại:</span>
+                <span>{userData?.pageBalance}</span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="font-semibold">Tổng số lần in:</span>
+                <span>{userPrintConfig.length || '0'}</span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Các nút điều khiển */}

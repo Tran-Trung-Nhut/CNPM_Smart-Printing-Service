@@ -18,7 +18,7 @@ export default function Home() {
         <div className="min-h-screen flex items-center justify-center text-white">
             <div className="flex flex-col md:flex-row items-center justify-between w-11/12 max-w-7xl">
                 {/* Phần trái: Nội dung */}
-                <div className="text-center md:text-left md:w-1/2 space-y-6">
+                <div className="text-center md:text-left md:w-1/2 space-y-6 animate-fade-in-up">
                     <h1 className="text-5xl md:text-6xl font-extrabold leading-tight">
                         HỆ THỐNG <span className="text-yellow-300">IN ẤN</span> THÔNG MINH
                     </h1>

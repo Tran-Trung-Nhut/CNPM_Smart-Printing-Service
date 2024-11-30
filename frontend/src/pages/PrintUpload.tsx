@@ -24,10 +24,12 @@ const PrintUpload: React.FC = () => {
       onSuccess("ok"); 
       message.success(`${file.name} đã được tải lên thành công.`);
 
+      const formattedLastModifiedDate = new Date(file.lastModifiedDate).toISOString().slice(0, 19).replace('T', ' ');
+
       const fileDetails = {
         name: file.name,
         size: file.size,
-        lastModifiedDate: file.lastModifiedDate, 
+        lastModifiedDate: formattedLastModifiedDate, 
       };
 
       setFile((prev) => [...prev, fileDetails]);

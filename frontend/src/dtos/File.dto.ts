@@ -8,5 +8,12 @@ export interface FileUploadDto {
 export interface DocumentDto{
     name: string,
     size: number,
-    lastModifiedDate: Date, 
+    lastModifiedDate: string, 
+}
+
+export interface DocumentDbDto{
+  config_ID: number,
+  name: string,
+  size: number,
+  lastModifiedDate: Date, 
 }

@@ -5,17 +5,18 @@ import CreatePrinterPopup from "../components/CreatePrinterPopup";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { documentState, userState } from "../state";
 import axios from "axios";
-import { PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
+import { defaultPrintConfigurationDto, PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
+import PrintConfigInformation from "../components/PrintConfigInformationPopup";
 
 
 
 export default function PrintHistory() {
     const setDocument = useSetRecoilState(documentState)
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
-    const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [printConfig, setPrintConfig] = useState<PrintConfigurationDto[]>([])
+    const [selectedPrintConfig, setSelectedPrintConfig] = useState<PrintConfigurationDto>(defaultPrintConfigurationDto)
     const user = useRecoilValue(userState)
 
     const totalPages = Math.ceil(printConfig.length / rowsPerPage);
@@ -37,11 +38,12 @@ export default function PrintHistory() {
     const fetchPrintConfiguration = async () => {
         try {
             const response = await axios.get(`http://localhost:3000/api/v1/printconfig?user_ID=${user.user_ID}`);
-            console.log(response.data.data.configs)
+            console.log(response.data.data)
 
-            setPrintConfig(response.data.data.configs)
-        } catch (error) {
-            alert('Get configuration false!')
+            setPrintConfig(response.data.data)
+        } catch (error: any) {
+            if(error.response.data.message !== 'No print configurations found') alert('Get configuration false!')
+            console.log(error.response.data.message)
         }
     }
 
@@ -53,9 +55,11 @@ export default function PrintHistory() {
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
             {isShowInformation && (
-                <PrinterInformationPopup onClose={() => setIsShowInformation(false)} />
+                <PrintConfigInformation 
+                onClose={() => setIsShowInformation(false)} 
+                config={selectedPrintConfig}
+                />
             )}
-            {isShowCreate && (<CreatePrinterPopup onClose={() => setIsShowCreate(false)}/>)}
 
             <div className="w-full">
             <div className="bg-[#C6DCFE] flex items-center justify-between px-4 py-2">
@@ -93,14 +97,38 @@ export default function PrintHistory() {
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
                                 <td className="px-4 py-3 text-center">{data.printer_ID}</td>
-                                <td className="px-4 py-3 text-center">{data.numPages  || 'Không xác định'}</td>
-                                <td className="px-4 py-3 text-center">{data.printStart?.toISOString() || 'Không xác định'}</td>
-                                <td className="px-4 py-3 text-center">{data.status === 'unCompleted'? 'Chưa được in' : data.printEnd.toISOString()}</td>
+                                <td className="px-4 py-3 text-center">{data.documents.length}</td>
+                                <td className="px-4 py-3 text-center">
+                                    {data.printStart ? 
+                                        new Date(data.printStart).toLocaleDateString('vi-VN', {
+                                            hour: '2-digit', 
+                                            minute: '2-digit',
+                                            hour12: false,
+                                            day: '2-digit', 
+                                            month: '2-digit', 
+                                            year: 'numeric'
+                                        }) : 
+                                        'Không xác định'}
+                                </td>                           
+                                <td className="px-4 py-3 text-center">{data.printEnd ? 
+                                        new Date(data.printEnd).toLocaleDateString('vi-VN', {
+                                            hour: '2-digit', 
+                                            minute: '2-digit',
+                                            hour12: false,
+                                            day: '2-digit', 
+                                            month: '2-digit', 
+                                            year: 'numeric'
+                                        }) : 
+                                        'Chưa được in'}
+                                </td>
                                 <td className="px-4 py-3 text-center">
                                     <button
                                         type="button"
                                         className="text-gray-400"
-                                        onClick={() => setIsShowInformation(true)}
+                                        onClick={() => {
+                                            setSelectedPrintConfig(data)
+                                            setIsShowInformation(true)
+                                        }}
                                     >
                                         <i className="pi pi-info-circle"></i>
                                     </button>

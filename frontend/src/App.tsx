@@ -40,7 +40,16 @@ export default function App() {
       <Router>
         <Routes>
           <Route path='/' element={<DefaultLayout/>}>
-            <Route path='/' element={<Home/>}/>
+            <Route 
+            path='/'
+            element={
+              <ProtectedRoute
+                  allowedRoles={["student", ""]}
+                  currentRole={user.role}
+              >
+              <Home/>
+              </ProtectedRoute>
+            }/>
             <Route 
             path='/buy-paper-history'
             element={

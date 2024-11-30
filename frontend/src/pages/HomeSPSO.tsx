@@ -1,6 +1,8 @@
+import "./css/HomeSPSO.css"
+
 export default function HomeSPSO() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center mt-4 text-white">
+        <div className="min-h-screen flex flex-col items-center justify-center mt-4 text-white animate-fade-in-up">
             {/* Tiêu đề */}
             <div className="text-center space-y-8">
                 {/* Biểu tượng */}
