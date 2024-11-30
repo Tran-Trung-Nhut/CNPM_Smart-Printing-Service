@@ -71,7 +71,7 @@ export default function Login() {
             const message = error.response.data.message;
             const status = error.response.status;
             if(status === 500) alert("Đăng nhập thất bại, vui lòng thử lại!");
-            if(message === 'User no found') alert("Email không chính xác, vui lòng nhập lại!");
+            if(message === 'User no found' || status === 404) alert("Email không chính xác, vui lòng nhập lại!");
             if(message === 'Invalid credentials') alert("Mật khẩu không chính xác, vui lòng nhập lại!");
         }
     };

@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <div className="relative bg-gradient-to-r from-blue-600 to-indigo-800 text-white pt-3 mt-16 shadow-xl">
+        <div className="relative bg-gradient-to-r from-blue-600 to-indigo-800 text-white pt-3 mt-16 shadow-xl z-1000">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="text-center md:text-left mb-4 md:mb-0">
