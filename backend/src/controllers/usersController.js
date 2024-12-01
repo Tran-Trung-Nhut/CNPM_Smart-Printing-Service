@@ -4,7 +4,7 @@ exports.getUsers = async (req, res) => {
     try {
         const { role } = req.query; 
         const condition = role ? { role } : {}; 
-        const users = await usersModel.getUsers(condition);
+        const users = await usersModel. getALLUsers(condition);
         res.status(200).json({ status: 200, data: users, message: "Successfully retrieved users!" });
     } catch (error) {
         console.log(error);
