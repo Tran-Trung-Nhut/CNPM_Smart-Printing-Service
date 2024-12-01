@@ -7,4 +7,5 @@ module.exports = (router) => {
     router.delete("/users/:id", usersController.deleteUser);
     router.post("/users", usersController.createUser);
     // router.post("/users/login", usersController.login); 
+
 };

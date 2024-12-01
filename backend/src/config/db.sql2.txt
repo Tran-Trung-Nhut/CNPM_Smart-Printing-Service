@@ -1,6 +1,6 @@
 -- Bảng `User`
 CREATE TABLE IF NOT EXISTS `User` (
-    `user_ID` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_ID` INT PRIMARY KEY,
     `email` VARCHAR(255) UNIQUE NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `name` VARCHAR(255),
@@ -86,18 +86,17 @@ CREATE TABLE IF NOT EXISTS `Properties` (
 
 -- Bảng `Orders`
 CREATE TABLE IF NOT EXISTS `Orders` (
-    `order_ID` INT AUTO_INCREMENT PRIMARY KEY,
+    `order_ID` INT PRIMARY KEY AUTO_INCREMENT,
     `user_ID` INT,
     `quantityPaper` INT DEFAULT 0,
     `quantityPackage1` INT DEFAULT 0,
     `quantityPackage2` INT DEFAULT 0,
     `quantityPackage3` INT DEFAULT 0,
-    `dateOrder` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    `dateOrder` DATE NOT NULL,
     `datePaid` DATE DEFAULT NULL,
     `status` ENUM('chưa thanh toán', 'đã thanh toán') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'chưa thanh toán',
     FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 -- Bảng `Paper_Package`
 CREATE TABLE IF NOT EXISTS `Paper_Package` (
@@ -118,20 +117,3 @@ CREATE TABLE IF NOT EXISTS `Order_Package` (
     FOREIGN KEY (`order_ID`) REFERENCES `Orders`(`order_ID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng `Notification_Message`
-CREATE TABLE IF NOT EXISTS `Notification_Message` (
-    `notification_ID` INT PRIMARY KEY AUTO_INCREMENT,
-    `createDate` DATETIME DEFAULT CURRENT_TIMESTAMP,    -- Ngày tạo
-    `updateDate` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Ngày cập nhật
-    `title` VARCHAR(255) NOT NULL, -- Tiêu đề của thông báo
-    `content` TEXT NOT NULL        -- Nội dung thông báo
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Bảng `Receiver_Message` (liên kết thông báo với người nhận)
-CREATE TABLE IF NOT EXISTS `Receiver_Message` (
-    `notification_ID` INT NOT NULL,  -- ID của thông báo
-    `user_ID` INT NOT NULL,          -- ID của người nhận
-    PRIMARY KEY (`notification_ID`, `user_ID`),
-    FOREIGN KEY (`notification_ID`) REFERENCES `Notification_Message`(`notification_ID`) ON DELETE CASCADE,
-    FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

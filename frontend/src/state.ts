@@ -10,7 +10,7 @@ export const isLoginAsState = atom<string>({
 
 export const isPrintingSuccessState = atom<boolean>({
     key: 'isPrintingSuccessState',
-    default: true
+    default: false
 })
 
 export const userState = atom<LoginUserDto>({
@@ -51,4 +51,9 @@ export const orientationState = atom<string>({
 export const printerIDState = atom<number>({
     key: 'printerIDState',
     default: -1111
+})
+
+export const errorState = atom<string>({
+    key: 'errorState',
+    default: ''
 })

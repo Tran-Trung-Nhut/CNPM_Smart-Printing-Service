@@ -11,6 +11,22 @@ export default function NotificationInformationPopup({
     createDate: Date;
     updateDate: Date;
 }) {
+    // Hàm kiểm tra xem đối tượng Date có hợp lệ không
+    const formatDate = (date: any) => {
+        const parsedDate = new Date(date);
+        if (parsedDate.toString() === 'Invalid Date') {
+            return 'Ngày không hợp lệ';
+        }
+        return new Intl.DateTimeFormat("vi-VN", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+        }).format(parsedDate);
+    };
+
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
@@ -49,27 +65,13 @@ export default function NotificationInformationPopup({
                         <div>
                             <p>
                                 <span className="font-medium">Ngày tạo: </span>
-                                {new Intl.DateTimeFormat("vi-VN", {
-                                    weekday: "long",
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                }).format(createDate)}
+                                {formatDate(createDate)}
                             </p>
                         </div>
                         <div>
                             <p>
                                 <span className="font-medium">Ngày chỉnh sửa: </span>
-                                {new Intl.DateTimeFormat("vi-VN", {
-                                    weekday: "long",
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                }).format(updateDate)}
+                                {formatDate(updateDate)}
                             </p>
                         </div>
                     </div>

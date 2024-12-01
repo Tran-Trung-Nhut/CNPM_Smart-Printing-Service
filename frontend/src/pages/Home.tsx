@@ -2,23 +2,25 @@ import home1 from "../assets/home1.png";
 import { useNavigate } from "react-router-dom";
 import "./css/Home.css"
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { documentState, userState } from "../state";
+import { documentState, errorState, userState } from "../state";
 import { useEffect } from "react";
 
 export default function Home() {
     const navigate = useNavigate();
     const setDocument = useSetRecoilState(documentState)
     const user = useRecoilValue(userState)
+    const setError = useSetRecoilState(errorState)
 
     useEffect(() => {
         setDocument([])
+        setError('')
     }, [])
 
     return (
         <div className="min-h-screen flex items-center justify-center text-white">
             <div className="flex flex-col md:flex-row items-center justify-between w-11/12 max-w-7xl">
                 {/* Phần trái: Nội dung */}
-                <div className="text-center md:text-left md:w-1/2 space-y-6">
+                <div className="text-center md:text-left md:w-1/2 space-y-6 animate-fade-in-up">
                     <h1 className="text-5xl md:text-6xl font-extrabold leading-tight">
                         HỆ THỐNG <span className="text-yellow-300">IN ẤN</span> THÔNG MINH
                     </h1>

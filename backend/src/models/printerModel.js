@@ -13,10 +13,18 @@ const printerModel = {
     getAllPrinters: async () => {
         try {
             const printers = await query.getAll("Printer");
-            for (const printer of printers) {
-                const location = await query.getOne("Location", { Location_ID: printer.loc_ID });
-                printer.location = location;
+            
+            // Kiểm tra nếu không có máy in nào
+            if (!printers || printers.length === 0) {
+                console.log("No printers found.");
+                return [];
             }
+            for (const printer of printers) {
+                console.log("Processing Printer:", printer); 
+                const location = await query.getOne("Location", { Location_ID: printer.loc_ID });
+                printer.location = location || null; 
+            }
+
             return printers;
         } catch (error) {
             console.error("Error in getAllPrinters:", error);
@@ -37,6 +45,7 @@ const printerModel = {
 
     updatePrinter: async (printer_ID, updates) => {
         try {
+            // Cập nhật bản ghi máy in
             await query.updateRow("Printer", updates, { Printer_ID: printer_ID });
             return { Printer_ID: printer_ID, ...updates };
         } catch (error) {
@@ -44,6 +53,7 @@ const printerModel = {
             throw error;
         }
     },
+    
 
     deletePrinter: async (printer_ID) => {
         try {

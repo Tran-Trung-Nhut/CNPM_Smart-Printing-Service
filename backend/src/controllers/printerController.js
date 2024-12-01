@@ -1,29 +1,63 @@
 const printerModel = require('../models/printerModel');
 const locationModel = require('../models/locationModel');
 
+// Lấy tất cả các máy in kèm theo thông tin vị trí
 exports.getAllPrinters = async (req, res) => {
     try {
         const printers = await printerModel.getAllPrinters();
+
+        if (!printers || printers.length === 0) {
+            return res.status(404).json({ status: 404, message: "No Printers Found" });
+        }
+
         const formattedPrinters = printers.map(printer => ({
             Printer_ID: printer.Printer_ID,
             branchName: printer.branchName,
             model: printer.model,
             description: printer.description,
             status: printer.status,
-            location: {
-                campus: printer.location?.campus,
-                building: printer.location?.building,
-                room: printer.location?.room
-            }
+            location: printer.location ? {
+                campus: printer.location.campus,
+                building: printer.location.building,
+                room: printer.location.room
+            } : null
         }));
-
+        
         res.status(200).json({ status: 200, data: formattedPrinters, message: "Successfully Retrieved Printers!" });
     } catch (error) {
-        console.error("Error Retrieving Printers:", error);
-        res.status(500).json({ status: 500, message: 'Error Retrieving Printers' });
+        console.error("Error Retrieving Printers:", error.message);
+        res.status(500).json({ status: 500, message: 'Error Retrieving Printers', error: error.message });
+    }
+};
+exports.getPrinterById = async (req, res) => {
+    try {
+        const printer = await printerModel.getPrinterById(req.params.id);
+        if (!printer) {
+            return res.status(404).json({ status: 404, message: "Printer does not exist" });
+        }
+
+        const formattedPrinter = {
+            Printer_ID: printer.Printer_ID,
+            branchName: printer.branchName,
+            model: printer.model,
+            description: printer.description,
+            status: printer.status,
+            location: printer.location ? {
+                campus: printer.location.campus,
+                building: printer.location.building,
+                room: printer.location.room
+            } : null
+        };
+
+        res.status(200).json({ status: 200, data: formattedPrinter, message: "Printer details retrieved successfully!" });
+    } catch (error) {
+        console.error("Error Retrieving Printer:", error.message);
+        res.status(500).json({ status: 500, message: 'Error Retrieving Printer Details', error: error.message });
     }
 };
 
+
+// Tạo mới máy in
 exports.createPrinter = async (req, res) => {
     try {
         const { branchName, model, description, status = 'enable', location } = req.body;
@@ -47,29 +81,51 @@ exports.createPrinter = async (req, res) => {
     }
 };
 
+
 exports.updatePrinter = async (req, res) => {
     try {
         const printerId = req.params.id;
         const { branchName, model, description, status, location } = req.body;
 
         let loc_ID = null;
+
         if (location) {
             const existingLocation = await locationModel.findLocation(location);
+
             if (existingLocation) {
                 loc_ID = existingLocation.Location_ID;
+                if (
+                    existingLocation.campus !== location.campus ||
+                    existingLocation.building !== location.building ||
+                    existingLocation.room !== location.room
+                ) {
+                    await locationModel.updateLocation(loc_ID, location);
+                }
             } else {
                 const newLocation = await locationModel.createLocation(location.campus, location.building, location.room);
                 loc_ID = newLocation.Location_ID;
             }
         }
 
-        const updatedPrinter = await printerModel.updatePrinter(printerId, { branchName, model, description, status, loc_ID });
-        res.status(200).json({ status: 200, data: updatedPrinter, message: "Successfully Updated Printer!" });
+        const updatedPrinter = await printerModel.updatePrinter(printerId, {
+            branchName,
+            model,
+            description,
+            status,
+            loc_ID,
+        });
+
+        res.status(200).json({
+            status: 200,
+            data: updatedPrinter,
+            message: "Successfully Updated Printer!",
+        });
     } catch (error) {
         console.error("Error Updating Printer:", error);
-        res.status(500).json({ status: 500, message: 'Error Updating Printer' });
+        res.status(500).json({ status: 500, message: "Error Updating Printer" });
     }
 };
+
 
 exports.deletePrinter = async (req, res) => {
     try {

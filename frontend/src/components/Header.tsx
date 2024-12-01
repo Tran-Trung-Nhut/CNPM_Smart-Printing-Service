@@ -79,7 +79,7 @@ export default function Header() {
             onClick={() => {
               if(user.role === '') navigate('/login-as')
               if(user.role === 'spso') navigate('/SPSO/printer')
-              if(user.role === 'student') navigate('/')
+              if(user.role === 'student') navigate('/buy-paper')
             }}> 
               {user.role === 'spso'? 'Máy in':'Mua giấy in' } 
             </button>

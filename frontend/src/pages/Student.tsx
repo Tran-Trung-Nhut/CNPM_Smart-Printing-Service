@@ -2,14 +2,15 @@ import "primeicons/primeicons.css";
 import { useEffect, useState } from "react";
 import StudentInformationPopup from "../components/StudentInformationPopup";
 import axios from "axios";
-import { StudentDto } from "../dtos/Student.dto";
-
+import { defaultStudentShowDto, StudentDto, StudentShowDto } from "../dtos/Student.dto";
 
 export default function Student() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [student, setStudent] = useState<StudentDto[]>([])
+    const [student, setStudent] = useState<StudentDto[]>([]);
+    const [userNumOfPrint, setUserNumOfPrint] = useState<{ [key: number]: number }>({}); 
+    const [selectStudent, setSelectStudent] = useState<StudentShowDto> (defaultStudentShowDto)
 
     const totalPages = Math.ceil(student.length / rowsPerPage);
     const currentData = student.slice(
@@ -19,7 +20,7 @@ export default function Student() {
 
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setRowsPerPage(Number(event.target.value));
-        setCurrentPage(1); // Reset to the first page when rows per page changes
+        setCurrentPage(1); 
     };
 
     const handlePageChange = (newPage: number) => {
@@ -30,21 +31,49 @@ export default function Student() {
 
     const fetchStudents = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/v1/users?role=student'); 
+            const response = await axios.get('http://localhost:3000/api/v1/users?role=student');
             setStudent(response.data.data);
+            await updatePrintCounts(response.data.data); 
         } catch (error) {
-            alert('Get printer false!')
+            setStudent([])
         }
-    }
+    };
+
+    const getNumberOfPrinting = async (user_ID: number): Promise<number> => {
+        try {
+            const response = await axios.get(`http://localhost:3000/api/v1/printconfig?user_ID=${user_ID}`);
+            if (response.data && response.data.data) {
+                return response.data.data.length;
+            } else {
+                return 0;
+            }
+        } catch (error) {
+            return 0; 
+        }
+    };
+
+    const updatePrintCounts = async (students: StudentDto[]) => {
+        const newUserNumOfPrint: { [key: number]: number } = {};
+        await Promise.all(
+            students.map(async (student) => {
+                const printCount = await getNumberOfPrinting(student.user_ID);
+                newUserNumOfPrint[student.user_ID] = printCount;
+            })
+        );
+        setUserNumOfPrint(newUserNumOfPrint); 
+    };
 
     useEffect(() => {
-        fetchStudents()
-    }, [])
+        fetchStudents(); 
+    }, []);
 
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
             {isShowInformation && (
-                <StudentInformationPopup onClose={() => setIsShowInformation(false)} />
+                <StudentInformationPopup 
+                student={selectStudent}
+                onClose={() => setIsShowInformation(false) }
+                />
             )}
 
             <div className="w-full">
@@ -79,13 +108,26 @@ export default function Student() {
                                 </td>
                                 <td className="px-4 py-3 text-center">{data.name}</td>
                                 <td className="px-4 py-3 text-center">{data.user_ID}</td>
-                                <td className="px-4 py-3 text-center">{0}</td>
+                                <td className="px-4 py-3 text-center">
+                                    {userNumOfPrint[data.user_ID] !== undefined ? userNumOfPrint[data.user_ID] : 0}
+                                </td>
                                 <td className="px-4 py-3 text-center">{data.pageBalance}</td>
                                 <td className="px-4 py-3 text-center">
                                     <button
                                         type="button"
                                         className="text-gray-400"
-                                        onClick={() => setIsShowInformation(true)}
+                                        onClick={() => {
+                                            setSelectStudent({
+                                                email: data.email,
+                                                name: data.name,
+                                                pageBalance: data.pageBalance,
+                                                password:  '',
+                                                role: data.role,
+                                                user_ID: data.user_ID,
+                                                numOfPrint: userNumOfPrint[data.user_ID]
+                                            })
+                                            setIsShowInformation(true)
+                                        }}
                                     >
                                         <i className="pi pi-info-circle"></i>
                                     </button>
@@ -139,4 +181,3 @@ export default function Student() {
         </div>
     );
 }
-
