@@ -45,6 +45,7 @@ const printerModel = {
 
     updatePrinter: async (printer_ID, updates) => {
         try {
+            // Cập nhật bản ghi máy in
             await query.updateRow("Printer", updates, { Printer_ID: printer_ID });
             return { Printer_ID: printer_ID, ...updates };
         } catch (error) {
@@ -52,6 +53,7 @@ const printerModel = {
             throw error;
         }
     },
+    
 
     deletePrinter: async (printer_ID) => {
         try {
