@@ -92,6 +92,7 @@ CREATE TABLE IF NOT EXISTS `Orders` (
     `quantityPackage1` INT DEFAULT 0,
     `quantityPackage2` INT DEFAULT 0,
     `quantityPackage3` INT DEFAULT 0,
+    `totalCost` DECIMAL(10, 2) DEFAULT 0.00 NOT NULL,
     `dateOrder` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     `datePaid` DATE DEFAULT NULL,
     `status` ENUM('chưa thanh toán', 'đã thanh toán') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'chưa thanh toán',
