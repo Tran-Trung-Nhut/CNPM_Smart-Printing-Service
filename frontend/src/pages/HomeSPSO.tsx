@@ -1,6 +1,6 @@
 export default function HomeSPSO() {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-[linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)] text-white">
+        <div className="min-h-screen flex flex-col items-center justify-center mt-4 text-white">
             {/* Tiêu đề */}
             <div className="text-center space-y-8">
                 {/* Biểu tượng */}

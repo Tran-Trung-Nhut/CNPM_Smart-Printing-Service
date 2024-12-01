@@ -3,33 +3,20 @@ import { useEffect, useState } from "react";
 import PrinterInformationPopup from "../components/PrinterInformationPopup";
 import CreatePrinterPopup from "../components/CreatePrinterPopup";
 import axios from "axios";
+import { PrinterDto } from "../dtos/Printer.dto";
 
-interface Printer {
-    brand: string;
-    ID: string;
-    location: string;
-    status: string;
-}
-
-const datas = Array.from({ length: 30 }).map<Printer>((_, i) => ({
-    brand: `Dell`,
-    ID: `${i}`,
-    location: `H1-CS${i % 2 === 0 ? 2 : 1}`,
-    status: `${i % 2 === 0 ? 'Hoạt động' : 'Bảo trì'}`,
-}));
 
 export default function Printer() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
     const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [printer, setPrinter] = useState<any>()
+    const [printer, setPrinter] = useState<PrinterDto[]>([])
 
-    const totalPages = Math.ceil(datas.length / rowsPerPage);
-    const currentData = datas.slice(
-        (currentPage - 1) * rowsPerPage,
-        currentPage * rowsPerPage
-    );
+    const totalPages = Math.ceil(printer.length / rowsPerPage);
+    const currentData = Array.isArray(printer)
+    ? printer.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+    : [];
 
     const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setRowsPerPage(Number(event.target.value));
@@ -44,16 +31,16 @@ export default function Printer() {
 
     const fetchPrinters = async () => {
         try {
-            const response = await axios.get('/api/printers'); 
-            setPrinter(response.data);
+            const response = await axios.get('http://localhost:3000/api/v1/printers'); 
+            setPrinter(response.data.data);
         } catch (error) {
             alert('Get printer false!')
         }
     }
 
     useEffect(() => {
-        fetchPrinters()
-    }, [printer])
+        fetchPrinters();
+    }, []); // 
 
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
@@ -96,7 +83,7 @@ export default function Printer() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentData.map((data, index) => (
+                        {currentData.map((data: PrinterDto, index: number) => (
                             <tr
                                 key={index}
                                 className={index % 2 === 0 ? "" : "bg-gray-100"}
@@ -104,11 +91,11 @@ export default function Printer() {
                                 <td className="px-4 py-2 text-center">
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
-                                <td className="px-4 py-2 text-center">{data.brand}</td>
-                                <td className="px-4 py-2 text-center">{data.ID}</td>
-                                <td className="px-4 py-2 text-center">{data.location}</td>
-                                <td className="px-4 py-2 text-center">{data.status}</td>
-                                <td className="px-4 py-2 text-center">
+                                <td className="px-4 py-3 text-center">{data.branchName}</td>
+                                <td className="px-4 py-3 text-center">{data.model}</td>
+                                <td className="px-4 py-3 text-center">{data.location.campus} - {data.location.building} - {data.location.room}</td>
+                                <td className={`px-4 py-3 text-center ${data.status === 'enable' ? 'text-green-500' : 'text-red-500'}`}>{data.status === 'enable' ? 'Hoạt động': 'Bảo trì'}</td>
+                                <td className="px-4 py-3 text-center">
                                     <button
                                         type="button"
                                         className="text-gray-400"
@@ -125,7 +112,7 @@ export default function Printer() {
 
             <div className="bg-[#C6DCFE] h-12 flex items-center justify-between w-full rounded px-4">
                 <div className="flex justify-center items-center space-x-2">
-                    <p className="pl-2">Tổng số hàng: {datas.length}</p>
+                    <p className="pl-2">Tổng số hàng: {printer.length}</p>
                     <div className="border-x-2 border-black"></div>
                     <div className="flex items-center space-x-2">
                     <label htmlFor="rows-per-page" className="text-sm">

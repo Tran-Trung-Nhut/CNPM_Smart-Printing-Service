@@ -15,5 +15,6 @@ module.exports = (app) => {
     require("./verify/[example]authorizationRouter")(router);
     require("./verify/authenticationRouter")(router);
     require("./propertiesRouter")(router);
+    require("./locationRouter")(router);
     app.use("/api/v1", router);
 };

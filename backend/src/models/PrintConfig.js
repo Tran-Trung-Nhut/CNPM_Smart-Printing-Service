@@ -1,6 +1,4 @@
 const { connectDB } = require("../config/config.js");
-const document = require("./Document.js");
-const properties = require("./Properties.js")
 
 const Query = require("../config/query"); 
 
@@ -25,9 +23,9 @@ const PrintConfig = {
 
 
 
-    createPrintConfig: async (printStart, printEnd, user_ID, printer_ID) => {
+    createPrintConfig: async (user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation) => {
         try {
-            const data = { printStart, printEnd, user_ID, printer_ID };
+            const data = {user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation};
             const result = await Query.insertSingleRow("PrintConfiguration", data);
             return { config_ID: result.insertId, ...data };
         } catch (error) {
@@ -35,11 +33,24 @@ const PrintConfig = {
             throw error;
         }
     },
-    updatePrintConfig: async (config_ID, printStart, printEnd, user_ID, printer_ID) => {
+    updatePrintConfig: async (config_ID, user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation) => {
         try {
-            const data = { printStart, printEnd, user_ID, printer_ID };
+            const data = {user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation};
             await Query.updateRow("PrintConfiguration", data, { config_ID });
-            return { config_ID, ...data };
+            return { config_ID, data };
+        } catch (error) {
+            console.error("Error updating PrintConfiguration:", error);
+            throw error;
+        }
+    },
+    completePrintConfig: async (config_ID) => {
+        try {
+            const data = {
+                'printEnd': new Date(),
+                'status': 'Completed'
+            }
+            await Query.updateRow("PrintConfiguration", data, { config_ID });
+            return { config_ID, data };
         } catch (error) {
             console.error("Error updating PrintConfiguration:", error);
             throw error;

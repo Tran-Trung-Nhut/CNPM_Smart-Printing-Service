@@ -17,16 +17,17 @@ exports.getAllPrintConfigs = async (req, res) => {
                 message: "No print configurations found."
             });
         }
-        let documents = [];
-        if (user_ID) {
-            for (const config of configs) {
+        let datas = [];
+        for (const config of configs) {
                 const configDocuments = await Document.findAll({ config_ID: config.config_ID });
-                documents = [...documents, ...configDocuments]; 
-            }
+                datas.push({
+                    ...config,
+                    documents : configDocuments
+                });
         }
         res.status(200).json({
             status: 200,
-            data: { configs, documents: user_ID ? documents : undefined }, 
+            data: datas, 
             message: "Successfully retrieved print configurations" + (user_ID ? " and documents" : "") + "!"
         });
     } catch (error) {
@@ -37,8 +38,8 @@ exports.getAllPrintConfigs = async (req, res) => {
 
 exports.createPrintConfig = async (req, res) => {
     try {
-        const { printStart, printEnd, user_ID, printer_ID } = req.body;
-        const postData = await PrintConfig.createPrintConfig(printStart, printEnd, user_ID, printer_ID);
+        const { user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation} = req.body;
+        const postData = await PrintConfig.createPrintConfig(user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation);
         res.status(200).json({ status: 200, data: postData, message: "Successfully created Print Configuration!" });
     } catch (error) {
         console.error(error);
@@ -49,9 +50,20 @@ exports.createPrintConfig = async (req, res) => {
 exports.updatePrintConfig = async (req, res) => {
     try {
         const config_ID = req.params.id;
-        const { printStart, printEnd, user_ID, printer_ID } = req.body;
-        const updateData = await PrintConfig.updatePrintConfig(config_ID, printStart, printEnd, user_ID, printer_ID);
+        const { user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation} = req.body;
+        const updateData = await PrintConfig.updatePrintConfig(config_ID, user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation);
         res.status(200).json({ status: 200, data: updateData, message: "Successfully updated Print Configuration!" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 500, message: "Error updating Print Configuration" });
+    }
+};
+
+exports.completePrintConfig = async (req, res) => {
+    try {
+        const config_ID = req.params.id;
+        const updateData = await PrintConfig.completePrintConfig(config_ID);
+        res.status(200).json({ status: 200, data: updateData, message: "Successfully Completed Print Configuration!" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 500, message: "Error updating Print Configuration" });

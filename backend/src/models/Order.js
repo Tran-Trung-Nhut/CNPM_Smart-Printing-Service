@@ -21,15 +21,15 @@ const Order = {
     },
     getOderByID: async (order_ID) => {
         try {
-            const [rows] = await pool.query('SELECT * FROM Oders WHERE order_ID = ?', [order_ID]);
+            const [rows] = await Query.getOne("Orders", { order_ID });
             return rows;
         } catch (error) {
             console.log(error);
         }
     },
-    createOrder: async (user_ID, time, quantity, status) => {
+    createOrder: async (data) => {
         try {
-            const data = { user_ID, time, quantity, status };
+            data.dateOrder = new Date();
             const result = await Query.insertSingleRow("Orders", data);
             return { order_ID: result.insertId, ...data };
         } catch (error) {
@@ -37,9 +37,8 @@ const Order = {
             throw error;
         }
     },
-    updateOrder: async (order_ID, user_ID, time, quantity, status) => {
+    updateOrder: async (data = {}, order_ID) => {
         try {
-            const data = { user_ID, time, quantity, status };
             const condition = { order_ID };
             await Query.updateRow("Orders", data, condition);
             return { order_ID, ...data };

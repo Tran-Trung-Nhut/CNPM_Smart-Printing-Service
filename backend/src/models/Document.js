@@ -20,9 +20,10 @@ const Document = {
         }
     },
 
-    createDocument: async (config_ID, DName, noPage, pageSize) => {
+
+    createDocument: async (config_ID, name, size, lastModifiedDate) => {
         try {
-            const data = { config_ID, DName, noPage, pageSize };
+            const data = { config_ID, name, size, lastModifiedDate };
             await Query.insertSingleRow("Document", data);
             return data;
         } catch (error) {
@@ -31,21 +32,21 @@ const Document = {
         }
     },
 
-    updateDocument: async (config_ID, DName, noPage, pageSize) => {
+    updateDocument: async (config_ID, name, size, lastModifiedDate) => {
         try {
-            const condition = { config_ID, DName };
-            const newData = { noPage, pageSize };
+            const condition = { config_ID, name };
+            const newData = { size, lastModifiedDate };
             await Query.updateRow("Document", newData, condition);
-            return { config_ID, DName, noPage, pageSize };
+            return { config_ID, name, size, lastModifiedDate };
         } catch (error) {
             console.error("Error updating Document:", error);
             throw error;
         }
     },
 
-    deleteDocument: async (config_ID, DName) => {
+    deleteDocument: async (config_ID, name) => {
         try {
-            const condition = { config_ID, DName };
+            const condition = { config_ID, name };
             await Query.deleteRow("Document", condition);
             return condition;
         } catch (error) {
