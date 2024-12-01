@@ -29,6 +29,33 @@ exports.getAllPrinters = async (req, res) => {
         res.status(500).json({ status: 500, message: 'Error Retrieving Printers', error: error.message });
     }
 };
+exports.getPrinterById = async (req, res) => {
+    try {
+        const printer = await printerModel.getPrinterById(req.params.id);
+        if (!printer) {
+            return res.status(404).json({ status: 404, message: "Printer does not exist" });
+        }
+
+        const formattedPrinter = {
+            Printer_ID: printer.Printer_ID,
+            branchName: printer.branchName,
+            model: printer.model,
+            description: printer.description,
+            status: printer.status,
+            location: printer.location ? {
+                campus: printer.location.campus,
+                building: printer.location.building,
+                room: printer.location.room
+            } : null
+        };
+
+        res.status(200).json({ status: 200, data: formattedPrinter, message: "Printer details retrieved successfully!" });
+    } catch (error) {
+        console.error("Error Retrieving Printer:", error.message);
+        res.status(500).json({ status: 500, message: 'Error Retrieving Printer Details', error: error.message });
+    }
+};
+
 
 // Tạo mới máy in
 exports.createPrinter = async (req, res) => {
