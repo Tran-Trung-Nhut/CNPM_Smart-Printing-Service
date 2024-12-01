@@ -58,10 +58,10 @@ VALUES
 (3, 'A4', 2, 100, 1, 100, 100, '1', 'Dọc');
 
 -- Dữ liệu cho bảng Orders
-INSERT INTO Orders (user_ID, quantityPaper, quantityPackage1, quantityPackage2, quantityPackage3, dateOrder, datePaid, status)
+INSERT INTO Orders (user_ID, quantityPaper, quantityPackage1, quantityPackage2, quantityPackage3, totalCost, dateOrder, datePaid, status)
 VALUES
-(1, 100, 2, 1, 0, '2024-11-25', '2024-11-26', 'đã thanh toán'),
-(2, 50, 0, 0, 1, '2024-11-26', '2024-10-17', 'chưa thanh toán');
+(1, 100, 2, 1, 0, 75.00, '2024-11-25', '2024-11-26', 'đã thanh toán'),
+(2, 50, 0, 0, 1, 90.00, '2024-11-26', '2024-10-17', 'chưa thanh toán');
 
 -- Dữ liệu cho bảng Paper_Package
 INSERT INTO Paper_Package (name, quantity, price)
