@@ -18,5 +18,6 @@ module.exports = (app) => {
     require("./locationRouter")(router);
     require("./receiverMessageRounter")(router);
     require("./notificationRouter")(router);
+    require("./userNotificationRouter")(router);
     app.use("/api/v1", router);
 };
