@@ -63,7 +63,11 @@ export default function Notification() {
                 updateDate={selectedNotification.updateDate}/>
             )}
 
-            {isShowCreate && (<CreateNotificationPopup onClose={() => setIsShowCreate(false)}/>)}
+            {isShowCreate && (<CreateNotificationPopup 
+            onClose={() => setIsShowCreate(false)}
+            fetchNotifications={() => fetchNotifications()}
+            />
+            )}
 
             <div className="w-full">
             <div className="bg-[#C6DCFE] flex items-center justify-between space-x-1 px-4 py-2">

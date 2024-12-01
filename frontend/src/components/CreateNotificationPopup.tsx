@@ -2,12 +2,19 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { UserDto } from "../dtos/User.dto";
 
-export default function CreateNotificationPopup({ onClose }: { onClose: () => void }) {
-    const [recipient, setRecipient] = useState<string[]>([]);
+export default function CreateNotificationPopup({
+    onClose,
+    fetchNotifications, // Nhận hàm fetchPrinters từ props
+  }: {
+    onClose: () => void;
+    fetchNotifications: () => void;
+  }) {
+    const [recipient, setRecipient] = useState<string[]>([]); // List of selected recipients
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<string>("");
     const [students, setStudents] = useState<UserDto[]>([]);
 
+    // Fetch student list
     const fetchRecipient = async () => {
         try {
             const response = await axios.get('http://localhost:3000/api/v1/users?role=student');
@@ -21,21 +28,42 @@ export default function CreateNotificationPopup({ onClose }: { onClose: () => vo
         fetchRecipient();
     }, []); 
 
+    // Handle create notification
     const handleCreate = async () => {
-        if (!title || !content) {
+        if (!title || !content || !recipient) {
             alert("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
 
         try {
-            const notificationData = {
-                title,
-                content,
-            };
+            if(recipient[0] === 'All') {
+                const response = await axios.post('http://localhost:3000/api/v1/notifications/sendToAll',{
+                    title,
+                    content
+                })
 
-            const response = await axios.post('http://localhost:3000/api/v1/notifications', notificationData);
+                if(response.data.status === 201){
+                    fetchNotifications()
 
-            alert("Thông báo đã được tạo thành công!");
+                    alert("Gửi thông báo thành công!")
+                }
+            }else {
+                for(const rec of recipient){
+                    const response = await axios.post('http://localhost:3000/api/v1/notifications/send',{
+                        user_ID: Number(rec),
+                        title,
+                        content
+                    })
+
+                    console.log(Number(rec),
+                    title,
+                    content)
+
+                    console.log(response)
+                }
+
+                alert("Gửi thông báo thành công!")
+            }
         } catch (error) {
             alert("Không thể tạo thông báo ngay lúc này! Vui lòng thử lại sau!");
         }
@@ -43,9 +71,22 @@ export default function CreateNotificationPopup({ onClose }: { onClose: () => vo
         onClose();
     };
 
-    const handleRecipientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedValues = Array.from(event.target.selectedOptions, (option) => option.value);
-        setRecipient(selectedValues);
+    // Handle recipient change (checkbox selection)
+    const handleRecipientChange = (event: React.ChangeEvent<HTMLInputElement>, userId: string) => {
+        if (event.target.checked) {
+            setRecipient((prev) => [...prev, userId]);
+        } else {
+            setRecipient((prev) => prev.filter((id) => id !== userId));
+        }
+    };
+
+    // Handle the "Select All" checkbox
+    const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.checked) {
+            setRecipient(["All"]);
+        } else {
+            setRecipient([]);
+        }
     };
 
     return (
@@ -67,19 +108,38 @@ export default function CreateNotificationPopup({ onClose }: { onClose: () => vo
                 <div className="space-y-6">
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Người nhận</label>
-                        <select
-                            multiple
-                            className="block w-full rounded-lg border border-gray-300 shadow-md focus:ring-blue-400 focus:border-blue-400 p-2 bg-white"
-                            value={recipient}
-                            onChange={handleRecipientChange}
-                        >
-                            <option value="All">Tất cả</option>
-                            {students.map((student) => (
-                                <option key={student.user_ID} value={student.user_ID}>
-                                    {`${student.name} - ${student.user_ID}`}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="space-y-2">
+                            {/* Select All Checkbox */}
+                            <div className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    id="selectAll"
+                                    onChange={handleSelectAll}
+                                    checked={recipient.length === students.length}
+                                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                />
+                                <label htmlFor="selectAll" className="text-sm text-gray-700">Chọn tất cả</label>
+                            </div>
+
+                            {/* Scrollable List of Checkboxes */}
+                            <div className="overflow-y-auto max-h-60 p-2 border border-gray-300 rounded-lg" style={{ maxHeight: "250px" }}>
+                                {students.map((student) => (
+                                    <div key={student.user_ID} className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            id={`recipient-${student.user_ID}`}
+                                            value={student.user_ID}
+                                            checked={recipient.includes(student.user_ID.toString())}
+                                            onChange={(e) => handleRecipientChange(e, student.user_ID.toString())}
+                                            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                        />
+                                        <label htmlFor={`recipient-${student.user_ID}`} className="text-sm text-gray-700">
+                                            {`${student.name} - ${student.user_ID}`}
+                                        </label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
 
                     <div className="space-y-2">
