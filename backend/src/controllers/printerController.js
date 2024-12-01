@@ -88,23 +88,48 @@ exports.updatePrinter = async (req, res) => {
         const { branchName, model, description, status, location } = req.body;
 
         let loc_ID = null;
+
+        // Xử lý location (nếu có)
         if (location) {
+            // Tìm location đã tồn tại
             const existingLocation = await locationModel.findLocation(location);
+
             if (existingLocation) {
                 loc_ID = existingLocation.Location_ID;
+                if (
+                    existingLocation.campus !== location.campus ||
+                    existingLocation.building !== location.building ||
+                    existingLocation.room !== location.room
+                ) {
+                    await locationModel.updateLocation(loc_ID, location);
+                }
             } else {
+                // Nếu Location chưa tồn tại, tạo mới
                 const newLocation = await locationModel.createLocation(location.campus, location.building, location.room);
                 loc_ID = newLocation.Location_ID;
             }
         }
 
-        const updatedPrinter = await printerModel.updatePrinter(printerId, { branchName, model, description, status, loc_ID });
-        res.status(200).json({ status: 200, data: updatedPrinter, message: "Successfully Updated Printer!" });
+        // Cập nhật thông tin Printer
+        const updatedPrinter = await printerModel.updatePrinter(printerId, {
+            branchName,
+            model,
+            description,
+            status,
+            loc_ID,
+        });
+
+        res.status(200).json({
+            status: 200,
+            data: updatedPrinter,
+            message: "Successfully Updated Printer!",
+        });
     } catch (error) {
         console.error("Error Updating Printer:", error);
-        res.status(500).json({ status: 500, message: 'Error Updating Printer' });
+        res.status(500).json({ status: 500, message: "Error Updating Printer" });
     }
 };
+
 
 exports.deletePrinter = async (req, res) => {
     try {
