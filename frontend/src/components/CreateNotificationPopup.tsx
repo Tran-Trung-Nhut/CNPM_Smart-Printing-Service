@@ -50,11 +50,11 @@ export default function CreateNotificationPopup({ onClose }: { onClose: () => vo
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto"
             onClick={onClose}
         >
             <div
-                className="bg-gradient-to-br from-white via-blue-50 to-gray-100 p-8 rounded-2xl shadow-2xl w-[90%] max-w-lg space-y-6"
+                className="bg-gradient-to-br from-white via-blue-50 to-gray-100 p-8 rounded-2xl shadow-2xl w-[90%] max-w-lg space-y-6 mt-40 mb-10"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex flex-col items-center space-y-2">

@@ -89,9 +89,7 @@ exports.updatePrinter = async (req, res) => {
 
         let loc_ID = null;
 
-        // Xử lý location (nếu có)
         if (location) {
-            // Tìm location đã tồn tại
             const existingLocation = await locationModel.findLocation(location);
 
             if (existingLocation) {
@@ -104,13 +102,11 @@ exports.updatePrinter = async (req, res) => {
                     await locationModel.updateLocation(loc_ID, location);
                 }
             } else {
-                // Nếu Location chưa tồn tại, tạo mới
                 const newLocation = await locationModel.createLocation(location.campus, location.building, location.room);
                 loc_ID = newLocation.Location_ID;
             }
         }
 
-        // Cập nhật thông tin Printer
         const updatedPrinter = await printerModel.updatePrinter(printerId, {
             branchName,
             model,
