@@ -20,9 +20,9 @@ exports.getOrderByID = async (req, res) => {
 };
 
 exports.createOrder = async (req, res) => {
+    const data = req.body;
     try {
-        const { user_ID, time, quantity, status} = req.body;
-        const postData = await Order.createOrder(user_ID, time, quantity, status);
+        const postData = await Order.createOrder(data);
         res.status(200).json({ status: 200, data: postData, message: "Succesfully Create Order!" });
     } catch (error) {
         console.log(error);
@@ -33,8 +33,8 @@ exports.createOrder = async (req, res) => {
 exports.updateOrder = async (req, res) => {
     try {
         const order_ID = req.params.id;
-        const { user_ID, time, quantity, status} = req.body;
-        const updateData = await Order.updateOrder(order_ID, user_ID, time, quantity, status);
+        const data= req.body;
+        const updateData = await Order.updateOrder(data, order_ID);
         res.status(200).json({ status: 200, data: updateData, message: "Succesfully Update Order!" });
     } catch (error) {
         res.status(500).json({ status: 500, message: 'Error Update Order' });

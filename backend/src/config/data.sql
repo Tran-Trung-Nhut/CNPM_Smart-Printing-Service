@@ -1,11 +1,11 @@
 
+-- Dữ liệu cho bảng `User`
+INSERT INTO `User` (`email`, `password`, `name`, `role`, `pageBalance`)
 
--- Dữ liệu cho bảng User
-INSERT INTO User (user_ID, email, password, name, role, pageBalance)
 VALUES 
-(1, 'student1@example.com', 'password123', 'Student One', 'student', 100),
-(2, 'student2@example.com', 'password123', 'Student Two', 'student', 150),
-(3, 'spso1@example.com', 'password123', 'SPSO One', 'spso', 0);
+('student1@example.com', 'password123', 'Student One', 'student', 100),
+('student2@example.com', 'password123', 'Student Two', 'student', 150),
+('spso1@example.com', 'password123', 'SPSO One', 'spso', 0);
 
 -- Dữ liệu cho bảng FileType
 INSERT INTO FileType (type, spso_ID)
@@ -34,8 +34,9 @@ VALUES
 ('Printer Beta', 'Canon PIXMA MG3600', 'Great for color printing.', 'enable', 2),
 ('Printer Gamma', 'Epson EcoTank L3150', 'Cost-efficient.', 'disable', 3);
 
--- Dữ liệu cho bảng PrintConfiguration (thêm mới với các thuộc tính đã cập nhật)
-INSERT INTO PrintConfiguration (user_ID, printer_ID, numPages, numCopies, paperSize, printSide, orientation)
+-- Dữ liệu cho bảng `PrintConfiguration`
+INSERT INTO `PrintConfiguration` (`user_ID`, `printer_ID`, `numPages`, `numCopies`, `paperSize`, `printSide`, `orientation`)
+
 VALUES
 ( 1, 1, 0, 1, 'A4', 'single', 'portrait'),
 ( 2, 2, 0, 1, 'A4', 'double', 'landscape'),
@@ -60,7 +61,7 @@ VALUES
 INSERT INTO Orders (user_ID, quantityPaper, quantityPackage1, quantityPackage2, quantityPackage3, dateOrder, datePaid, status)
 VALUES
 (1, 100, 2, 1, 0, '2024-11-25', '2024-11-26', 'đã thanh toán'),
-(2, 50, 0, 0, 1, '2024-11-26', NULL, 'chưa thanh toán');
+(2, 50, 0, 0, 1, '2024-11-26', '2024-10-17', 'chưa thanh toán');
 
 -- Dữ liệu cho bảng Paper_Package
 INSERT INTO Paper_Package (name, quantity, price)
