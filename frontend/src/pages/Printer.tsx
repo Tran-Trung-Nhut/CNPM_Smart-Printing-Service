@@ -111,7 +111,7 @@ export default function Printer() {
 
                 <button
                     className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
-                    onClick={() => setIsShowCreate(true)} // Mở popup thêm máy in
+                    onClick={() => setIsShowCreate(true)} 
                 >
                     <i className="pi pi-print mr-2"></i> Thêm máy in
                 </button>

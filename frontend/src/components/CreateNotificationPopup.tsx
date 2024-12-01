@@ -61,7 +61,7 @@ export default function CreateNotificationPopup({
 
                     console.log(response)
                 }
-
+                fetchNotifications()
                 alert("Gửi thông báo thành công!")
             }
         } catch (error) {

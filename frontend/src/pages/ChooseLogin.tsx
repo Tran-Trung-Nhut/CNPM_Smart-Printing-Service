@@ -15,7 +15,6 @@ export default function ChooseLogin() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 text-white">
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-[90%] max-w-md text-center space-y-8">
-                {/* Logo */}
                 <div>
                     <img
                         src={logo}
@@ -24,7 +23,6 @@ export default function ChooseLogin() {
                     />
                 </div>
 
-                {/* Tiêu đề */}
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold text-blue-600">
                         Chọn vai trò đăng nhập
@@ -34,7 +32,6 @@ export default function ChooseLogin() {
                     </p>
                 </div>
 
-                {/* Nút lựa chọn */}
                 <div className="space-y-4">
                     <button
                         className="w-full px-6 py-3 text-white bg-blue-500 rounded-lg shadow hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition"
@@ -50,7 +47,6 @@ export default function ChooseLogin() {
                     </button>
                 </div>
 
-                {/* Gạch ngang */}
                 <div className="w-full border-t border-gray-200"></div>
             </div>
         </div>

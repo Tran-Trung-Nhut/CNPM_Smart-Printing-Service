@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import school from "../assets/hcmut.png";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { isLoginAsState, userState } from "../state";
 import { useEffect, useState } from "react";
 import { defaultLoginUser } from "../dtos/User.dto";
 import LogoutConfirm from "./LogoutConfirm";
 import UserProfile from "./UserProfile";
-import { NotificationDto } from "../dtos/Notification.dto";
+import { NotificationDto, NotificationWithRecipientDto, NotificationWithStatusDto } from "../dtos/Notification.dto";
 import axios from "axios";
 
 export default function Header() {
@@ -15,10 +15,25 @@ export default function Header() {
     const [user, setUser] = useRecoilState(userState);
     const [isOpenDropdown, setIsOpenDropDown] = useState(false);
     const [isOpenDropdownNotifcation, setIsOpenDropDownNotification] = useState(false);
-    const [isLoginAs, setIsLoginAs] = useRecoilState(isLoginAsState);
     const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
     const [isShowProfile, setIsShowProfile] = useState<boolean>(false);
-    const [notification, setNotification] = useState<NotificationDto[]>([]);
+    const [notification, setNotification] = useState<NotificationWithStatusDto[]>([]);
+    const [notificationWithRecipient, setNotificationWithRecipient] = useState<NotificationWithRecipientDto[]>([])
+
+    const formatDate = (date: any) => {
+        const parsedDate = new Date(date);
+        if (parsedDate.toString() === 'Invalid Date') {
+            return 'Ngày không hợp lệ';
+        }
+        return new Intl.DateTimeFormat("vi-VN", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+        }).format(parsedDate);
+    };
 
     const SigninClick = () => {
         navigate('/login-as');
@@ -41,9 +56,10 @@ export default function Header() {
 
     const fetchNotifications = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/v1/users/${user.user_ID}/notifications`);
-            console.log(response)
-            setNotification(response.data.data);
+            const response = await axios.get(`http://localhost:3000/api/v1/users/${user.user_ID}/notifications`,);
+            
+            console.log(response.data.data)
+            
         } catch (e) {
             console.log(e)
             setNotification([]);
@@ -51,10 +67,9 @@ export default function Header() {
     };
 
     useEffect(() => {
-        fetchNotifications();
-    }, []);
+        fetchNotifications()
+    }, []); 
 
-    // Đánh dấu thông báo đã đọc
     const markAsRead = async (notificationId: number) => {
         try {
             const response = await axios.patch(`http://localhost:3000/api/v1/notifications/${notificationId}`, { read: true });
@@ -165,7 +180,7 @@ export default function Header() {
                                                 {notif.title}
                                             </p>
                                             <p className="text-sm text-gray-500">
-                                                {new Date(notif.createDate).toLocaleString()}
+                                                {formatDate(notif.createDate)}
                                             </p>
                                         </div>
                                     ))}
