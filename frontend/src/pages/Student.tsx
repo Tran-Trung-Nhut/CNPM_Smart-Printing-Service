@@ -35,7 +35,7 @@ export default function Student() {
             setStudent(response.data.data);
             await updatePrintCounts(response.data.data); 
         } catch (error) {
-            alert('Get student data failed!');
+            setStudent([])
         }
     };
 

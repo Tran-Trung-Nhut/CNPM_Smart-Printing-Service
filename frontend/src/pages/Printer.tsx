@@ -37,13 +37,19 @@ export default function Printer() {
         try{
             const newStatus = printer.status === 'enable'? 'disable': 'enable'
 
+            console.log(printer.location.building, printer.location.room)
+
             const response = await axios.put(`http://localhost:3000/api/v1/printers/${printer.Printer_ID}`,{
                 printer_ID: printer.Printer_ID,
                 branchName: printer.branchName,
                 model: printer.model,
                 description: printer.description,
                 status: newStatus,
-                location: printer.location
+                location: {
+                    campus: printer.location.campus,
+                    building: printer.location.building,
+                    room: printer.location.room
+                }
             })
 
             console.log(response)
@@ -74,7 +80,7 @@ export default function Printer() {
             const response = await axios.get('http://localhost:3000/api/v1/printers'); 
             setPrinter(response.data.data);
         } catch (error) {
-            alert('Get printer false!')
+            setPrinter([])
         }
     }
 
@@ -133,7 +139,7 @@ export default function Printer() {
                                 </td>
                                 <td className="px-4 py-3 text-center">{data.branchName}</td>
                                 <td className="px-4 py-3 text-center">{data.model}</td>
-                                <td className="px-4 py-3 text-center">{data.location.campus} - {data.location.building} - {data.location.room}</td>
+                                <td className="px-4 py-3 text-center">{data.location?.campus} - {data.location?.building} - {data.location?.room}</td>
                                 <td className={`px-4 py-3 text-center ${data.status === 'enable' ? 'text-green-500' : 'text-red-500'}`}>{data.status === 'enable' ? 'Hoạt động': 'Bảo trì'}</td>
                                 <td className="px-4 py-3 text-center space-x-3">
                                     <button
