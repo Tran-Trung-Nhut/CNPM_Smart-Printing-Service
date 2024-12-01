@@ -64,20 +64,24 @@ exports.deleteNotification = async (req, res) => {
 };
 
 
-exports.getNotificationsForUser = async (req, res) => {
-    const { user_ID } = req.params;  // Lấy user_ID từ tham số URL
-
+exports.getReceiversByNotification = async (req, res) => {
     try {
-        // Lấy tất cả thông báo gửi đến user cụ thể
-        const notifications = await notificationModel.getNotificationsForUser(user_ID);
-
-        if (!notifications || notifications.length === 0) {
-            return res.status(404).json({ status: 404, message: `No Notifications Found for User ${user_ID}` });
-        }
-
-        res.status(200).json({ status: 200, data: notifications, message: `Successfully Retrieved Notifications for User ${user_ID}` });
+        const { notificationId } = req.params;
+        const receivers = await notificationModel.getReceiversByNotification(notificationId);
+        res.status(200).json({ status: 200, data: receivers, message: "Successfully retrieved receivers!" });
     } catch (error) {
-        console.error("Error Retrieving Notifications for User:", error.message);
-        res.status(500).json({ status: 500, message: 'Error Retrieving Notifications for User', error: error.message });
+        console.error("Error retrieving receivers:", error);
+        res.status(500).json({ status: 500, message: "Error retrieving receivers", error: error.message });
+    }
+};
+
+exports.markNotificationAsRead = async (req, res) => {
+    try {
+        const { notificationId, userId } = req.params;
+        const result = await notificationModel.markAsRead(notificationId, userId);
+        res.status(200).json({ status: 200, message: result.message });
+    } catch (error) {
+        console.error("Error marking notification as read:", error);
+        res.status(500).json({ status: 500, message: "Error marking notification as read", error: error.message });
     }
 };

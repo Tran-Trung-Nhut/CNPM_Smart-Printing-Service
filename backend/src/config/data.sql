@@ -1,91 +1,103 @@
-
--- Dữ liệu cho bảng `User`
-INSERT INTO `User` (`email`, `password`, `name`, `role`, `pageBalance`)
-
-VALUES 
+-- Bảng User
+INSERT INTO `User` (`email`, `password`, `name`, `role`, `pageBalance`) VALUES
 ('student1@example.com', 'password123', 'Student One', 'student', 100),
-('student2@example.com', 'password123', 'Student Two', 'student', 150),
-('spso1@example.com', 'password123', 'SPSO One', 'spso', 0);
+('student2@example.com', 'password456', 'Student Two', 'student', 150),
+('spso1@example.com', 'password789', 'SPSO One', 'spso', 0),
+('spso2@example.com', 'password321', 'SPSO Two', 'spso', 0),
+('student3@example.com', 'password654', 'Student Three', 'student', 200);
 
--- Dữ liệu cho bảng FileType
-INSERT INTO FileType (type, spso_ID)
-VALUES
+-- Bảng FileType
+INSERT INTO `FileType` (`type`, `spso_ID`) VALUES
 ('PDF', 3),
 ('DOCX', 3),
-('JPEG', NULL);
+('TXT', 4),
+('JPEG', 4),
+('XLSX', 3);
 
--- Dữ liệu cho bảng AutoPaper
-INSERT INTO AutoPaper (semester, number, scheduler, spso_ID)
-VALUES
-('Fall2024', 500, '2024-12-01 09:00:00', 3),
-('Spring2025', 300, '2025-04-01 09:00:00', 3);
+-- Bảng AutoPaper
+INSERT INTO `AutoPaper` (`semester`, `number`, `scheduler`, `spso_ID`) VALUES
+('Fall 2024', 5000, '2024-12-01 10:00:00', 3),
+('Spring 2025', 6000, '2025-01-15 08:00:00', 4),
+('Summer 2025', 4500, '2025-05-01 09:00:00', 3),
+('Winter 2025', 5500, '2025-09-01 08:30:00', 4),
+('Fall 2025', 7000, '2025-11-01 10:30:00', 3);
 
--- Dữ liệu cho bảng Location
-INSERT INTO Location (campus, building, room)
-VALUES
-('Main Campus', 'Building A', '101'),
-('Main Campus', 'Building B', '202'),
-('North Campus', 'Building C', '303');
+-- Bảng Location
+INSERT INTO `Location` (`campus`, `building`, `room`) VALUES
+('Main Campus', 'Building A', 'Room 101'),
+('North Campus', 'Building B', 'Room 202'),
+('West Campus', 'Building C', 'Room 303'),
+('South Campus', 'Building D', 'Room 404'),
+('East Campus', 'Building E', 'Room 505');
 
--- Dữ liệu cho bảng Printer
-INSERT INTO Printer (branchName, model, description, status, loc_ID)
-VALUES
-('Printer Alpha', 'HP LaserJet 1020', 'Fast and reliable.', 'enable', 1),
-('Printer Beta', 'Canon PIXMA MG3600', 'Great for color printing.', 'enable', 2),
-('Printer Gamma', 'Epson EcoTank L3150', 'Cost-efficient.', 'disable', 3);
+-- Bảng Printer
+INSERT INTO `Printer` (`branchName`, `model`, `description`, `status`, `loc_ID`) VALUES
+('Printer A1', 'HP LaserJet', 'High-speed B&W printer', 'enable', 1),
+('Printer B2', 'Canon Pixma', 'Color printer with duplex printing', 'enable', 2),
+('Printer C3', 'Epson EcoTank', 'Eco-friendly color printer', 'disable', 3),
+('Printer D4', 'Brother HL-L2350DW', 'Compact laser printer', 'enable', 4),
+('Printer E5', 'Xerox Phaser', 'High-capacity network printer', 'enable', 5);
 
--- Dữ liệu cho bảng `PrintConfiguration`
-INSERT INTO `PrintConfiguration` (`user_ID`, `printer_ID`, `numPages`, `numCopies`, `paperSize`, `printSide`, `orientation`)
+-- Bảng PrintConfiguration
+INSERT INTO `PrintConfiguration` (`printStart`, `printEnd`, `user_ID`, `printer_ID`, `numPages`, `numCopies`, `paperSize`, `printSide`, `orientation`, `status`) VALUES
+('2024-12-01 09:00:00', '2024-12-01 09:30:00', 1, 1, 10, 1, 'A4', 'single', 'portrait', 'completed'),
+('2024-12-01 10:00:00', '2024-12-01 10:20:00', 2, 2, 20, 2, 'A4', 'duplex', 'landscape', 'completed'),
+('2024-12-01 11:00:00', '2024-12-01 11:15:00', 3, 3, 15, 1, 'A3', 'single', 'portrait', 'unCompleted'),
+('2024-12-01 12:00:00', '2024-12-01 12:30:00', 4, 4, 30, 3, 'A4', 'duplex', 'portrait', 'completed'),
+('2024-12-01 13:00:00', '2024-12-01 13:10:00', 5, 5, 5, 1, 'A4', 'single', 'landscape', 'completed');
 
-VALUES
-( 1, 1, 0, 1, 'A4', 'single', 'portrait'),
-( 2, 2, 0, 1, 'A4', 'double', 'landscape'),
-( 1, 2, 0, 2, 'A4', 'single', 'portrait');
+-- Bảng Document
+INSERT INTO `Document` (`config_ID`, `name`, `size`, `lastModifiedDate`) VALUES
+(1, 'Document1.pdf', 1024, '2024-11-30 08:00:00'),
+(2, 'Document2.docx', 2048, '2024-11-30 09:00:00'),
+(3, 'Document3.xlsx', 3072, '2024-11-30 10:00:00'),
+(4, 'Document4.txt', 512, '2024-11-30 11:00:00'),
+(5, 'Document5.jpeg', 4096, '2024-11-30 12:00:00');
 
--- Dữ liệu cho bảng Document
-INSERT INTO Document (config_ID, name, size, lastModifiedDate)
-VALUES
-(1, 'Thesis.pdf', 5000, '2024-11-28 09:00:00'),
-(1, 'Report.docx', 2000, '2024-11-28 10:00:00'),
-(2, 'Presentation.pptx', 1500, '2024-11-29 09:00:00'),
-(3, 'Resume.pdf', 1500, '2024-11-29 10:00:00');
+-- Bảng Properties
+INSERT INTO `Properties` (`config_ID`, `pageSize`, `noCopy`, `noPage`, `startPage`, `endPage`, `scale`, `isDuplex`, `orientation`) VALUES
+(1, 'A4', 1, 10, 1, 10, 100, '1', 'Dọc'),
+(2, 'A4', 2, 20, 1, 20, 100, '2', 'Ngang'),
+(3, 'A3', 1, 15, 5, 20, 90, '1', 'Dọc'),
+(4, 'A4', 3, 30, 1, 30, 80, '2', 'Dọc'),
+(5, 'A4', 1, 5, 1, 5, 100, '1', 'Ngang');
 
--- Dữ liệu cho bảng Properties
-INSERT INTO Properties (config_ID, pageSize, noCopy, noPage, startPage, endPage, scale, isDuplex, orientation)
-VALUES
-(1, 'A4', 1, 120, 1, 120, 100, '1', 'Dọc'),
-(2, 'A4', 1, 50, 1, 50, 100, '2', 'Ngang'),
-(3, 'A4', 2, 100, 1, 100, 100, '1', 'Dọc');
+-- Bảng Orders
+INSERT INTO `Orders` (`user_ID`, `quantityPaper`, `quantityPackage1`, `quantityPackage2`, `quantityPackage3`, `totalCost`, `dateOrder`, `datePaid`, `status`) VALUES
+(1, 500, 1, 2, 0, 50.00, '2024-12-01', NULL, 'chưa thanh toán'),
+(2, 1000, 0, 1, 1, 100.00, '2024-12-01', '2024-12-02', 'đã thanh toán'),
+(3, 750, 3, 0, 1, 75.00, '2024-12-01', NULL, 'chưa thanh toán'),
+(4, 250, 0, 0, 2, 25.00, '2024-12-01', NULL, 'chưa thanh toán'),
+(5, 300, 1, 1, 1, 30.00, '2024-12-01', '2024-12-02', 'đã thanh toán');
 
--- Dữ liệu cho bảng Orders
-INSERT INTO Orders (user_ID, quantityPaper, quantityPackage1, quantityPackage2, quantityPackage3, totalCost, dateOrder, datePaid, status)
-VALUES
-(1, 100, 2, 1, 0, 75.00, '2024-11-25', '2024-11-26', 'đã thanh toán'),
-(2, 50, 0, 0, 1, 90.00, '2024-11-26', '2024-10-17', 'chưa thanh toán');
+-- Bảng Paper_Package
+INSERT INTO `Paper_Package` (`name`, `quantity`, `price`) VALUES
+('Basic Package', 500, 10),
+('Standard Package', 1000, 18),
+('Premium Package', 1500, 25),
+('Eco-Friendly Package', 750, 15),
+('Custom Package', 250, 8);
 
--- Dữ liệu cho bảng Paper_Package
-INSERT INTO Paper_Package (name, quantity, price)
-VALUES
-('Package A', 100, 50),
-('Package B', 200, 90),
-('Package C', 500, 200);
+-- Bảng Order_Package
+INSERT INTO `Order_Package` (`order_ID`, `description`, `price`, `originalPrice`, `discount`) VALUES
+(1, 'Basic Package', 10, 12, 2),
+(2, 'Standard Package', 18, 20, 2),
+(3, 'Premium Package', 25, 30, 5),
+(4, 'Eco-Friendly Package', 15, 18, 3),
+(5, 'Custom Package', 8, 10, 2);
 
--- Dữ liệu cho bảng Order_Package
-INSERT INTO Order_Package (order_ID, description, price, originalPrice, discount)
-VALUES
-(1, 'Black Friday Discount', 45, 50, 5),
-(2, 'Early Bird Discount', 85, 90, 5); 
+-- Bảng Notification_Message
+INSERT INTO `Notification_Message` (`title`, `content`) VALUES
+('Welcome Message', 'Welcome to our printing service!'),
+('System Maintenance', 'Scheduled maintenance will occur on 2024-12-05 from 00:00 to 04:00.'),
+('New Printer Available', 'A new high-speed printer has been added to the South Campus.'),
+('Payment Reminder', 'Your pending orders need to be paid by 2024-12-10.'),
+('Holiday Announcement', 'Our office will be closed on 2024-12-25 for the holidays.');
 
--- Dữ liệu cho bảng `Notification_Message`
-INSERT INTO `Notification_Message` (`title`, `content`)
-VALUES
-('System Maixccntexãnance', 'The system will be down fxzxcxcxzor maintenance from 2 AM to 4 AM.'),
-('New Document Avaxcxcxailable', 'A new document haxcxcs been uploazxzxded. Please check the portal.');
-
--- Dữ liệu cho bảng `Receiver_Message`
-INSERT IGNORE INTO `Receiver_Message` (`notification_ID`, `user_ID`)
-VALUES
-(1, 4), 
-(1, 2),  -- Gửi thông báo "System Maintenance" tới người dùng `user_ID = 2`
-(2, 3),  -- Gửi thông báo "New Document Available" tới người dùng `user_ID = 3`
-(2, 4);  -- Gửi thông báo "New Document Available" tới người dùng `user_ID = 4`
+-- Bảng Receiver_Message
+INSERT INTO `Receiver_Message` (`notification_ID`, `user_ID`, `status`) VALUES
+(1, 1, 'read'),
+(2, 2, 'unread'),
+(3, 3, 'read'),
+(4, 4, 'unread'),
+(5, 5, 'read');
