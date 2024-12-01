@@ -1,37 +1,23 @@
 import "primeicons/primeicons.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NotificationInformationPopup from "../components/NotificationInformationPopup";
 import CreateNotificationPopup from "../components/CreateNotificationPopup";
+import { defaultNotification, NotificationDto } from "../dtos/Notification.dto";
+import axios from "axios";
 
 
-interface Notification {
-    title: string,
-    content: string,
-    createDate: Date,
-    updateDate: Date,
-}
 
-const datas = Array.from({ length: 30 }).map<Notification>((_, i) => ({
-    title: `Hoàn thành in cho sinh viên có mã số ${i + 100}`,
-    content: 'Hoàn thành việc in bạn hãy đến nhận ở tòa ... cơ sở ...',
-    createDate: new Date(),
-    updateDate: new Date()
-}));
 
 export default function Notification() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
     const [isShowCreate, setIsShowCreate] = useState<boolean>(false)
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const [selectedNotification, setSelectedNotification] = useState<Notification>({
-        title: `Unknow`,
-        content: 'Unknow',
-        createDate: new Date(),
-        updateDate: new Date()
-    })
+    const [selectedNotification, setSelectedNotification] = useState<NotificationDto>(defaultNotification)
+    const [notification, setNotification] = useState<NotificationDto[]>([])
 
-    const totalPages = Math.ceil(datas.length / rowsPerPage);
-    const currentData = datas.slice(
+    const totalPages = Math.ceil(notification.length / rowsPerPage);
+    const currentData = notification.slice(
         (currentPage - 1) * rowsPerPage,
         currentPage * rowsPerPage
     );
@@ -47,10 +33,24 @@ export default function Notification() {
         }
     };
 
-    const handleShowInformation = (notification: Notification) => {
+    const handleShowInformation = (notification: NotificationDto) => {
         setSelectedNotification(notification)
         setIsShowInformation(true)
     }
+
+    const fetchNotifications = async () => {
+        try{
+            const response = await axios.get('http://localhost:3000/api/v1/notifications')
+
+            setNotification(response.data.data)
+        }catch(e){
+            setNotification([])
+        }
+    }
+
+    useEffect(() => {
+        fetchNotifications()
+    },[])
 
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
@@ -103,24 +103,30 @@ export default function Notification() {
                                     {(currentPage - 1) * rowsPerPage + index + 1}
                                 </td>
                                 <td className="px-4 py-2 text-center">{data.title}</td>
-                                <td className="px-4 py-2 text-center">{new Intl.DateTimeFormat('vi-VN', { 
-                                                                            weekday: 'long', 
-                                                                            year: 'numeric', 
-                                                                            month: 'long', 
-                                                                            day: 'numeric', 
-                                                                            hour: 'numeric', 
-                                                                            minute: 'numeric', 
-                                                                            second: 'numeric'
-                                                                        }).format(data.createDate)}</td>
-                                <td className="px-4 py-2 text-center">{new Intl.DateTimeFormat('vi-VN', { 
-                                                                            weekday: 'long', 
-                                                                            year: 'numeric', 
-                                                                            month: 'long', 
-                                                                            day: 'numeric', 
-                                                                            hour: 'numeric', 
-                                                                            minute: 'numeric', 
-                                                                            second: 'numeric'
-                                                                        }).format(data.updateDate)}</td>
+                                <td className="px-4 py-2 text-center">
+                                    {new Date(data.createDate).toString() !== 'Invalid Date' ?
+                                        new Intl.DateTimeFormat('vi-VN', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric', 
+                                        hour: 'numeric', 
+                                        minute: 'numeric', 
+                                        second: 'numeric'
+                                        }).format(new Date(data.createDate)) : 'Ngày không hợp lệ'}
+                                    </td>
+                                    <td className="px-4 py-2 text-center">
+                                    {new Date(data.createDate).toString() !== 'Invalid Date' ?
+                                        new Intl.DateTimeFormat('vi-VN', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric', 
+                                        hour: 'numeric', 
+                                        minute: 'numeric', 
+                                        second: 'numeric'
+                                        }).format(new Date(data.updateDate)) : 'Ngày không hợp lệ'}
+                                    </td>
                                 <td className="px-4 py-2 text-center">
                                     <button
                                         type="button"
@@ -138,7 +144,7 @@ export default function Notification() {
 
             <div className="bg-[#C6DCFE] h-12 flex items-center justify-between w-full rounded px-4">
                 <div className="flex justify-center items-center space-x-2">
-                    <p className="pl-2">Tổng số hàng: {datas.length}</p>
+                    <p className="pl-2">Tổng số hàng: {notification.length}</p>
                     <div className="border-x-2 border-black"></div>
                     <div className="flex items-center space-x-2">
                     <label htmlFor="rows-per-page" className="text-sm">
