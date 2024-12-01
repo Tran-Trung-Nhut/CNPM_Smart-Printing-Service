@@ -14,7 +14,6 @@ export default function Login() {
     const [password, setPassword] = useState<string>("");
     const [rememberMe, setRememberMe] = useState<boolean>(false);
 
-    // Kiểm tra nếu thông tin đã được lưu trong localStorage
     useEffect(() => {
         const savedEmail = localStorage.getItem("email");
         const savedPassword = localStorage.getItem("password");
@@ -76,9 +75,9 @@ export default function Login() {
         }
     };
 
-    // Quay lại trang trước đó
+
     const handleGoBack = () => {
-        navigate(-1); // Quay lại trang trước đó
+        navigate(-1); 
     };
 
     return (

@@ -1,6 +1,9 @@
 import React, { useState } from 'react'; 
 import paper from "../assets/paper.png"
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useRecoilValue } from 'recoil';
+import { userState } from '../state';
 
 interface CartItem {
   description: string;
@@ -16,7 +19,7 @@ interface Package {
 }
 
 const PaperShop: React.FC = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate()
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedPackage, setSelectedPackage] = useState<Package>({
     description: 'Giấy lẻ',
@@ -24,9 +27,9 @@ const PaperShop: React.FC = () => {
     originalPrice: 500,
     discount: 0,
   });
-  const [stock, setStock] = useState<number>(0);
   const [tempStock, setTempStock] = useState<number>(0);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const user = useRecoilValue(userState)
 
   const packages: Package[] = [
     { description: 'Giấy lẻ', price: 500, originalPrice: 500, discount: 0 },
@@ -50,14 +53,98 @@ const PaperShop: React.FC = () => {
     setQuantity(1);
   };
 
-  const checkout = (): void => {
-    setStock(tempStock);
-    setCart([]);
+  const calculateTotalPapers = (): number => {
+    let numOfPaper = 0
+    
+    for(const item of cart){
+      if(item.description === "Giấy lẻ"){
+        numOfPaper += item.quantity
+      }else if(item.description === "Combo 50 tờ"){
+        numOfPaper += item.quantity * 50
+      }else if(item.description === "Combo 100 tờ"){
+        numOfPaper += item.quantity  * 100
+      }else {
+        numOfPaper += item.quantity * 200
+      }
+    }
+
+    return numOfPaper
   };
 
   const calculateTotal = (): number => {
     return cart.reduce((total, item) => total + item.quantity * item.price, 0);
   };
+
+
+  const handlePayNow = async (status: string) => {
+    if(cart.length === 0) return
+    
+    let quantityPaper: number = 0
+    let quantityPackage1: number = 0
+    let quantityPackage2: number = 0
+    let quantityPackage3: number = 0
+
+    for(const item of cart) {
+      if(item.description === "Giấy lẻ"){
+        quantityPaper = item.quantity
+      }else if(item.description === "Combo 50 tờ"){
+        quantityPackage1 = item.quantity
+      }else if(item.description === "Combo 100 tờ"){
+        quantityPackage2 = item.quantity
+      }else {
+        quantityPackage3 = item.quantity
+      }
+    }
+
+    try{
+      if(status === "đã thanh toán"){
+        const confirm = window.confirm("Thanh toán ngay bây giờ?")
+
+        if(!confirm) return
+        const response = await axios.post('http://localhost:3000/api/v1/order',{
+          user_ID: user.user_ID,
+          quantityPaper,
+          quantityPackage1,
+          quantityPackage2,
+          quantityPackage3,
+          totalCost: calculateTotal(),
+          datePaid: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          status
+        })
+
+        const resGetUserInfo = await axios.get(`http://localhost:3000/api/v1/users/${user.user_ID}`)
+
+        const resUpdateUser = await axios.put(`http://localhost:3000/api/v1/users/${user.user_ID}`,{
+          user_ID: resGetUserInfo.data.data.user_ID,
+          email: resGetUserInfo.data.data.email,
+          password: resGetUserInfo.data.data.password,
+          name: resGetUserInfo.data.data.name,
+          role: resGetUserInfo.data.data.role,
+          pageBalance: resGetUserInfo.data.data.pageBalance + calculateTotalPapers()
+        })
+
+        console.log(resUpdateUser.data)
+      }else{
+        const response = await axios.post('http://localhost:3000/api/v1/order',{
+          user_ID: user.user_ID,
+          quantityPaper,
+          quantityPackage1,
+          quantityPackage2,
+          quantityPackage3,
+          totalCost: calculateTotal(),
+          status
+        })
+
+        console.log(response.data)
+      }
+      
+    }catch(e){
+
+    }
+    setCart([]);
+  };
+
+
 
   const removeItemFromCart = (index: number): void => {
     const removedItem = cart[index];
@@ -160,8 +247,8 @@ const PaperShop: React.FC = () => {
 
       <div className="w-full md:w-1/2 shadow-lg rounded-lg p-6 bg-white p">
         <div className="p-2 flex bg-blue-100 rounded-lg space-x-1">
-          <div className="font-semibold text-gray-700">Kho giấy:</div>
-          <div className="font-semibold text-blue-600">{stock}</div>
+          <div className="font-semibold text-gray-700">Tổng số giấy:</div>
+          <div className="font-semibold text-blue-600">{calculateTotalPapers()}</div>
         </div>
 
         <div className="font-semibold text-gray-700 mt-3 mb-2">Giỏ hàng</div>
@@ -221,13 +308,13 @@ const PaperShop: React.FC = () => {
           <div className='flex items-center justify-end space-x-1'>
             <button
                 className="font-semibold ml-auto bg-[#63B3ED] text-white py-2 px-4 rounded-lg shadow-md hover:bg-[#63B3EF] transition-all"
-                onClick={() => console.log("Thanh toán sau")}
+                onClick={() => handlePayNow("chưa thanh toán")}
             >
                 Thanh toán sau
             </button>
             <button
                 className="font-semibold ml-auto bg-blue-700 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-800 transition-all"
-                onClick={checkout}
+                onClick={() => handlePayNow("đã thanh toán")}
                 disabled={cart.length === 0}
             >
                 Thanh toán ngay

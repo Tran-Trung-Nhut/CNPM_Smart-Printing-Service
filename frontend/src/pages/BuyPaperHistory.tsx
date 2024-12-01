@@ -1,50 +1,36 @@
-import React, { useState } from "react";
-
-interface PaymentItem {
-  id: number;
-  quantity: string;
-  time: string;
-  date: string;
-  status: string;
-  amount: string;
-  packageInfo?: string;
-}
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { OrderDto } from "../dtos/Order.dto";
+import { useRecoilValue } from "recoil";
+import { userState } from "../state";
 
 const BuyPaperHistory: React.FC = () => {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
+  const [order, setOrder] = useState<OrderDto[]>([])
+  const [orderNeedToPay, setOrderNeedToPay] = useState<OrderDto[]>([])
+  const user = useRecoilValue(userState)
 
-  const data: PaymentItem[] = [
-    { id: 1, quantity: "Giấy lẻ: 15", time: "10g00", date: "20/10/2024", status: "Chờ thanh toán", amount: "40.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 3 (SL:1)" },
-    { id: 2, quantity: "Giấy lẻ: 20", time: "11g00", date: "20/10/2024", status: "Chờ thanh toán", amount: "20.000 đồng", packageInfo: "Gói 1 (SL:1)"  },
-    { id: 3, quantity: "Giấy lẻ: 10", time: "12g00", date: "20/10/2024", status: "Đã thanh toán", amount: "100.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 2 (SL:1), Gói 3 (SL:1)"  },
-    { id: 4, quantity: "Giấy lẻ: 5", time: "07g59", date: "21/10/2024", status: "Đã thanh toán", amount: "50.000 đồng", packageInfo: "Gói 1 (SL:2), Gói 3 (SL:1)"  },
-    { id: 5, quantity: "Giấy lẻ: 7", time: "07g59", date: "21/10/2024", status: "Đã thanh toán", amount: "50.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 3 (SL:2)"  },
-    { id: 6, quantity: "Giấy lẻ: 0", time: "15g30", date: "21/10/2024", status: "Đã huỷ", amount: "200.000 đồng", packageInfo: "Gói 1 (SL:10), Gói 3 (SL:10)"  },
-    { id: 7, quantity: "Giấy lẻ: 0", time: "13g30", date: "22/10/2024", status: "Đã thanh toán", amount: "5.000 đồng", packageInfo: "Gói 1 (SL:1)"  },
-    { id: 8, quantity: "Giấy lẻ: 12", time: "13g00", date: "22/10/2024", status: "Đã thanh toán", amount: "50.000 đồng", packageInfo: "Gói 2 (SL:2), Gói 3 (SL:1)"  },
-    { id: 9, quantity: "Giấy lẻ: 6", time: "12g00", date: "23/10/2024", status: "Đã huỷ", amount: "100.000 đồng", packageInfo: "Gói 1 (SL:1), Gói 3 (SL:3)" },
-  ];
 
-  const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState(order);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
-    const filtered = data.filter((item) =>
+    const filtered = order.filter((item) =>
       Object.values(item)
         .join(" ")
         .toLowerCase()
         .includes(term.toLowerCase())
     );
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
+    setCurrentPage(1);
   };
 
-  const totalAmount = selectedIds.reduce((sum, id) => {
-    const item = data.find((item) => item.id === id);
-    return item ? sum + parseFloat(item.amount.replace(/\./g, "").replace(" đồng", "")) : sum;
+  const totalAmount = selectedIds.reduce((sum, order_ID) => {
+    const item = order.find((item) => item.order_ID === order_ID);
+    return item ? sum + parseFloat(item.totalCost.toString() ) : sum;
   }, 0);
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
@@ -52,10 +38,29 @@ const BuyPaperHistory: React.FC = () => {
   const currentData = filteredData.slice(startIndex, startIndex + rowsPerPage);
 
   const handleSelect = (id: number) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => {
+      const newSelectedIds = prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id];
+  
+
+      const updatedOrders = newSelectedIds
+        .map((selectedId) => order.find((order) => order.order_ID === selectedId))
+        .filter((order): order is OrderDto => order !== undefined); 
+  
+      setOrderNeedToPay(updatedOrders);
+  
+      return newSelectedIds;
+    });
   };
+  
+
+  function formatCurrency(totalCost: number) {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(totalCost).replace('₫', 'đ');
+  }
 
   const handleRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value));
@@ -74,6 +79,80 @@ const BuyPaperHistory: React.FC = () => {
     }
   };
 
+  const formatDateForMySQL = async (date: Date) =>  {
+    const formattedDate = new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+    return formattedDate;
+  }
+
+  const handlePay = async () => {
+    if (orderNeedToPay.length === 0) {
+      alert("Không có đơn hàng nào được chọn để thanh toán!");
+      return;
+    }
+
+    const confirm = window.confirm(`Bạn có chắc muốn thanh toán ${formatCurrency(totalAmount)} không?`)
+
+    if(!confirm) return
+
+    try{
+      let numOfPaper: number = 0
+
+      for(const ord of orderNeedToPay){
+        numOfPaper += ord.quantityPaper
+        numOfPaper += ord.quantityPackage1 * 50
+        numOfPaper += ord.quantityPackage2 * 100
+        numOfPaper += ord.quantityPackage3 * 200
+
+        const response = await axios.put(`http://localhost:3000/api/v1/order/${ord.order_ID}`,{
+          order_ID: ord.order_ID,
+          user_ID: ord.user_ID,
+          quantityPaper: ord.quantityPaper,
+          quantityPackage1: ord.quantityPackage1,
+          quantityPackage2: ord.quantityPackage2,
+          quantityPackage3: ord.quantityPackage3,
+          totalCost: ord.totalCost,
+          dateOrder: await formatDateForMySQL(ord.dateOrder),
+          datePaid: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          status: 'đã thanh toán'
+        })
+      }
+
+
+      const resGetUserInfo = await axios.get(`http://localhost:3000/api/v1/users/${user.user_ID}`)
+
+      const resUpdateUser = await axios.put(`http://localhost:3000/api/v1/users/${user.user_ID}`,{
+        user_ID: resGetUserInfo.data.data.user_ID,
+        email: resGetUserInfo.data.data.email,
+        password: resGetUserInfo.data.data.password,
+        name: resGetUserInfo.data.data.name,
+        role: resGetUserInfo.data.data.role,
+        pageBalance: resGetUserInfo.data.data.pageBalance + numOfPaper
+      })
+
+      console.log(resUpdateUser.data)
+
+      fetchOrders()
+      alert("Thanh toán thành công!")
+    }catch(e){
+
+    }
+  }
+
+  const fetchOrders = async () => {
+    try{
+      const response = await axios.get('http://localhost:3000/api/v1/order')
+      setOrder(response.data.data)
+      setFilteredData(response.data.data)
+    }catch(e){
+      setOrder([])
+    }
+  }
+
+  useEffect(() => {
+    fetchOrders()
+
+  }, [])
+
   return (
     <div className="[background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]">
       <div className="p-4 min-h-screen flex flex-col pb-20">
@@ -82,7 +161,7 @@ const BuyPaperHistory: React.FC = () => {
             <table className="table-auto bg-white w-full border-collapse border border-gray-200 rounded-lg overflow-hidden shadow-xl">
               <thead className="bg-blue-100 text-left">
                 <tr>
-                  <th colSpan={5}>
+                  <th colSpan={6}>
                     <div className="flex justify-between items-center">
                       <input
                         type="text"
@@ -93,48 +172,58 @@ const BuyPaperHistory: React.FC = () => {
                       />
                     </div>
                   </th>
+                
                 </tr>
                 <tr>
                   <th className="p-2 border-b text-sm text-center">#</th>
                   <th className="p-2 border-b text-sm text-center">Số lượng</th>
-                  <th className="p-2 border-b text-sm text-center">Thời gian</th>
+                  <th className="p-2 border-b text-sm text-center">Thời gian mua</th>
                   <th className="p-2 border-b text-sm text-center">Trạng thái</th>
                   <th className="p-2 border-b text-sm text-center">Số tiền</th>
+                  <th className="p-2 border-b text-sm text-center">Tùy chọn</th>
                 </tr>
               </thead>
               <tbody>
                 {currentData.length > 0 ? (
                   currentData.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
+                    <tr key={item.order_ID} className="hover:bg-gray-50">
                       <td className="p-2 border-b text-sm text-center">
-                        {item.status === "Đã thanh toán" || item.status === "Đã huỷ" ? (
+                        {item.status === "đã thanh toán" ? (
                           "-"
                         ) : (
                           <input
                             type="checkbox"
-                            checked={selectedIds.includes(item.id)}
-                            onChange={() => handleSelect(item.id)}
+                            checked={selectedIds.includes(item.order_ID)}
+                            onChange={() => handleSelect(item.order_ID)}
                           />
                         )}
                       </td>
-                      <td className="p-2 border-b text-sm text-center">{item.quantity}</td>
                       <td className="p-2 border-b text-sm text-center">
-                        {item.time}, {item.date}
+                        {item.quantityPaper > 0? `Giấy lẻ: ${item.quantityPaper},`: ''}
+                        {item.quantityPackage1 > 0? `Combo 50 tờ: ${item.quantityPackage1},`: ''}
+                        {item.quantityPackage2 > 0? `Combo 100 tờ: ${item.quantityPackage2},`: ''}
+                        {item.quantityPackage3 > 0? `Combo 200 tờ: ${item.quantityPackage3}`: ''}
+                      </td>
+                      <td className="p-2 border-b text-sm text-center">
+                        {new Date(item.dateOrder).toLocaleTimeString('vi-VN')}, {new Date(item.dateOrder).toLocaleDateString('vi-VN')}
                       </td>
                       <td className="p-2 border-b text-sm text-center">
                         <span
                           className={`px-2 py-1 rounded ${
-                            item.status === "Chờ thanh toán"
+                            item.status === "chưa thanh toán"
                               ? "bg-purple-100 text-purple-600"
-                              : item.status === "Đã thanh toán"
-                              ? "bg-green-100 text-green-600"
-                              : "bg-red-100 text-red-600"
+                              : "bg-green-100 text-green-600"
                           }`}
                         >
                           {item.status}
                         </span>
                       </td>
-                      <td className="p-2 border-b text-sm text-center">{item.amount}</td>
+                      <td className="p-2 border-b text-sm text-center">{formatCurrency(item.totalCost)}</td>
+                      <td className="p-2 border-b text-sm text-center">
+                        <button className="hover:scale-110 active:scale-90">
+                          <i className="pi pi pi-info-circle" style={{color: 'gray'}}/>
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
@@ -147,11 +236,10 @@ const BuyPaperHistory: React.FC = () => {
               </tbody>
               <tfoot className="bg-blue-100">
                 <tr>
-                  <td colSpan={5} className="p-4">
+                  <td colSpan={6} className="p-4">
                     <div className="flex justify-between items-center">
-                      {/* Bên trái: Tổng số hàng và chọn số hàng hiển thị */}
                       <div className="flex items-center space-x-4 text-sm">
-                        <span>Tổng số hàng: {data.length}</span>
+                        <span>Tổng số hàng: {order.length}</span>
                         <select
                           className="border border-gray-300 rounded px-2 py-1"
                           value={rowsPerPage}
@@ -163,7 +251,6 @@ const BuyPaperHistory: React.FC = () => {
                         </select>
                       </div>
 
-                      {/* Bên phải: Điều hướng trang */}
                       <div className="flex items-center space-x-4 text-sm">
                         <button
                           onClick={handlePreviousPage}
@@ -174,7 +261,7 @@ const BuyPaperHistory: React.FC = () => {
                               : "bg-blue-600 text-white hover:bg-blue-700"
                           }`}
                         >
-                          Previous
+                          Trước
                         </button>
                         <span>
                           Trang {currentPage} / {totalPages}
@@ -188,7 +275,7 @@ const BuyPaperHistory: React.FC = () => {
                               : "bg-blue-600 text-white hover:bg-blue-700"
                           }`}
                         >
-                          Next
+                          Sau
                         </button>
                       </div>
                     </div>
@@ -209,7 +296,7 @@ const BuyPaperHistory: React.FC = () => {
               <strong>Số tiền cần thanh toán:</strong> {totalAmount.toLocaleString("vi-VN")} đồng
             </p>
             <div className="flex space-x-4">
-            <button
+            {/* <button
                 className="text-red-600 bg-white px-4 py-2 rounded-lg hover:bg-red-700 hover:text-white"
                 onClick={() => {
                   if (window.confirm("Bạn có chắc chắn muốn hủy đơn mua?")) {
@@ -219,10 +306,10 @@ const BuyPaperHistory: React.FC = () => {
                 }}
               >
                 Hủy đơn mua
-              </button>
+              </button> */}
               <button
                 className="text-blue-600 bg-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-white"
-                onClick={() => alert("Thanh toán thành công!")}
+                onClick={() => handlePay()}
               >
                 Thanh toán ngay
               </button>
