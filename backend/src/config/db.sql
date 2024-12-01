@@ -130,9 +130,10 @@ CREATE TABLE IF NOT EXISTS `Notification_Message` (
 
 -- Bảng `Receiver_Message` (liên kết thông báo với người nhận)
 CREATE TABLE IF NOT EXISTS `Receiver_Message` (
-    `notification_ID` INT NOT NULL,  -- ID của thông báo
-    `user_ID` INT NOT NULL,          -- ID của người nhận
-    PRIMARY KEY (`notification_ID`, `user_ID`),
-    FOREIGN KEY (`notification_ID`) REFERENCES `Notification_Message`(`notification_ID`) ON DELETE CASCADE,
-    FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE CASCADE
+    `notification_ID` INT NOT NULL,   -- ID của thông báo
+    `user_ID` INT NOT NULL,           -- ID của người nhận
+    `status` ENUM('unread', 'read') DEFAULT 'unread',  -- Trạng thái thông báo
+    PRIMARY KEY (`notification_ID`, `user_ID`),       -- Khóa chính gồm cả notification_ID và user_ID
+    FOREIGN KEY (`notification_ID`) REFERENCES `Notification_Message`(`notification_ID`) ON DELETE CASCADE,  -- Ràng buộc khóa ngoại
+    FOREIGN KEY (`user_ID`) REFERENCES `User`(`user_ID`) ON DELETE CASCADE -- Ràng buộc khóa ngoại
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

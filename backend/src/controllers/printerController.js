@@ -89,11 +89,14 @@ exports.updatePrinter = async (req, res) => {
 
         let loc_ID = null;
 
+        // Check if location is provided in the request body
         if (location) {
             const existingLocation = await locationModel.findLocation(location);
 
             if (existingLocation) {
                 loc_ID = existingLocation.Location_ID;
+
+                // If the location details have changed, update it
                 if (
                     existingLocation.campus !== location.campus ||
                     existingLocation.building !== location.building ||
@@ -101,12 +104,16 @@ exports.updatePrinter = async (req, res) => {
                 ) {
                     await locationModel.updateLocation(loc_ID, location);
                 }
+                const newLocation = await locationModel.createLocation(location.campus, location.building, location.room);
+                loc_ID = newLocation.Location_ID;
             } else {
+                // Create new location if it does not exist
                 const newLocation = await locationModel.createLocation(location.campus, location.building, location.room);
                 loc_ID = newLocation.Location_ID;
             }
         }
 
+        // Update the printer details in the database
         const updatedPrinter = await printerModel.updatePrinter(printerId, {
             branchName,
             model,
@@ -115,9 +122,20 @@ exports.updatePrinter = async (req, res) => {
             loc_ID,
         });
 
+        // Fetch the updated printer with location details
+        const printerWithDetails = await printerModel.getPrinterById(printerId);
+
+        // Return the updated printer details in the response
         res.status(200).json({
             status: 200,
-            data: updatedPrinter,
+            data: {
+                Printer_ID: printerWithDetails.Printer_ID,
+                branchName: printerWithDetails.branchName,
+                model: printerWithDetails.model,
+                description: printerWithDetails.description,
+                status: printerWithDetails.status,
+                location: printerWithDetails.location || null // If location is null, return null instead of an empty object
+            },
             message: "Successfully Updated Printer!",
         });
     } catch (error) {

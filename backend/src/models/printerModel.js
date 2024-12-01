@@ -47,7 +47,7 @@ const printerModel = {
         try {
             // Cập nhật bản ghi máy in
             await query.updateRow("Printer", updates, { Printer_ID: printer_ID });
-            return { Printer_ID: printer_ID, ...updates };
+            return { Printer_ID: parseInt(printer_ID), ...updates };
         } catch (error) {
             console.error("Error in updatePrinter:", error);
             throw error;
