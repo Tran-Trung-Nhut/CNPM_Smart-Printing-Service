@@ -158,3 +158,20 @@ API nguồn: http://localhost:3000/api/v1
     ```
 
 ---
+## API: `/users/all/:paperAmount`
+
+### Description:
+API này sẽ cập nhật số lượng giấy (pages) cho tất cả người dùng có vai trò `student` trong hệ thống. Khi một số lượng giấy được cung cấp, tất cả sinh viên sẽ nhận thêm số lượng giấy đó vào tài khoản của mình.
+
+### Method: `PUT`
+
+### URL Parameters:
+- `paperAmount`: (required) Số lượng giấy cần thêm vào tài khoản của tất cả sinh viên. Đây phải là một số nguyên dương.
+
+### Query Parameters:
+- `role`: (optional) Vai trò của người dùng, chỉ hỗ trợ `student`. Nếu vai trò không phải `student`, API sẽ trả về lỗi.
+
+### Request Example:
+
+```http
+PUT /users/all/100?role=student   ( có thể đổi role)

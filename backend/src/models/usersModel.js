@@ -10,7 +10,7 @@
     initDB();
 
     const usersModel = {
-        getALLUsers: async (condition = {}) => {
+        getALLUsers: async (condition) => {
             try {
                 const users = await query.getAll("User", condition);
                 return users;
@@ -69,6 +69,7 @@
                 throw error;
             }
         },
+        
     };
 
 

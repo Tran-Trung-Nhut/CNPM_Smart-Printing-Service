@@ -6,6 +6,7 @@ module.exports = (router) => {
     router.put("/users/:id", usersController.updateUser);
     router.delete("/users/:id", usersController.deleteUser);
     router.post("/users", usersController.createUser);
+    router.put('/users/all/:paperAmount', usersController.allAddPaper);
     // router.post("/users/login", usersController.login); 
 
 };
