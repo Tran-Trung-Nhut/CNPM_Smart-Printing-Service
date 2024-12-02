@@ -1,15 +1,19 @@
 import { useState, useEffect } from "react";
 import { StudentShowDto } from "../dtos/Student.dto";
 import axios from "axios";
-import { PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
+import { defaultPrintConfigurationDto, PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
 import "./css/StudentInformationPopup.css"
 
 export default function StudentInformationPopup({
     student,
     onClose,
+    setPrintConfig,
+    showPrintConfig,
 }: {
     student: StudentShowDto;
     onClose: () => void;
+    setPrintConfig: (value: PrintConfigurationDto) => void
+    showPrintConfig: (value: boolean) => void
 }) {
     const [printHistory, setPrintHistory] = useState<any[]>([]);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -186,6 +190,10 @@ export default function StudentInformationPopup({
                                                 <button
                                                     type="button"
                                                     className="text-gray-400"
+                                                    onClick={() => {
+                                                        setPrintConfig(data)
+                                                        showPrintConfig(true)
+                                                    }}
                                                 >
                                                     <i className="pi pi-info-circle"></i>
                                                 </button>

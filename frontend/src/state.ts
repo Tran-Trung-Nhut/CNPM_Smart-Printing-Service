@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 import { defaultLoginUser, LoginUserDto } from './dtos/User.dto';
 import { DocumentDto } from './dtos/File.dto';
+import { defaultNotification, NotificationWithStatusDto } from './dtos/Notification.dto';
 
 
 export const isLoginAsState = atom<string>({
@@ -56,4 +57,9 @@ export const printerIDState = atom<number>({
 export const errorState = atom<string>({
     key: 'errorState',
     default: ''
+})
+
+export const notificationState = atom<NotificationWithStatusDto[]>({
+    key: 'notificationState',
+    default: []
 })

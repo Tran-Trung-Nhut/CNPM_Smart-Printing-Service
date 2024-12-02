@@ -1,13 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import school from "../assets/hcmut.png";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { isLoginAsState, userState } from "../state";
+import { isLoginAsState, notificationState, userState } from "../state";
 import { useEffect, useState } from "react";
 import { defaultLoginUser } from "../dtos/User.dto";
 import LogoutConfirm from "./LogoutConfirm";
 import UserProfile from "./UserProfile";
-import { NotificationDto, NotificationWithRecipientDto, NotificationWithStatusDto } from "../dtos/Notification.dto";
+import { defaultNotification, NotificationDto, NotificationWithRecipientDto, NotificationWithStatusDto } from "../dtos/Notification.dto";
 import axios from "axios";
+import NotificationInformationPopup from "./NotificationInformationPopup";
 
 export default function Header() {
     const navigate = useNavigate();
@@ -17,8 +18,9 @@ export default function Header() {
     const [isOpenDropdownNotifcation, setIsOpenDropDownNotification] = useState(false);
     const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
     const [isShowProfile, setIsShowProfile] = useState<boolean>(false);
-    const [notification, setNotification] = useState<NotificationWithStatusDto[]>([]);
-    const [notificationWithRecipient, setNotificationWithRecipient] = useState<NotificationWithRecipientDto[]>([])
+    const [notification, setNotification] = useRecoilState(notificationState)
+    const [isShowNotificationInformation, setIsShowNotificationInformation] = useState<boolean>(false)
+    const [selectedNotification, setSelectedNotification] = useState<NotificationWithStatusDto>(defaultNotification)
 
     const formatDate = (date: any) => {
         const parsedDate = new Date(date);
@@ -56,9 +58,10 @@ export default function Header() {
 
     const fetchNotifications = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/v1/users/${user.user_ID}/notifications`,);
+            const response = await axios.get(`http://localhost:3000/api/v1/users/${user.user_ID}/notifications/details`,);
             
-            console.log(response.data.data)
+
+            setNotification(response.data.data)
             
         } catch (e) {
             console.log(e)
@@ -70,20 +73,28 @@ export default function Header() {
         fetchNotifications()
     }, []); 
 
-    const markAsRead = async (notificationId: number) => {
-        try {
-            const response = await axios.patch(`http://localhost:3000/api/v1/notifications/${notificationId}`, { read: true });
-            setNotification((prev) =>
-                prev.map((notification) =>
-                    notification.notification_ID === notificationId
-                        ? { ...notification, read: true }
-                        : notification
-                )
-            );
-        } catch (e) {
-            console.error('Không thể đánh dấu thông báo là đã đọc!', e);
+    const markAsRead = async (notificationInfor: NotificationWithStatusDto) => {
+        setSelectedNotification(notificationInfor)
+
+        setIsShowNotificationInformation(true)
+
+        console.log(isShowNotificationInformation)
+
+        if(notificationInfor.status === 'unread'){
+            try {
+                const response = await axios.put(`http://localhost:3000/api/v1/notifications/${notificationInfor.notification_ID}/user/${user.user_ID}/read`)
+    
+                console.log(response)
+    
+                fetchNotifications()
+    
+            } catch (e) {
+                console.error('Không thể đánh dấu thông báo là đã đọc!', e);
+            }
         }
     };
+
+    const unreadNotificationsCount = notification.filter(notif => notif.status !== 'read').length;
 
     return (
         <div className="flex shadow-2xl border-2 w-full h-16 z-10 bg-white justify-between">
@@ -92,6 +103,15 @@ export default function Header() {
             )}
             {isShowProfile && (
                 <UserProfile onClose={() => setIsShowProfile(false)} />
+            )}
+            {isShowNotificationInformation && (
+                <NotificationInformationPopup
+                onClose={() => setIsShowNotificationInformation(false)}
+                title={selectedNotification.title}
+                content={selectedNotification.content}
+                createDate={selectedNotification.createDate}
+                updateDate={selectedNotification.updateDate} 
+                />
             )}
             <div className="space-x-7 flex">
                 <img src={school} alt="school_logo" className="ml-6 size-14" />
@@ -157,12 +177,15 @@ export default function Header() {
                     <>
                         {user.role === 'student' && (
                           <button
-                              type="button"
-                              className="hover:scale-110 active:scale-90"
-                              onClick={() => setIsOpenDropDownNotification(!isOpenDropdownNotifcation)}
-                          >
-                              <i className="pi pi-bell" style={{ fontSize: '20px' }} />
-                          </button>
+                                type="button"
+                                className="relative hover:scale-110 active:scale-90"
+                                onClick={() => setIsOpenDropDownNotification(!isOpenDropdownNotifcation)}
+                            >
+                                <i className="pi pi-bell" style={{ fontSize: '20px' }} />
+                                {unreadNotificationsCount > 0 && (
+                                    <span className="absolute top-[-5px] right-[-4px] w-4 h-4 bg-red-500 text-white text-xs rounded-full flex justify-center items-center">{unreadNotificationsCount}</span>
+                                )}
+                            </button>
                         )}
                         <div className="relative">
                             {isOpenDropdownNotifcation && (
@@ -173,8 +196,11 @@ export default function Header() {
                                     {notification.map((notif) => (
                                         <div
                                             key={notif.notification_ID}
-                                            className={`px-4 py-2 cursor-pointer ${true ? 'bg-white' : 'bg-gray-300'}`}
-                                            onClick={() => markAsRead(notif.notification_ID)}
+                                            className={`px-4 py-2 cursor-pointer ${notif.status === 'read' ? 'bg-white' : 'bg-gray-300'}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                markAsRead(notif)
+                                            }}
                                         >
                                             <p className={`font-bold ${true ? 'text-gray-700' : 'text-black'}`}>
                                                 {notif.title}
