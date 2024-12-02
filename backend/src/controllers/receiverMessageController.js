@@ -4,14 +4,33 @@ const userModel = require("../models/usersModel");
 exports.sendNotificationToUser = async (req, res) => {
     try {
         const { userId, title, content } = req.body;
+
+        // Tạo thông báo mới
         const notification = await notificationModel.createNotification(title, content);
+
+        // Thêm người nhận thông báo
         await notificationModel.addReceiver(notification.notification_ID, userId);
-        res.status(201).json({ status: 201, message: "Notification sent to user successfully!" });
+
+        // Lấy chi tiết thông báo vừa tạo
+        const notificationDetails = await notificationModel.getNotificationById(notification.notification_ID);
+
+        // Kết hợp thêm trạng thái từ Receiver_Message
+        const receiver = await notificationModel.getReceiverByNotificationAndUser(notification.notification_ID, userId);
+
+        res.status(201).json({
+            status: 201,
+            data: {
+                ...notificationDetails,
+                status: receiver.status, // trạng thái từ Receiver_Message (vd: đã đọc hoặc chưa đọc)
+            },
+            message: "Notification sent to user successfully!",
+        });
     } catch (error) {
         console.error("Error sending notification:", error);
         res.status(500).json({ status: 500, message: "Error sending notification", error: error.message });
     }
 };
+
 
 exports.getReceiversByNotification = async (req, res) => {
     try {

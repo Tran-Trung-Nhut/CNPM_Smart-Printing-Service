@@ -102,6 +102,10 @@ const notificationModel = {
             console.error("Error in markAsRead:", error);
             throw error;
         }
+    },
+    getReceiverByNotificationAndUser: async (notification_ID, user_ID) => {
+        const result = await query.getOne("Receiver_Message", { notification_ID, user_ID });
+        return result;
     }
 };
 
