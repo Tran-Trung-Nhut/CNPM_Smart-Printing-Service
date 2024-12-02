@@ -24,7 +24,15 @@ export default function PrintConfigInformation ({
 
                 {/* Thông tin về cấu hình in */}
                 <div className="space-y-4 text-gray-700">
-                    <p><strong>{type === 'student'? 'Mã máy in:': 'MSSV:'}</strong> <span className="text-gray-500">{type === 'student'?config.printer_ID: config.user_ID}</span></p>
+                    {type === 'all' ? (
+                        <>
+                            <p><strong>Mã sinh viên</strong> <span className="text-gray-500">{config.user_ID}</span></p>
+                            <p><strong>Mã máy in</strong> <span className="text-gray-500">{config.printer_ID}</span></p>
+                        </>
+                    ) : (
+                        <p><strong>{type === 'student'? 'Mã máy in:': 'MSSV:'}</strong> <span className="text-gray-500">{type === 'student'?config.printer_ID: config.user_ID}</span></p>
+
+                    )}
                     <p><strong>Số trang:</strong> <span>{config.numPages}</span></p>
                     <p><strong>Số bản sao:</strong> <span>{config.numCopies}</span></p>
                     <p><strong>Kích thước giấy:</strong> <span>{config.paperSize}</span></p>

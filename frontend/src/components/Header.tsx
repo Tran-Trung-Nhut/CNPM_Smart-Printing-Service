@@ -1,12 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import school from "../assets/hcmut.png";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { isLoginAsState, notificationState, userState } from "../state";
+import { useRecoilState } from "recoil";
+import { notificationState, userState } from "../state";
 import { useEffect, useState } from "react";
-import { defaultLoginUser } from "../dtos/User.dto";
 import LogoutConfirm from "./LogoutConfirm";
 import UserProfile from "./UserProfile";
-import { defaultNotification, NotificationDto, NotificationWithRecipientDto, NotificationWithStatusDto } from "../dtos/Notification.dto";
+import { defaultNotification, NotificationWithStatusDto } from "../dtos/Notification.dto";
 import axios from "axios";
 import NotificationInformationPopup from "./NotificationInformationPopup";
 
@@ -55,6 +54,10 @@ export default function Header() {
             currentLocation !== '/print-config' &&
             currentLocation !== '/print-complete') navigate('/print');
     };
+
+    const handleShowPrintConfig = () => {
+        if(user.role === 'spso') navigate('/SPSO/printconfig-list')
+    }
 
     const fetchNotifications = async () => {
         try {
@@ -160,7 +163,7 @@ export default function Header() {
                 )}
             </div>
 
-            {(user.role === 'student' || user.role === '') && (
+            {(user.role === 'student' || user.role === '') ? (
                 <div className="flex items-center mt-2 mr-64">
                     <button
                         type="button"
@@ -168,6 +171,16 @@ export default function Header() {
                         onClick={() => handlePrintNow()}
                     >
                         In ngay
+                    </button>
+                </div>
+            ) : (
+                <div className="flex items-center mt-2 mr-64">
+                    <button
+                        type="button"
+                        className="hover:scale-110 text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-xl px-5 py-2.5 text-center me-2 mb-2"
+                        onClick={() => handleShowPrintConfig()}
+                    >
+                        Danh sách in
                     </button>
                 </div>
             )}

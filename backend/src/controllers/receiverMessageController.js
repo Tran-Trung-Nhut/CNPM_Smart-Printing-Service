@@ -21,7 +21,7 @@ exports.sendNotificationToUser = async (req, res) => {
             status: 201,
             data: {
                 ...notificationDetails,
-                status: receiver.status, // trạng thái từ Receiver_Message (vd: đã đọc hoặc chưa đọc)
+                status: receiver.status,
             },
             message: "Notification sent to user successfully!",
         });
