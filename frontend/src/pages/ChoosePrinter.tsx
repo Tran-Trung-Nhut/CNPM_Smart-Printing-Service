@@ -7,22 +7,47 @@ import { PrinterDto } from '../dtos/Printer.dto';
 import axios from 'axios';
 import { useSetRecoilState } from 'recoil';
 import { printerIDState } from '../state';
+import { PrintConfigurationDto } from '../dtos/PrintConfiguration.dto';
 
 interface PrinterProps {
     id: number;
     position: string;
-    queue: number;
     status: string;
 }
 
-const PrinterCard: React.FC<PrinterProps> = ({ id, position, queue, status }) => {
+const PrinterCard: React.FC<PrinterProps> = ({ id, position, status }) => {
     const navigate = useNavigate();
     const setPrinterID = useSetRecoilState(printerIDState)
+    const [queue, setQueue] = useState<number>(0)
 
     const handleChoosePrinter = (printer_ID: number) => {
         setPrinterID(printer_ID)
         navigate('/print-config')
     }
+
+    const getQueuePrinter = async (printer_ID: number) => {
+        try {
+            let number: number = 0
+            const response = await axios.get(`http://localhost:3000/api/v1/printconfig?printer_ID=${printer_ID}`);
+            const printConfigs: PrintConfigurationDto[] = response.data.data;
+            
+            for (const printcof of printConfigs) {
+                if (printcof.status === 'unCompleted') {
+                    number += 1;
+                    console.log(number)
+                }
+                
+            }
+            
+            setQueue(number)
+        } catch (e) {
+            setQueue(0) 
+        }
+    };
+
+    useEffect(() => {
+        getQueuePrinter(id)
+    },[])
 
     return (
         <div
@@ -91,6 +116,7 @@ export default function ChoosePrinter() {
             alert('Lấy danh sách máy in thất bại!');
         }
     };
+    
 
     useEffect(() => {
         fetchPrinters();
@@ -131,7 +157,6 @@ export default function ChoosePrinter() {
                         key={key + 1}
                         id={printerItem.Printer_ID}
                         position={`${printerItem.location.campus} - ${printerItem.location.building} - ${printerItem.location.room}`}
-                        queue={0}
                         status={printerItem.status}
                     />
                 ))}
