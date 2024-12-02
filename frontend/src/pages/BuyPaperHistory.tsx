@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { OrderDto } from "../dtos/Order.dto";
+import { defaultOrder, OrderDto } from "../dtos/Order.dto";
 import { useRecoilValue } from "recoil";
 import { userState } from "../state";
+import OrderDetailPopup from "../components/OrderInformationPopup";
 
 const BuyPaperHistory: React.FC = () => {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -11,6 +12,8 @@ const BuyPaperHistory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [order, setOrder] = useState<OrderDto[]>([])
   const [orderNeedToPay, setOrderNeedToPay] = useState<OrderDto[]>([])
+  const [isShowInformation, setIsShowInformation] = useState<boolean>(false)
+  const [selectdOrder, setSelectedOrder] = useState<OrderDto>(defaultOrder)
   const user = useRecoilValue(userState)
 
 
@@ -55,12 +58,12 @@ const BuyPaperHistory: React.FC = () => {
   };
   
 
-  function formatCurrency(totalCost: number) {
+  const formatCurrency = (totalCost: number) => {
     return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
+        style: 'currency',
+        currency: 'VND',
     }).format(totalCost).replace('₫', 'đ');
-  }
+}
 
   const handleRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value));
@@ -84,6 +87,7 @@ const BuyPaperHistory: React.FC = () => {
     return formattedDate;
   }
 
+  
   const handlePay = async () => {
     if (orderNeedToPay.length === 0) {
       alert("Không có đơn hàng nào được chọn để thanh toán!");
@@ -154,7 +158,13 @@ const BuyPaperHistory: React.FC = () => {
   }, [])
 
   return (
-    <div className="[background-image:linear-gradient(-90deg,_#6fb1fc,_#4364f7_50%,_#0052d4)]">
+    <div className="">
+      {isShowInformation && (
+        <OrderDetailPopup
+        onClose={() => setIsShowInformation(false)}
+        order={selectdOrder}
+        />
+      )}
       <div className="p-4 min-h-screen flex flex-col pb-20">
         <div className="flex-grow"> 
           <div className="max-w-7xl mx-auto overflow-x-auto shadow-2xl">
@@ -220,7 +230,13 @@ const BuyPaperHistory: React.FC = () => {
                       </td>
                       <td className="p-2 border-b text-sm text-center">{formatCurrency(item.totalCost)}</td>
                       <td className="p-2 border-b text-sm text-center">
-                        <button className="hover:scale-110 active:scale-90">
+                        <button
+                        type="button" 
+                        className="hover:scale-110 active:scale-90"
+                        onClick={() => {
+                          setSelectedOrder(item)
+                          setIsShowInformation(true)
+                        }}>
                           <i className="pi pi pi-info-circle" style={{color: 'gray'}}/>
                         </button>
                       </td>

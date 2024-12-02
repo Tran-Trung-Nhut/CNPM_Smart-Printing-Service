@@ -11,3 +11,16 @@ export interface PrinterDto {
     status: string
 }
 
+export const defaultPrinterDto:  PrinterDto = {
+    Printer_ID: -111,
+    branchName: '',
+    description: '',
+    location: {
+        campus: '',
+        building: '',
+        room: ''
+    },
+    model: '',
+    status: 'enable'
+}
+

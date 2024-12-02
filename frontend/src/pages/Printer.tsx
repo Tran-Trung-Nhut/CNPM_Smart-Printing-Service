@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import PrinterInformationPopup from "../components/PrinterInformationPopup";
 import CreatePrinterPopup from "../components/CreatePrinterPopup";
 import axios from "axios";
-import { PrinterDto } from "../dtos/Printer.dto";
+import { defaultPrinterDto, PrinterDto } from "../dtos/Printer.dto";
+import { defaultPrintConfigurationDto, PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
+import PrintConfigInformation from "../components/PrintConfigInformationPopupSPSO";
 
 
 export default function Printer() {
@@ -12,6 +14,10 @@ export default function Printer() {
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [printer, setPrinter] = useState<PrinterDto[]>([])
+    const [selectPrinter, setSelectPrinter] = useState<PrinterDto> (defaultPrinterDto)
+    const [selectedPrintConfig, setSelectedPrintConfig] = useState<PrintConfigurationDto>(defaultPrintConfigurationDto)
+    const [isShowPrintConfig, setIsShowPrintConfig] = useState<boolean>(false)
+
 
     const totalPages = Math.ceil(printer.length / rowsPerPage);
     const currentData = Array.isArray(printer)
@@ -91,7 +97,19 @@ export default function Printer() {
     return (
         <div className="overflow-x-auto shadow-xl rounded flex flex-col justify-between items-center min-h-screen bg-white mt-5 mx-5">
             {isShowInformation && (
-                <PrinterInformationPopup onClose={() => setIsShowInformation(false)} />
+                <PrinterInformationPopup 
+                printer={selectPrinter}
+                onClose={() => setIsShowInformation(false)} 
+                setPrintConfig={(value: PrintConfigurationDto) => setSelectedPrintConfig(value)}
+                showPrintConfig={(value: boolean) => setIsShowPrintConfig(value)}
+                />
+            )}
+            {isShowPrintConfig && (
+                <PrintConfigInformation
+                onClose={() => setIsShowPrintConfig(false)}
+                config={selectedPrintConfig}
+                type="printer"
+                />
             )}
             {isShowCreate && (<CreatePrinterPopup onClose={() => setIsShowCreate(false)} fetchPrinters={() => fetchPrinters()}/>)}
 
@@ -152,7 +170,10 @@ export default function Printer() {
                                     <button
                                         type="button"
                                         className="text-gray-400 hover:scale-110 active:scale-90"
-                                        onClick={() => setIsShowInformation(true)}
+                                        onClick={() => {
+                                            setSelectPrinter(data)
+                                            setIsShowInformation(true)
+                                        }}
                                     >
                                         <i className="pi pi-info-circle"></i>
                                     </button>

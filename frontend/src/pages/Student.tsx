@@ -3,14 +3,23 @@ import { useEffect, useState } from "react";
 import StudentInformationPopup from "../components/StudentInformationPopup";
 import axios from "axios";
 import { defaultStudentShowDto, StudentDto, StudentShowDto } from "../dtos/Student.dto";
-
+import { defaultPrintConfigurationDto, PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
+import PrintConfigInformation from "../components/PrintConfigInformationPopupSPSO";
+import AddPaperPopup from "../components/SemeterPaperPopup";
+import AddPaperHistoryPopup from "../components/AddPaperHistoryPopup";
 export default function Student() {
     const [isShowInformation, setIsShowInformation] = useState<boolean>(false);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [student, setStudent] = useState<StudentDto[]>([]);
     const [userNumOfPrint, setUserNumOfPrint] = useState<{ [key: number]: number }>({}); 
-    const [selectStudent, setSelectStudent] = useState<StudentShowDto> (defaultStudentShowDto)
+    const [selectStudent, setSelectStudent] = useState<StudentShowDto>(defaultStudentShowDto);
+    const [selectedPrintConfig, setSelectedPrintConfig] = useState<PrintConfigurationDto>(defaultPrintConfigurationDto);
+    const [isShowPrintConfig, setIsShowPrintConfig] = useState<boolean>(false);
+    const [isShowSemeterPaper, setIsShowSemeterPaper] = useState<boolean>(false);
+    const [isShowHistoryPaper, setIsShowHistoryPaper] = useState<boolean>(false);
+
+
 
     const totalPages = Math.ceil(student.length / rowsPerPage);
     const currentData = student.slice(
@@ -73,18 +82,54 @@ export default function Student() {
                 <StudentInformationPopup 
                 student={selectStudent}
                 onClose={() => setIsShowInformation(false) }
+                setPrintConfig={(value) => setSelectedPrintConfig(value)}
+                showPrintConfig={(value) => setIsShowPrintConfig(value)}
                 />
             )}
 
+            {isShowPrintConfig && (
+                <PrintConfigInformation
+                onClose={() => setIsShowPrintConfig(false)}
+                config={selectedPrintConfig}
+                type="student"
+                />
+            )}
+
+            {isShowSemeterPaper && (
+                <AddPaperPopup
+                onClose={() => setIsShowSemeterPaper(false)}
+                />
+            )}
+
+            {isShowHistoryPaper && (
+                <AddPaperHistoryPopup
+                onClose={() => setIsShowHistoryPaper(false)}
+                />
+            )}  
+
             <div className="w-full">
-                <div className="bg-[#C6DCFE] flex items-center space-x-1">
-                    <div className="pl-2 py-2 rounded">
+                <div className="bg-[#C6DCFE] flex items-center justify-between py-2 px-4 rounded">
+                    <div className="flex items-center space-x-2">
                         <input
                             placeholder="Nhập họ và tên hoặc MSSV"
                             className="w-64 pl-1 rounded placeholder:italic"
                         />
+                        <i className="pi pi-search" />
                     </div>
-                    <i className="pi pi-search" />
+                    <div className="flex items-center space-x-2">
+                        <button
+                            onClick={() => setIsShowHistoryPaper(true)}
+                            className="px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-lg shadow-md transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:from-green-600 hover:to-green-700 focus:outline-none"
+                        >
+                            Lịch sử thêm giấy
+                        </button>
+                        <button
+                            onClick={() => setIsShowSemeterPaper(true)}
+                            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg shadow-md transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none"
+                        >
+                            Thêm giấy định kỳ
+                        </button>
+                    </div>
                 </div>
                 <table className="table-auto w-full bg-white">
                     <thead className="bg-[#C6DCFE]">
@@ -143,20 +188,20 @@ export default function Student() {
                     <p className="pl-2">Tổng số hàng: {student.length}</p>
                     <div className="border-x-2 border-black"></div>
                     <div className="flex items-center space-x-2">
-                    <label htmlFor="rows-per-page" className="text-sm">
-                        Số hàng mỗi trang:
-                    </label>
-                    <select
-                        id="rows-per-page"
-                        className="rounded border-gray-300 p-1"
-                        value={rowsPerPage}
-                        onChange={handleRowsPerPageChange}
-                    >
-                        <option value={10}>10</option>
-                        <option value={20}>20</option>
-                        <option value={50}>50</option>
-                    </select>
-                </div>
+                        <label htmlFor="rows-per-page" className="text-sm">
+                            Số hàng mỗi trang:
+                        </label>
+                        <select
+                            id="rows-per-page"
+                            className="rounded border-gray-300 p-1"
+                            value={rowsPerPage}
+                            onChange={handleRowsPerPageChange}
+                        >
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
                 </div>
                 <div className="flex items-center space-x-2">
                     <button
@@ -181,3 +226,4 @@ export default function Student() {
         </div>
     );
 }
+

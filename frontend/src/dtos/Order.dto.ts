@@ -10,3 +10,16 @@ export interface OrderDto {
     datePaid: Date | null,
     status: string
 }
+
+export const defaultOrder: OrderDto = {
+    order_ID: -111,
+    user_ID: -111,
+    quantityPaper: 0,
+    quantityPackage1: 0,
+    quantityPackage2: 0,
+    quantityPackage3: 0,
+    totalCost: 0,
+    dateOrder: new Date(),
+    datePaid: null,
+    status: "chưa thanh toán"
+}

@@ -44,7 +44,7 @@ export default function CreateNotificationPopup({
 
                 if(response.data.status === 201){
                     fetchNotifications()
-
+                    onClose()
                     alert("Gửi thông báo thành công!")
                 }
             }else {
@@ -109,20 +109,17 @@ export default function CreateNotificationPopup({
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-700">Người nhận</label>
                         <div className="space-y-2">
-                            {/* Select All Checkbox */}
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
-                                    id="selectAll"
-                                    onChange={handleSelectAll}
-                                    checked={recipient.length === students.length}
-                                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                                />
-                                <label htmlFor="selectAll" className="text-sm text-gray-700">Chọn tất cả</label>
-                            </div>
-
-                            {/* Scrollable List of Checkboxes */}
                             <div className="overflow-y-auto max-h-60 p-2 border border-gray-300 rounded-lg" style={{ maxHeight: "250px" }}>
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        id="selectAll"
+                                        onChange={handleSelectAll}
+                                        checked={recipient.includes("All") || recipient.length === students.length}
+                                        className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                    />
+                                    <label htmlFor="selectAll" className="text-sm text-gray-700">Chọn tất cả</label>
+                                </div>
                                 {students.map((student) => (
                                     <div key={student.user_ID} className="flex items-center space-x-2">
                                         <input

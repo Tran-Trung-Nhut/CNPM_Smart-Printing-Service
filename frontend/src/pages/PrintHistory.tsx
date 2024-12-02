@@ -43,8 +43,7 @@ export default function PrintHistory() {
 
             setPrintConfig(response.data.data)
         } catch (error: any) {
-            if(error.response.data.message !== 'No print configurations found') alert('Get configuration false!')
-            console.log(error.response.data.message)
+            setPrintConfig([])
         }
     }
 
