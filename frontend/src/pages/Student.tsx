@@ -98,6 +98,7 @@ export default function Student() {
             {isShowSemeterPaper && (
                 <AddPaperPopup
                 onClose={() => setIsShowSemeterPaper(false)}
+                fetchStudents={() => fetchStudents()}
                 />
             )}
 

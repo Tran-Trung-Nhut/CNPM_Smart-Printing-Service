@@ -4,12 +4,12 @@ import { UserDto } from "../dtos/User.dto";
 
 export default function CreateNotificationPopup({
     onClose,
-    fetchNotifications, // Nhận hàm fetchPrinters từ props
+    fetchNotifications,
   }: {
     onClose: () => void;
     fetchNotifications: () => void;
   }) {
-    const [recipient, setRecipient] = useState<string[]>([]); // List of selected recipients
+    const [recipient, setRecipient] = useState<string[]>([]); 
     const [title, setTitle] = useState<string>("");
     const [content, setContent] = useState<string>("");
     const [students, setStudents] = useState<UserDto[]>([]);
@@ -49,14 +49,10 @@ export default function CreateNotificationPopup({
             }else {
                 for(const rec of recipient){
                     const response = await axios.post('http://localhost:3000/api/v1/notifications/send',{
-                        user_ID: Number(rec),
+                        userId: Number(rec),
                         title,
                         content
                     })
-
-                    console.log(Number(rec),
-                    title,
-                    content)
 
                     console.log(response)
                 }
@@ -64,13 +60,13 @@ export default function CreateNotificationPopup({
                 alert("Gửi thông báo thành công!")
             }
         } catch (error) {
+            console.log(error)
             alert("Không thể tạo thông báo ngay lúc này! Vui lòng thử lại sau!");
         }
 
         onClose();
     };
 
-    // Handle recipient change (checkbox selection)
     const handleRecipientChange = (event: React.ChangeEvent<HTMLInputElement>, userId: string) => {
         if (event.target.checked) {
             setRecipient((prev) => [...prev, userId]);
@@ -79,7 +75,6 @@ export default function CreateNotificationPopup({
         }
     };
 
-    // Handle the "Select All" checkbox
     const handleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
             setRecipient(["All"]);

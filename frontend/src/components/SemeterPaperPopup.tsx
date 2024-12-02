@@ -5,7 +5,13 @@ import axios from "axios";
 
 
 
-export default function AddPaperPopup({ onClose }: { onClose: () => void }) {
+export default function AddPaperPopup({ 
+    onClose,
+    fetchStudents
+}: { 
+    onClose: () => void,
+    fetchStudents: () => void
+}) {
     const [semester, setSemester] = useState<string>("");
     const [paperAmount, setPaperAmount] = useState<number>(0);
     const user = useRecoilValue(userState)
@@ -29,15 +35,18 @@ export default function AddPaperPopup({ onClose }: { onClose: () => void }) {
                 spso_ID: user.user_ID
             })
 
-            const res = await axios.post('http://localhost:3000/api/v1/notifications/sendToAll',{
+            const res = await axios.put(`http://localhost:3000/api/v1/users/all/${paperAmount}?role=student`)
+
+            const r = await axios.post('http://localhost:3000/api/v1/notifications/sendToAll',{
                 title: `Cấp giấy cho sinh viên học kỳ ${semester}`,
-                content: `Bạn vừa nhận thêm được ${paperAmount} giấy mới nhằm tri ân sinh viên học kỳ mới - học kỳ ${semester}, Chúc bạn sẽ có kỳ học thật thành công!`
+                content: `Bạn vừa nhận thêm được ${paperAmount} giấy mới nhằm tri ân sinh viên học kỳ mới - học kỳ ${semester}.\n \n Chúc bạn sẽ có kỳ học thật thành công!`
             }) 
 
             alert(`Thêm giấy cho học kỳ ${semester} thành công!`)
-
+            fetchStudents()
             onClose()
         }catch(e){
+            console.log(e)
             alert("Không thể thêm giấy ngay lúc này! Vui lòng thử lại sau")
         }
     }
@@ -50,10 +59,8 @@ export default function AddPaperPopup({ onClose }: { onClose: () => void }) {
                 className="bg-white p-8 rounded-lg shadow-xl w-96 text-left space-y-6"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header */}
                 <h3 className="text-2xl font-semibold text-center text-indigo-600">Cấp giấy định kỳ</h3>
 
-                {/* Form nhập thông tin */}
                 <div className="space-y-6">
                     <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-700">Kỳ học:</label>
@@ -78,7 +85,6 @@ export default function AddPaperPopup({ onClose }: { onClose: () => void }) {
                     </div>
                 </div>
 
-                {/* Nút hành động */}
                 <div className="flex justify-end mt-6 space-x-4">
                     <button
                         onClick={onClose}

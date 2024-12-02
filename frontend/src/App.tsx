@@ -6,7 +6,6 @@ import ChooseLogin from './pages/ChooseLogin';
 import HomeSPSO from './pages/HomeSPSO';
 import Student from './pages/Student';
 import Printer from './pages/Printer';
-import BuyPaper from './pages/BuyPaperHistory';
 import ChoosePrinter from './pages/ChoosePrinter';
 import Notification from './pages/Notification';
 import LearnMore from './pages/LearnMore';
@@ -15,13 +14,14 @@ import ProtectedRoute from './ProtectedRoute';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { isLoginAsState, userState } from './state';
 import Forbidden from './pages/Forbidden';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import PrintUpload from './pages/PrintUpload';
 import PrintHistory from './pages/PrintHistory';
 import PrintingConfiguration from './pages/PrintingConfiguration';
 import PrintingComplete from './pages/PrintingComplete';
 import BuyPaperHistory from './pages/BuyPaperHistory';
 import PaperShop from './pages/BuyPaper';
+import PrintConfigList from './pages/PrintConfigList';
 
 export default function App() {
   const [user, setUser] = useRecoilState(userState)
@@ -160,6 +160,16 @@ export default function App() {
                   currentRole={user.role}
               >
               <Notification/>
+              </ProtectedRoute>
+            }/>
+            <Route 
+            path='/SPSO/printconfig-list' 
+            element={
+                  <ProtectedRoute
+                  allowedRoles={["spso"]}
+                  currentRole={user.role}
+              >
+              <PrintConfigList/>
               </ProtectedRoute>
             }/>
           </Route>
