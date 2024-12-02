@@ -17,6 +17,10 @@ export default function AddPaperPopup({ onClose }: { onClose: () => void }) {
             return
         }
 
+        const confirm = window.confirm("Bạn có chắc muốn thêm giấy, vui lòng kiểm tra lại số lượng vì giấy đã cấp sẽ không thể thu hồi!")
+
+        if(!confirm) return
+
         try{
             const response = await axios.post('http://localhost:3000/api/v1/paper',{
                 semester,
@@ -24,6 +28,11 @@ export default function AddPaperPopup({ onClose }: { onClose: () => void }) {
                 scheduler: new Date().toISOString().slice(0, 19).replace('T', ' '),
                 spso_ID: user.user_ID
             })
+
+            const res = await axios.post('http://localhost:3000/api/v1/notifications/sendToAll',{
+                title: `Cấp giấy cho sinh viên học kỳ ${semester}`,
+                content: `Bạn vừa nhận thêm được ${paperAmount} giấy mới nhằm tri ân sinh viên học kỳ mới - học kỳ ${semester}, Chúc bạn sẽ có kỳ học thật thành công!`
+            }) 
 
             alert(`Thêm giấy cho học kỳ ${semester} thành công!`)
 

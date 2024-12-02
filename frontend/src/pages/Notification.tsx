@@ -38,6 +38,21 @@ export default function Notification() {
         setIsShowInformation(true)
     }
 
+    const handleDelete = async (notification_ID: number) => {
+        const confirm = window.confirm("Bạn có chắc chắn muốn xóa thông báo này?")
+
+        if(!confirm) return
+
+        try{
+            const response = await axios.delete(`http://localhost:3000/api/v1/notifications/${notification_ID}`)
+
+            fetchNotifications()
+            alert("Xóa thông báo thành công!")
+        }catch(e){
+            alert("Không thể xóa thông báo trong lúc này! Vui lòng thử lại sau!")
+        }
+    }
+
     const fetchNotifications = async () => {
         try{
             const response = await axios.get('http://localhost:3000/api/v1/notifications')
@@ -131,13 +146,21 @@ export default function Notification() {
                                         second: 'numeric'
                                         }).format(new Date(data.updateDate)) : 'Ngày không hợp lệ'}
                                     </td>
-                                <td className="px-4 py-2 text-center">
+                                <td className="px-4 py-2 text-center flex space-x-3 justify-center">
                                     <button
                                         type="button"
-                                        className="text-gray-400"
+                                        className="text-gray-400 hover:scale-110 active:scale-90"
                                         onClick={() => handleShowInformation(data)}
                                     >
-                                        <i className="pi pi-info-circle"></i>
+                                        <i className="pi pi-info-circle"/>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="text-gray-400 hover:scale-110 active:scale-90"
+                                        onClick={() => handleDelete(data.notification_ID)}
+                                    >
+                                        <i className="pi pi-trash" style={{color: 'red'}}/>
                                     </button>
                                 </td>
                             </tr>

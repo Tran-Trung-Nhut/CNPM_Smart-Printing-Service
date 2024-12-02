@@ -193,23 +193,30 @@ export default function Header() {
                                     className="absolute right-0 bg-white border border-gray-200 shadow-md rounded-md w-64 z-10 mt-2 max-h-64 overflow-y-auto"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    {notification.map((notif) => (
-                                        <div
-                                            key={notif.notification_ID}
-                                            className={`px-4 py-2 cursor-pointer ${notif.status === 'read' ? 'bg-white' : 'bg-gray-300'}`}
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                markAsRead(notif)
-                                            }}
-                                        >
-                                            <p className={`font-bold ${true ? 'text-gray-700' : 'text-black'}`}>
-                                                {notif.title}
-                                            </p>
-                                            <p className="text-sm text-gray-500">
-                                                {formatDate(notif.createDate)}
-                                            </p>
-                                        </div>
-                                    ))}
+                                    {
+                                        notification.length === 0 ? (
+                                            <div className="px-4 py-2 text-gray-500">Không có thông báo nào</div>
+                                        ) : (
+                                            notification.map((notif) => (
+                                                <div
+                                                    key={notif.notification_ID}
+                                                    className={`px-4 py-2 cursor-pointer ${notif.status === 'read' ? 'bg-white' : 'bg-gray-300'}`}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        markAsRead(notif)
+                                                    }}
+                                                >
+                                                    <p className={`font-bold ${true ? 'text-gray-700' : 'text-black'}`}>
+                                                        {notif.title}
+                                                    </p>
+                                                    <p className="text-sm text-gray-500">
+                                                        {formatDate(notif.createDate)}
+                                                    </p>
+                                                </div>
+                                            ))
+                                        )
+                                    }
+
                                 </div>
                             )}
                         </div>

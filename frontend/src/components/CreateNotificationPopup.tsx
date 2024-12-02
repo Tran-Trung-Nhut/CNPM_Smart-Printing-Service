@@ -28,7 +28,6 @@ export default function CreateNotificationPopup({
         fetchRecipient();
     }, []); 
 
-    // Handle create notification
     const handleCreate = async () => {
         if (!title || !content || !recipient) {
             alert("Vui lòng nhập đầy đủ thông tin!");
