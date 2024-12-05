@@ -27,13 +27,18 @@ export default function PrintingConfiguration() {
   const paperSizes = ["A4", "A3"];
 
   const getNumberOfPageForPrint  = async () : Promise<number> => {
+    let number : number = 0
     if(printSide === 'single-sided'){
-      return numPages * numCopies
+      number = numPages * numCopies
     }else if(numPages === 1 || numPages === 2){
-      return numCopies
+      number = numCopies
     }else if(numPages % 2 === 0){
-      return (numPages / 2) * numCopies
-    } else return (numPages / 2 + 1) * numCopies
+      number = (numPages / 2) * numCopies
+    } else number = (numPages / 2 + 1) * numCopies
+
+    if(paperSize === 'A3') number = number * 2
+
+    return number
   }
 
   const handleSubmit = async () => {

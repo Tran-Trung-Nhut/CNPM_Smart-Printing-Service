@@ -5,39 +5,64 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { DocumentDto } from "../dtos/File.dto";
 import { documentState, errorState } from "../state";
+import axios from "axios";
+import { types } from "util";
 
 const PrintUpload: React.FC = () => {
   const navigate = useNavigate();
   const setError = useSetRecoilState(errorState)
   const [file, setFile] = useRecoilState(documentState);
+  const [types, setTypes] = useState<string[]>([])
 
   const handleChoosePrinter = () => {
     if(file.length === 0) alert("Vui lòng tải tệp cần in trước khi đến bước tiếp theo!")
     if(file.length > 0) navigate('/choose-printer')
   }
 
-  const customRequest = (options: any) => {
-    const { file, onSuccess } = options;
+  const fetchFileType = async () => {
+    try{
+      const response = await axios.get('http://localhost:3000/api/v1/filetypes')
 
+      const tmpType : string[] = []
+
+      for(const res of response.data.data){
+        tmpType.push(res.type)
+      }
+      setTypes(tmpType)
+    }catch(e){
+      console.log(e)
+    }
+  }
+
+  const customRequest = (options: any) => {
+    const { file, onSuccess, onError } = options;
+
+    const type = file.name.split('.').pop() || ""
   
     setTimeout(() => {
-      onSuccess("ok"); 
-      message.success(`${file.name} đã được tải lên thành công.`);
+      if(types.includes(type)){
+        onSuccess("ok")
+        message.success(`${file.name} đã được tải lên thành công.`);
 
-      const formattedLastModifiedDate = new Date(file.lastModifiedDate).toISOString().slice(0, 19).replace('T', ' ');
+        const formattedLastModifiedDate = new Date(file.lastModifiedDate).toISOString().slice(0, 19).replace('T', ' ');
 
-      const fileDetails = {
-        name: file.name,
-        size: file.size,
-        lastModifiedDate: formattedLastModifiedDate, 
-      };
+        const fileDetails = {
+          name: file.name,
+          size: file.size,
+          lastModifiedDate: formattedLastModifiedDate, 
+        };
 
-      setFile((prev) => [...prev, fileDetails]);
+        setFile((prev) => [...prev, fileDetails]);
+      }else{
+        onError(new Error(`.${type} không được phép in!`)); 
+        message.error((`${file.name} đã xảy ra lỗi khi tải lên.`))
+      }
     }, 1000); 
   };
 
   useEffect(() => {
     setError('')
+    fetchFileType()
   }, [])
 
   return (
