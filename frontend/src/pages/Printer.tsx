@@ -6,6 +6,7 @@ import axios from "axios";
 import { defaultPrinterDto, PrinterDto } from "../dtos/Printer.dto";
 import { defaultPrintConfigurationDto, PrintConfigurationDto } from "../dtos/PrintConfiguration.dto";
 import PrintConfigInformation from "../components/PrintConfigInformationPopupSPSO";
+import EditFileTypePopup from "../components/SettingFIleTypePopup";
 
 
 export default function Printer() {
@@ -17,6 +18,7 @@ export default function Printer() {
     const [selectPrinter, setSelectPrinter] = useState<PrinterDto> (defaultPrinterDto)
     const [selectedPrintConfig, setSelectedPrintConfig] = useState<PrintConfigurationDto>(defaultPrintConfigurationDto)
     const [isShowPrintConfig, setIsShowPrintConfig] = useState<boolean>(false)
+    const [isShowSettingType, setIsShowSettingType] = useState<boolean>(false)
 
 
     const totalPages = Math.ceil(printer.length / rowsPerPage);
@@ -113,28 +115,44 @@ export default function Printer() {
                 />
             )}
             {isShowCreate && (<CreatePrinterPopup onClose={() => setIsShowCreate(false)} fetchPrinters={() => fetchPrinters()}/>)}
+            {isShowSettingType && (
+                <EditFileTypePopup
+                onClose={() => setIsShowSettingType(false)}
+                />
+            )}
 
             <div className="w-full">
-            <div className="bg-[#C6DCFE] flex items-center justify-between px-4 py-2">
-                <div className="flex items-center space-x-2">
-                    <input
-                        placeholder="Nhập thông tin tìm kiếm"
-                        className="w-64 pl-1 rounded placeholder:italic"
-                    />
-                    <button
-                        className="flex items-center justify-center bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200"
-                    >
-                        <i className="pi pi-search mr-1"></i> Tìm kiếm
-                    </button>
+                <div className="bg-[#C6DCFE] flex items-center justify-between px-4 py-2">
+                    <div className="flex items-center space-x-2">
+                        <input
+                            placeholder="Nhập thông tin tìm kiếm"
+                            className="w-64 pl-1 rounded placeholder:italic"
+                        />
+                        <button
+                            className="flex items-center justify-center bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition duration-200"
+                        >
+                            <i className="pi pi-search mr-1"></i> Tìm kiếm
+                        </button>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                        <button
+                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
+                            onClick={() => setIsShowCreate(true)} 
+                        >
+                            <i className="pi pi-print mr-2"></i> Thêm máy in
+                        </button>
+
+                        {/* Nút "Điều chỉnh loại tệp" */}
+                        <button
+                            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition duration-200"
+                            onClick={() => setIsShowSettingType(true)}
+                        >
+                            <i className="pi pi-file mr-2"></i> Điều chỉnh loại tệp
+                        </button>
+                    </div>
                 </div>
 
-                <button
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-200"
-                    onClick={() => setIsShowCreate(true)} 
-                >
-                    <i className="pi pi-print mr-2"></i> Thêm máy in
-                </button>
-            </div>
 
                 <table className="table-auto w-full bg-white">
                     <thead className="bg-[#C6DCFE]">
