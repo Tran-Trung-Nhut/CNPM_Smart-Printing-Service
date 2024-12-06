@@ -1,5 +1,3 @@
-// import printerImage from "../assets/printer.png"; 
-
 export default function LearnMore() {
     return (
         <div className="min-h-screen text-white">
@@ -55,7 +53,7 @@ export default function LearnMore() {
                                 <span className="font-bold text-yellow-300">3. Tùy chỉnh in:</span> Lựa chọn số lượng bản in, kích cỡ giấy và các thiết lập khác.
                             </li>
                             <li>
-                                <span className="font-bold text-yellow-300">4. Nhận tài liệu:</span> Đến máy in gần nhất để nhận tài liệu của bạn.
+                                <span className="font-bold text-yellow-300">4. Nhận tài liệu:</span> Đến máy in mà bạn đăng ký để nhận tài liệu.
                             </li>
                         </ul>
                     </div>
